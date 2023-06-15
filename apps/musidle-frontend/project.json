@@ -9,7 +9,8 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/musidle-frontend"
+        "outputPath": "dist/apps/musidle-frontend",
+        "postcssConfig": "apps/musidle-frontend/postcss.config.js"
       },
       "configurations": {
         "development": {

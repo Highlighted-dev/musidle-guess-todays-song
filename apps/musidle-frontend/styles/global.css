@@ -2,27 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .video-container {
-  overflow: hidden;
-  position: relative;
-} */
-
-.video-container iframe {
-  position: absolute;
-  top: -60px;
-  left: 0;
-  width: 100%;
-  height: calc(100% + 120px);
-  pointer-events: none;
-}
-iframe.blur {
-  filter: blur(20px);
-  background-color: #ccc;
-}
-.video-foreground {
-  pointer-events: none;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;

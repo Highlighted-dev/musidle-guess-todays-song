@@ -31,8 +31,7 @@ export default function Index() {
     key: string;
   }
 
-  const audio_element = new Audio('/music/2.mp3');
-  const [audio, setAudio] = useState(audio_element);
+  const [audio, setAudio] = useState(new Audio('/music/2.mp3'));
   const [audioTime, setAudioTime] = useState(0);
   const [time, setTime] = useState(1000);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null);
@@ -42,7 +41,7 @@ export default function Index() {
     {
       value: 'Songs will appear here',
       label: 'Songs will appear here',
-      key: 'Songs will appear here',
+      key: 'no-song',
     },
   ]);
 
@@ -173,29 +172,25 @@ export default function Index() {
                         />
 
                         <CommandGroup>
-                          {songs[0] == undefined ? (
-                            <CommandEmpty>Songs will appear here.</CommandEmpty>
-                          ) : (
-                            songs.map(song => (
-                              <CommandItem
-                                key={song.key}
-                                onSelect={currentValue => {
-                                  setValue(currentValue === value ? '' : currentValue);
-                                  setOpen(false);
-                                }}
-                              >
-                                <AiOutlineCheck
-                                  className={cn(
-                                    'mr-2 h-4 w-4',
-                                    value.toLowerCase() == song.label.toLowerCase()
-                                      ? 'opacity-100'
-                                      : 'opacity-0',
-                                  )}
-                                />
-                                {song.label}
-                              </CommandItem>
-                            ))
-                          )}
+                          {songs.map(song => (
+                            <CommandItem
+                              key={song.key}
+                              onSelect={currentValue => {
+                                setValue(currentValue === value ? '' : currentValue);
+                                setOpen(false);
+                              }}
+                            >
+                              <AiOutlineCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  value.toLowerCase() == song.label.toLowerCase()
+                                    ? 'opacity-100'
+                                    : 'opacity-0',
+                                )}
+                              />
+                              {song.label}
+                            </CommandItem>
+                          ))}
                         </CommandGroup>
                       </Command>
                     </PopoverContent>

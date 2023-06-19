@@ -1,6 +1,5 @@
 import express from 'express';
 import SearchTrackRoute from './routes/SearchTrackRoute';
-import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
@@ -23,9 +22,8 @@ mongoose
   .catch(error => {
     console.error(error);
   });
-
-app.use(cors({ origin: 'http://localhost:4200' }));
 app.use(cookieParser());
+
 app.use(helmet());
 app.use('/api/track/search/', SearchTrackRoute);
 app.use('/api/auth/', UserAuthenticationRoute);

@@ -6,17 +6,36 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import UserAuthenticationRoute from './routes/UserAuthenticationRoute';
+import http from 'http';
+import { Server } from 'socket.io';
 dotenv.config();
 
 const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
+const mongodb_url = process.env.MONGODB_URL || 'musidle';
 
 const app = express();
-const mongodb_url = process.env.MONGODB_URL || 'musidle';
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  },
+});
+
+io.on('connection', socket => {
+  socket.on('addPlayer', player => {
+    socket.broadcast.emit('addPlayer', player);
+  });
+  socket.on('toggleGame', () => {
+    socket.broadcast.emit('toggleGame');
+  });
+});
+
 mongoose
   .connect(mongodb_url)
   .then(() => {
-    app.listen(port, host, () => {
+    server.listen(port, host, () => {
       console.log(`Musidle API is listening on http://${host}:${port}`);
     });
   })

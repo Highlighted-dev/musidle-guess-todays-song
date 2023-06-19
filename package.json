@@ -17,6 +17,7 @@
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "bufferutil": "^4.0.7",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
@@ -32,9 +33,13 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.9.0",
+    "socket.io": "^4.6.2",
+    "socket.io-client": "^4.6.2",
     "tailwind-merge": "^1.13.1",
     "tailwindcss-animate": "^1.0.5",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "utf-8-validate": "^5.0.10",
+    "ws": "8.11"
   },
   "devDependencies": {
     "@nx/cypress": "16.3.1",

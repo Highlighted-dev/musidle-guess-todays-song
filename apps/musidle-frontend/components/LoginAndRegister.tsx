@@ -126,9 +126,7 @@ const LoginAndRegister = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle>Login</CardTitle>
-                    <CardDescription>
-                      Create account if you don&apos;t have already!
-                    </CardDescription>
+                    <CardDescription>Login to your account to access all features</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <div className="space-y-1">

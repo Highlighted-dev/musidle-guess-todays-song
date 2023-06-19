@@ -214,7 +214,7 @@ export default function Index() {
           </Alert>
         </CardContent>
         <CardFooter className="flex justify-between text-center">
-          <Button variant="ghost" onClick={() => handleSkip()} className="w-[9%]">
+          <Button variant="ghost" onClick={() => handleSkip()} className="w-[9%] min-w-[50px]">
             Skip
           </Button>
           <div className="w-1/4 text-center">
@@ -228,7 +228,7 @@ export default function Index() {
             />
             <Label>Volume</Label>
           </div>
-          <Button onClick={() => handlePlay()} className="w-[9%]">
+          <Button onClick={() => handlePlay()} className="w-[9%] min-w-[50px]">
             Play / Pause
           </Button>
         </CardFooter>

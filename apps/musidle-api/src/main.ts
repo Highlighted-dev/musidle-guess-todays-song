@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import UserAuthenticationRoute from './routes/UserAuthenticationRoute';
 dotenv.config();
 
@@ -23,7 +24,7 @@ mongoose
     console.error(error);
   });
 app.use(cookieParser());
-
+app.use(cors());
 app.use(helmet());
 app.use('/api/track/search/', SearchTrackRoute);
 app.use('/api/auth/', UserAuthenticationRoute);

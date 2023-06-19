@@ -19,6 +19,7 @@ import {
   doesPasswordHaveNumber,
   isEmailValid,
 } from '@/utils/Validations';
+import { toast } from './ui/use-toast';
 
 const LoginAndRegister = () => {
   const { authState, logout, login, register } = useContext(authContext) as AuthContextType;
@@ -33,33 +34,64 @@ const LoginAndRegister = () => {
       const email = emailRef.current.value;
       const username = usernameRef.current.value;
       const password = passwordRef.current.value;
-      if (!isEmailValid(email)) return console.log('Email is not valid.', { type: 'error' });
+      if (!isEmailValid(email))
+        return toast({
+          variant: 'destructive',
+          title: 'Failed to Register',
+          description: 'Email is not valid',
+        });
 
       if (!doesPasswordHaveCapitalLetter(password))
-        return console.log('Password does not have an upper case letter.', { type: 'error' });
+        return toast({
+          variant: 'destructive',
+          title: 'Failed to Register',
+          description: 'Password does not have a capital letter',
+        });
 
       if (!doesPasswordHaveNumber(password))
-        return console.log('Password does not have a number.', { type: 'error' });
+        return toast({
+          variant: 'destructive',
+          title: 'Failed to Register',
+          description: 'Password does not have a number',
+        });
 
       try {
         setLoading(true);
         register(username, email, password);
       } catch {
-        console.log('Failed to create an account', { type: 'error' });
+        toast({
+          variant: 'destructive',
+          title: 'Failed to Register',
+          description: 'Something went wrong. Please try again later.',
+        });
       }
       setLoading(false);
-      return console.log('Regitration was succesfull.', { type: 'success' });
+      return toast({
+        title: 'Registered successfully',
+      });
     }
-    return console.log('Please enter all the data', { type: 'error' });
+    return toast({
+      variant: 'destructive',
+      title: 'Failed to Register',
+      description: 'Please enter all fields',
+    });
   };
 
   const validateSignIn = () => {
     if (!emailRef.current.value || !passwordRef.current.value) {
-      console.log('Email or password is not set', { type: 'error' });
+      toast({
+        variant: 'destructive',
+        title: 'Failed to login',
+        description: 'Email or password is not set',
+      });
       return false;
     }
     if (emailRef.current.value.length < 6 || passwordRef.current.value.length < 6) {
-      console.log('Email and password must be at least 6 characters long', { type: 'error' });
+      toast({
+        variant: 'destructive',
+        title: 'Failed to login',
+        description: 'Email and password must be at least 6 characters long',
+      });
       return false;
     }
     return true;
@@ -109,7 +141,9 @@ const LoginAndRegister = () => {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button onClick={handleSignIn}>Sign in</Button>
+                    <Button onClick={handleSignIn} disabled={loading}>
+                      Sign in
+                    </Button>
                   </CardFooter>
                 </Card>
               </TabsContent>
@@ -134,7 +168,9 @@ const LoginAndRegister = () => {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button onClick={handleSignUp}>Sign Up</Button>
+                    <Button onClick={handleSignUp} disabled={loading}>
+                      Sign Up
+                    </Button>
                   </CardFooter>
                 </Card>
               </TabsContent>
@@ -142,7 +178,7 @@ const LoginAndRegister = () => {
           </DialogContent>
         </Dialog>
       ) : (
-        <Button onClick={logout} variant={'ghost'}>
+        <Button onClick={logout} variant={'ghost'} disabled={loading}>
           Logout
         </Button>
       )}

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, createContext, useMemo } from 'react';
 import axios from 'axios';
-import { AuthContextType, IUser, IAxiosErrorRestApi } from '../../@types/AuthContext';
-
+import { AuthContextType, IAxiosErrorRestApi, IUser } from '../../@types/AuthContext';
+import { toast } from '../ui/use-toast';
+import { useRouter } from 'next/navigation';
 export const authContext = createContext<AuthContextType | null>(null);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  // const navigate = useNavigate();
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [authState, setAuthState] = useState<IUser>({
     _id: null,
@@ -26,7 +27,11 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
           return [];
         }
         if (response_data.error) {
-          console.log(response_data.error, response_data.message);
+          toast({
+            variant: 'destructive',
+            title: response_data.error,
+            description: response_data.message,
+          });
           return [];
         }
         // If user is logged in(there is a cookie with token), set authState to user data
@@ -38,7 +43,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         return response_data;
       })
-      .catch(err => console.log(err))
+      .catch(err => axiosErrorHandler(err))
       .then(() => {
         setLoading(false);
       });
@@ -46,9 +51,14 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const axiosErrorHandler = (err: IAxiosErrorRestApi) => {
     // If the request was made and the server responded.
-    if (err.response) {
-      //TODO toast(err.response.data.message, { type: 'error' });
+    if (err.response?.data?.message) {
+      return toast({
+        title: 'Error',
+        description: err.response?.data.message,
+        variant: 'destructive',
+      });
     }
+    return toast({ title: 'Error', description: err.message, variant: 'destructive' });
   };
 
   // login logs user in and sets his data to the authState.
@@ -62,7 +72,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       .then(response_data => {
         if (response_data.isUserLoggedIn === true) {
           loadData();
-          // navigate('/');
+          router.push('/');
         }
       })
       .catch((err: IAxiosErrorRestApi) => axiosErrorHandler(err));

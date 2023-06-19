@@ -13,8 +13,8 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import React from 'react';
 import AuthProvider from '@/components/contexts/AuthContext';
-
 import LoginAndRegister from '@/components/LoginAndRegister';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: "Musidle - Guess Today's Top Hits",
@@ -63,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="w-full h-full">
       <body className="dark h-full w-full">
         <AuthProvider>
+          <Toaster />
           <div className="w-full h-full">
             <div className="w-full h-[60px] p-4 fixed left-0 top-0 z-10">
               <NavigationMenu>

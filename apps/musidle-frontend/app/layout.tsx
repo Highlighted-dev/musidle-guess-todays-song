@@ -17,8 +17,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="w-full h-full">
       <body className="dark h-full w-full">
-        <GameProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <GameProvider>
             <Toaster />
             <div className="w-full h-full">
               <div className="w-full h-[60px] p-4 fixed left-0 top-0 z-10">
@@ -34,8 +34,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {children}
               </div>
             </div>
-          </AuthProvider>
-        </GameProvider>
+          </GameProvider>
+        </AuthProvider>
       </body>
     </html>
   );

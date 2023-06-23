@@ -17,11 +17,20 @@ import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
 import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import axios from 'axios';
+
 import { GameContextType } from '@/@types/GameContext';
 import { gameContext } from '../contexts/GameContext';
 import { authContext } from '../contexts/AuthContext';
 import { AuthContextType } from '@/@types/AuthContext';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from '../ui/dialog';
 export default function Game() {
   const { authState } = useContext(authContext) as AuthContextType;
   const {
@@ -37,9 +46,24 @@ export default function Game() {
     handleValueChange,
     songs,
     searchSong,
+    handleAnswerSubmit,
+    submitRef,
+    handleTurnChange,
   } = useContext(gameContext) as GameContextType;
 
   const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleDialogClose = () => {
+    if (currentPlayer?._id != authState._id) {
+      if (!dialogOpen) setDialogOpen(!dialogOpen);
+      return;
+    }
+    setDialogOpen(!dialogOpen);
+    if (dialogOpen) {
+      handleTurnChange();
+    }
+  };
 
   return (
     <>
@@ -77,6 +101,7 @@ export default function Game() {
                         role="combobox"
                         aria-expanded={open}
                         className="w-[250px] justify-between"
+                        disabled={currentPlayer?._id != authState._id}
                       >
                         {value
                           ? songs.find(song => song.label.toLowerCase() === value.toLowerCase())
@@ -120,20 +145,55 @@ export default function Game() {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <Button variant={'default'}>Submit</Button>
-                </div>
-                <div className="pt-8">
-                  {value === '' ? null : value.toLowerCase() == answer ? (
-                    <label className=" text-green-500">You were right!</label>
-                  ) : (
-                    <Label>
-                      <label className=" text-red-700">You were Wrong! </label>
-                      <label>
-                        The correct answer was
-                        <br /> {answer}
-                      </label>
-                    </Label>
-                  )}
+                  <div className="pt-5">
+                    <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
+                      <DialogTrigger asChild ref={submitRef}>
+                        <Button
+                          variant={'default'}
+                          onClick={handleAnswerSubmit}
+                          className={
+                            currentPlayer?._id != authState._id || value === ''
+                              ? 'pointer-events-none'
+                              : ''
+                          }
+                        >
+                          Submit
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle className=" text-center">Your guess was</DialogTitle>
+                          <DialogDescription className=" text-center">
+                            {value.toLowerCase() == answer.toLowerCase() ? (
+                              <Label className="text-green-500 font-bold">CORRECT</Label>
+                            ) : (
+                              <Label className="text-red-700 font-bold">INCORRECT</Label>
+                            )}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <Label className="text-center">
+                            {`You guessed: ${
+                              songs.find(song => song.label.toLowerCase() === value.toLowerCase())
+                                ?.label
+                            }`}
+                          </Label>
+                          <Label className="text-center">The correct answer was: {answer}</Label>
+                        </div>
+                        <DialogFooter>
+                          <div className="flex w-full justify-center items-center">
+                            <Button
+                              className="w-[9%] min-w-[100px] justify-center"
+                              onClick={handleTurnChange}
+                              disabled={currentPlayer?._id != authState._id}
+                            >
+                              Continue
+                            </Button>
+                          </div>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
               </div>
             </AlertTitle>
@@ -183,7 +243,7 @@ export default function Game() {
                     >
                       {player.name}
                     </Label>
-                    <Label>100</Label>
+                    <Label>{player.score}</Label>
                   </div>
                 ))}
               </div>

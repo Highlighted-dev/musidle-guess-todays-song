@@ -27,8 +27,8 @@ io.on('connection', socket => {
   socket.on('addPlayer', player => {
     socket.broadcast.emit('addPlayer', player);
   });
-  socket.on('toggleGame', current_player => {
-    socket.broadcast.emit('toggleGame', current_player);
+  socket.on('togglePhaseOne', current_player => {
+    socket.broadcast.emit('togglePhaseOne', current_player);
   });
   socket.on('chooseCategory', category => {
     socket.broadcast.emit('chooseCategory', category);
@@ -39,11 +39,17 @@ io.on('connection', socket => {
   socket.on('skip', time => {
     socket.broadcast.emit('skip', time);
   });
-  socket.on('searchSong', query => {
-    socket.broadcast.emit('searchSong', query);
+  socket.on('searchSong', songs => {
+    socket.broadcast.emit('searchSong', songs);
   });
   socket.on('valueChange', value => {
     socket.broadcast.emit('valueChange', value);
+  });
+  socket.on('answerSubmit', (score, player) => {
+    socket.broadcast.emit('answerSubmit', score, player);
+  });
+  socket.on('turnChange', () => {
+    socket.broadcast.emit('turnChange');
   });
 });
 

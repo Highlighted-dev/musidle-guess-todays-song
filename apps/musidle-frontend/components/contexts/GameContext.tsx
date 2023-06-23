@@ -1,4 +1,4 @@
-import React, { useState, createContext, useMemo, useEffect, useContext } from 'react';
+import React, { useState, createContext, useMemo, useEffect, useContext, useRef } from 'react';
 import { GameContextType, ISongs, player } from '@/@types/GameContext';
 import { io } from 'socket.io-client';
 import { authContext } from './AuthContext';
@@ -10,14 +10,15 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   const { authState } = useContext(authContext) as AuthContextType;
   const [players, setPlayers] = useState<player[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<player | null>(null);
-  const [hasGameStarted, setHasGameStarted] = useState<boolean>(false);
+  const [hasPhaseOneStarted, setHasPhaseOneStarted] = useState<boolean>(false);
   const [audio, setAudio] = useState(typeof Audio == 'undefined' ? null : new Audio());
-  const [answer, setAnswer] = useState<string>('blinding lights - the weeknd');
+  const [answer, setAnswer] = useState<string>('');
   const [renderGame, setRenderGame] = useState<boolean>(false);
   const [time, setTime] = useState(1000);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null);
   const [audioTime, setAudioTime] = useState(0);
   const [value, setValue] = useState('');
+  const submitRef = useRef<HTMLButtonElement>(null);
   const [songs, setSongs] = useState<ISongs[]>([
     {
       value: 'Songs will appear here',
@@ -27,26 +28,26 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   ]);
 
   let random: number;
-  const addPlayer = (player: { _id: string; name: string }) => {
+  const addPlayer = (player: { _id: string; name: string; score: number }) => {
     if (players.find(p => p._id === player._id)) return;
     socket.emit('addPlayer', player);
     setPlayers([...players, player]);
   };
 
-  const toggleGame = () => {
+  const togglePhaseOne = () => {
     random = Math.floor(Math.random() * players.length);
     const current_player = players[random];
-    socket.emit('toggleGame', current_player);
-    if (!hasGameStarted) {
+    socket.emit('togglePhaseOne', current_player);
+    if (!hasPhaseOneStarted) {
       setCurrentPlayer(current_player);
     }
-    setHasGameStarted(!hasGameStarted);
+    setHasPhaseOneStarted(!hasPhaseOneStarted);
   };
 
   const handleChooseCategory = (category: string) => {
     socket.emit('chooseCategory', category);
     setAudio(new Audio(`/music/${category}.mp3`));
-    handleAnswer('payphone - maroon 5');
+    handleAnswer('Payphone - Maroon 5');
     handleRenderGame();
   };
 
@@ -59,7 +60,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleSkip = () => {
-    console.log('handleSkip');
     let temporary_time: number = time;
     switch (time) {
       case 1000:
@@ -80,7 +80,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
         temporary_time = 1000;
         setTime(1000);
     }
-    console.log(temporary_time);
     socket.emit('skip', temporary_time);
   };
 
@@ -118,17 +117,14 @@ function GameProvider({ children }: { children: React.ReactNode }) {
 
   const searchSong = async (query: string) => {
     if (query.length < 1) return;
-    if (currentPlayer?._id == authState._id) {
-      socket.emit('searchSong', query);
-    }
+
     const response = axios.get(`http://localhost:5000/api/track/search/${query}`).then(res => {
       return res.data;
     });
 
     const data = await response;
-
+    const temp_songs: ISongs[] = [];
     if (data.length > 0) {
-      const temp_songs: ISongs[] = [];
       data.map((track: any) => {
         // Check if the song is already in the songs state
         if (temp_songs.find(song => song.key === track.url)) return;
@@ -142,6 +138,74 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     } else {
       setSongs([]); // Clear the songs state if there are no search results
     }
+    if (currentPlayer?._id == authState._id) {
+      socket.emit('searchSong', temp_songs.slice(0, 8));
+    }
+  };
+
+  const handleAnswerSubmit = () => {
+    if (!currentPlayer) return;
+    if (audio) audio.pause();
+    let points = 0;
+    if (value && value.toLowerCase() == answer.toLowerCase()) {
+      switch (time) {
+        case 1000:
+          points = 500;
+          break;
+        case 3000:
+          points = 400;
+          break;
+        case 6000:
+          points = 300;
+          break;
+        case 15000:
+          points = 100;
+          break;
+        default:
+          points = 0;
+      }
+    }
+    updatePlayerScore(points, currentPlayer);
+    if (currentPlayer?._id == authState._id) {
+      socket.emit('answerSubmit', points, currentPlayer);
+    }
+  };
+
+  const updatePlayerScore = (points: number, player: player) => {
+    const temp_players = players.map(p => {
+      if (p._id === player._id) {
+        p.score += points;
+      }
+      return p;
+    });
+    setPlayers(temp_players);
+  };
+
+  const handleTurnChange = () => {
+    if (!currentPlayer) return;
+    if (currentPlayer?._id == authState._id) {
+      socket.emit('turnChange');
+    }
+    const index = players.findIndex(p => p._id === currentPlayer._id);
+    if (index === players.length - 1) {
+      setCurrentPlayer(players[0]);
+    } else {
+      setCurrentPlayer(players[index + 1]);
+    }
+    if (intervalId !== null) clearInterval(intervalId);
+    setAudioTime(0);
+    setAudio(null);
+    setValue('');
+    setAnswer('');
+    setTime(1000);
+    setSongs([
+      {
+        value: 'Songs will appear here',
+        label: 'Songs will appear here',
+        key: 'no-song',
+      },
+    ]);
+    setRenderGame(false);
   };
 
   useEffect(() => {
@@ -150,11 +214,11 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       setPlayers([...players, player]);
     });
     if (!players.find(p => p._id === authState._id)) return;
-    socket.on('toggleGame', current_player => {
-      if (!hasGameStarted) {
+    socket.on('togglePhaseOne', current_player => {
+      if (!hasPhaseOneStarted) {
         setCurrentPlayer(current_player);
       }
-      setHasGameStarted(!hasGameStarted);
+      setHasPhaseOneStarted(!hasPhaseOneStarted);
     });
     socket.on('chooseCategory', (category: string) => {
       setAudio(new Audio(`/music/${category}.mp3`));
@@ -162,16 +226,36 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       handleRenderGame();
     });
     socket.on('skip', (time: number) => {
-      console.log(time);
       setTime(time);
     });
+  }, [players, audio, time]);
+
+  useEffect(() => {
+    socket.on('turnChange', () => {
+      handleTurnChange();
+    });
+    return () => {
+      socket.off('turnChange');
+    };
+  }, [currentPlayer]);
+
+  useEffect(() => {
+    socket.on('searchSong', songs => {
+      setSongs(songs);
+    });
+    return () => {
+      socket.off('searchSong');
+    };
+  }, [songs]);
+
+  useEffect(() => {
     socket.on('valueChange', (value: string) => {
       handleValueChange(value);
     });
-    socket.on('searchSong', (query: string) => {
-      searchSong(query);
-    });
-  }, [players, audio, time, value, songs]);
+    return () => {
+      socket.off('valueChange');
+    };
+  }, [value]);
 
   useEffect(() => {
     if (intervalId !== null) clearInterval(intervalId); // Clear the previous interval
@@ -192,6 +276,18 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [handlePlay]);
 
   useEffect(() => {
+    socket.on('answerSubmit', (score: number, player: player) => {
+      updatePlayerScore(score, player);
+      if (submitRef.current) {
+        submitRef.current.click();
+      }
+    });
+    return () => {
+      socket.off('answerSubmit');
+    };
+  }, [submitRef]);
+
+  useEffect(() => {
     if (!audio) return;
     audio.addEventListener('timeupdate', handleAudioTimeUpdate);
     return () => {
@@ -203,8 +299,8 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     () => ({
       players,
       addPlayer,
-      hasGameStarted,
-      toggleGame,
+      hasPhaseOneStarted,
+      togglePhaseOne,
       handleChooseCategory,
       audio,
       answer,
@@ -220,10 +316,13 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       handleValueChange,
       searchSong,
       songs,
+      handleAnswerSubmit,
+      submitRef,
+      handleTurnChange,
     }),
     [
       players,
-      hasGameStarted,
+      hasPhaseOneStarted,
       audio,
       answer,
       renderGame,

@@ -1,6 +1,9 @@
+import { RefObject } from 'react';
+
 export type player = {
   _id: string;
   name: string;
+  score: number;
 };
 
 export interface ISongs {
@@ -12,8 +15,8 @@ export interface ISongs {
 export type GameContextType = {
   players: player[];
   addPlayer: (player: player) => void;
-  hasGameStarted: boolean;
-  toggleGame: () => void;
+  hasPhaseOneStarted: boolean;
+  togglePhaseOne: () => void;
   handleChooseCategory: (category: string) => void;
   audio: HTMLAudioElement | null;
   answer: string;
@@ -29,4 +32,7 @@ export type GameContextType = {
   handleValueChange: (value: string) => void;
   songs: ISongs[];
   searchSong: (query: string) => void;
+  handleAnswerSubmit: () => void;
+  submitRef: RefObject<HTMLButtonElement>;
+  handleTurnChange: () => void;
 };

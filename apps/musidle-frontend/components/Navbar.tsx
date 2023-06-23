@@ -54,7 +54,7 @@ const Navbar = () => {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Gamemodes</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[300px] gap-3 p-4 md:w-[400px] md:grid-cols-2 lg:w-[700px]">
+            <ul className="grid w-[300px] gap-3 p-4 md:w-[600px] md:grid-cols-2 lg:w-[750px]">
               {components.map(component => (
                 <Link key={component.title} href={component.href} legacyBehavior passHref>
                   <ListItem title={component.title}>{component.description}</ListItem>

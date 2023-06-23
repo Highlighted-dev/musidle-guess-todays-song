@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useContext } from 'react';
 
 export default function GameLobby() {
-  const { players, addPlayer, toggleGame } = useContext(gameContext) as GameContextType;
+  const { players, addPlayer, togglePhaseOne } = useContext(gameContext) as GameContextType;
   const { authState } = useContext(authContext) as AuthContextType;
 
   return (
@@ -22,13 +22,13 @@ export default function GameLobby() {
             variant={'default'}
             onClick={() =>
               authState._id && authState.username
-                ? addPlayer({ _id: authState._id, name: authState.username })
+                ? addPlayer({ _id: authState._id, name: authState.username, score: 0 })
                 : null
             }
           >
             Join game
           </Button>
-          <Button variant={'default'} disabled={authState.role != 'Admin'} onClick={toggleGame}>
+          <Button variant={'default'} disabled={authState.role != 'Admin'} onClick={togglePhaseOne}>
             Start game
           </Button>
         </div>

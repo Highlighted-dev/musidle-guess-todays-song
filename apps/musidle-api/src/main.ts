@@ -51,6 +51,12 @@ io.on('connection', socket => {
   socket.on('turnChange', () => {
     socket.broadcast.emit('turnChange');
   });
+  socket.on('togglePhaseTwo', () => {
+    socket.broadcast.emit('togglePhaseTwo');
+  });
+  socket.on('chooseArtist', artist => {
+    socket.broadcast.emit('chooseArtist', artist);
+  });
 });
 
 mongoose

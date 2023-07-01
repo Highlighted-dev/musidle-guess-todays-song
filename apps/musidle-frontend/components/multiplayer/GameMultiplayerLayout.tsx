@@ -31,7 +31,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from '../ui/dialog';
-export default function Game() {
+const GameMultiplayerLayout = () => {
   const { authState } = useContext(authContext) as AuthContextType;
   const {
     audio,
@@ -253,4 +253,6 @@ export default function Game() {
       </div>
     </>
   );
-}
+};
+
+export default GameMultiplayerLayout;

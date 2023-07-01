@@ -11,6 +11,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   const [players, setPlayers] = useState<player[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<player | null>(null);
   const [hasPhaseOneStarted, setHasPhaseOneStarted] = useState<boolean>(false);
+  const [hasPhaseTwoStarted, setHasPhaseTwoStarted] = useState<boolean>(false);
   const [audio, setAudio] = useState(typeof Audio == 'undefined' ? null : new Audio());
   const [answer, setAnswer] = useState<string>('');
   const [renderGame, setRenderGame] = useState<boolean>(false);
@@ -44,10 +45,23 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     setHasPhaseOneStarted(!hasPhaseOneStarted);
   };
 
+  const togglePhaseTwo = () => {
+    socket.emit('togglePhaseTwo', currentPlayer);
+    setHasPhaseOneStarted(!hasPhaseOneStarted);
+    setHasPhaseTwoStarted(!hasPhaseTwoStarted);
+  };
+
   const handleChooseCategory = (category: string) => {
     socket.emit('chooseCategory', category);
     setAudio(new Audio(`/music/${category}.mp3`));
     handleAnswer('Payphone - Maroon 5');
+    handleRenderGame();
+  };
+
+  const handleChooseArtist = (artist: string) => {
+    socket.emit('chooseArtist', artist);
+    setAudio(new Audio(`/music/${artist}.mp3`));
+    handleAnswer('Blinding Lights - The Weeknd');
     handleRenderGame();
   };
 
@@ -220,9 +234,18 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       }
       setHasPhaseOneStarted(!hasPhaseOneStarted);
     });
+    socket.on('togglePhaseTwo', () => {
+      setHasPhaseOneStarted(!hasPhaseOneStarted);
+      setHasPhaseTwoStarted(!hasPhaseTwoStarted);
+    });
     socket.on('chooseCategory', (category: string) => {
       setAudio(new Audio(`/music/${category}.mp3`));
       setAnswer('payphone - maroon 5');
+      handleRenderGame();
+    });
+    socket.on('chooseArtist', (artist: string) => {
+      setAudio(new Audio(`/music/${artist}.mp3`));
+      handleAnswer('Blinding Lights - The Weeknd');
       handleRenderGame();
     });
     socket.on('skip', (time: number) => {
@@ -319,6 +342,9 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       handleAnswerSubmit,
       submitRef,
       handleTurnChange,
+      hasPhaseTwoStarted,
+      togglePhaseTwo,
+      handleChooseArtist,
     }),
     [
       players,

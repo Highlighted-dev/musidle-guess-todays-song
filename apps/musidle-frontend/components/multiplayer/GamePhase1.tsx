@@ -10,7 +10,7 @@ import GameMultiplayerLayout from './GameMultiplayerLayout';
 
 export default function GamePhase1() {
   const { authState } = useContext(authContext) as AuthContextType;
-  const { handleChooseCategory, renderGame, currentPlayer } = useContext(
+  const { handleChooseCategory, renderGame, currentPlayer, togglePhaseTwo } = useContext(
     gameContext,
   ) as GameContextType;
 
@@ -40,6 +40,7 @@ export default function GamePhase1() {
               <Button variant={'secondary'}>Game & Movie Soundtracks</Button>
               <Button variant={'secondary'}>Jazz/Classical Music</Button>
               <Button variant={'secondary'}>Disco polo</Button>
+              <Button variant={'secondary'} onClick={togglePhaseTwo}></Button>
             </div>
           </CardContent>
         </Card>

@@ -12,6 +12,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   const [currentPlayer, setCurrentPlayer] = useState<player | null>(null);
   const [hasPhaseOneStarted, setHasPhaseOneStarted] = useState<boolean>(false);
   const [hasPhaseTwoStarted, setHasPhaseTwoStarted] = useState<boolean>(false);
+  const [hasPhaseThreeStarted, setHasPhaseThreeStarted] = useState<boolean>(false);
   const [audio, setAudio] = useState(typeof Audio == 'undefined' ? null : new Audio());
   const [answer, setAnswer] = useState<string>('');
   const [renderGame, setRenderGame] = useState<boolean>(false);
@@ -27,6 +28,8 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       key: 'no-song',
     },
   ]);
+  const [round, setRound] = useState<number>(0);
+  const [maxRounds, setMaxRounds] = useState<number>(2);
 
   let random: number;
   const addPlayer = (player: { _id: string; name: string; score: number }) => {
@@ -45,12 +48,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     setHasPhaseOneStarted(!hasPhaseOneStarted);
   };
 
-  const togglePhaseTwo = () => {
-    socket.emit('togglePhaseTwo', currentPlayer);
-    setHasPhaseOneStarted(!hasPhaseOneStarted);
-    setHasPhaseTwoStarted(!hasPhaseTwoStarted);
-  };
-
   const handleChooseCategory = (category: string) => {
     socket.emit('chooseCategory', category);
     setAudio(new Audio(`/music/${category}.mp3`));
@@ -63,6 +60,19 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     setAudio(new Audio(`/music/${artist}.mp3`));
     handleAnswer('Blinding Lights - The Weeknd');
     handleRenderGame();
+  };
+
+  const handleFinal = () => {
+    socket.emit('handleFinal');
+    if (currentPlayer) {
+      //Get the player with the highest score
+      const finalist = players.reduce((prev, current) =>
+        prev.score > current.score ? prev : current,
+      );
+      setCurrentPlayer(finalist);
+    }
+    setAudio(new Audio(`/music/final1.mp3`));
+    handleAnswer('Payphone - Maroon 5');
   };
 
   const handleAnswer = (answer: string) => {
@@ -200,6 +210,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     if (currentPlayer?._id == authState._id) {
       socket.emit('turnChange');
     }
+
     const index = players.findIndex(p => p._id === currentPlayer._id);
     if (index === players.length - 1) {
       setCurrentPlayer(players[0]);
@@ -220,6 +231,19 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       },
     ]);
     setRenderGame(false);
+    // As we update the round state later, the actual round is the current round + 1
+    if (maxRounds === round + 1) {
+      if (hasPhaseOneStarted) {
+        setHasPhaseTwoStarted(true);
+        setHasPhaseOneStarted(false);
+      } else {
+        handleFinal();
+        setHasPhaseTwoStarted(false);
+        setHasPhaseThreeStarted(true);
+      }
+      return setRound(0);
+    }
+    setRound(round + 1);
   };
 
   useEffect(() => {
@@ -233,10 +257,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
         setCurrentPlayer(current_player);
       }
       setHasPhaseOneStarted(!hasPhaseOneStarted);
-    });
-    socket.on('togglePhaseTwo', () => {
-      setHasPhaseOneStarted(!hasPhaseOneStarted);
-      setHasPhaseTwoStarted(!hasPhaseTwoStarted);
     });
     socket.on('chooseCategory', (category: string) => {
       setAudio(new Audio(`/music/${category}.mp3`));
@@ -343,12 +363,14 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       submitRef,
       handleTurnChange,
       hasPhaseTwoStarted,
-      togglePhaseTwo,
+      hasPhaseThreeStarted,
       handleChooseArtist,
     }),
     [
       players,
       hasPhaseOneStarted,
+      hasPhaseTwoStarted,
+      hasPhaseThreeStarted,
       audio,
       answer,
       renderGame,

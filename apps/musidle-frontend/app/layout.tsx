@@ -1,5 +1,5 @@
 'use client';
-import { Metadata } from 'next/types';
+
 import '../styles/global.css';
 import React from 'react';
 import AuthProvider from '@/components/contexts/AuthContext';
@@ -8,10 +8,6 @@ import { Toaster } from '@/components/ui/toaster';
 import GameProvider from '@/components/contexts/GameContext';
 import { Label } from '@/components/ui/label';
 import Navbar from '@/components/Navbar';
-
-export const metadata: Metadata = {
-  title: "Musidle - Guess Today's Top Hits",
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

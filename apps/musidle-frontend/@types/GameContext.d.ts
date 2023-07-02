@@ -18,7 +18,7 @@ export type GameContextType = {
   hasPhaseOneStarted: boolean;
   togglePhaseOne: () => void;
   hasPhaseTwoStarted: boolean;
-  togglePhaseTwo: () => void;
+  hasPhaseThreeStarted: boolean;
   handleChooseCategory: (category: string) => void;
   handleChooseArtist: (artist: string) => void;
   audio: HTMLAudioElement | null;

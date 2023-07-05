@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "./apps/musidle-api/src/main.ts",
+      "use": "@now/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "./apps/musidle-api/src/main.ts"
+    }
+  ]
+}

@@ -2,14 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "./apps/musidle-api/src/main.ts",
-      "use": "@now/node"
+      "src": "musidle-frontend/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "musidle-api/package.json",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "./apps/musidle-api/src/main.ts"
+      "dest": "http://localhost:5000/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/app/$1"
     }
   ]
 }

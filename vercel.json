@@ -17,7 +17,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/app/$1"
+      "dest": "/musidle-frontend/$1"
     }
   ]
 }

@@ -1,5 +1,6 @@
 //@ts-check
-
+const dotenv = require('dotenv');
+dotenv.config();
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { composePlugins, withNx } = require('@nx/next');
 
@@ -16,7 +17,11 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*', // Proxy to Backend
+        destination: `${
+          process.env.NODE_ENV == 'production'
+            ? process.env.NEXT_PUBLIC_API_HOST
+            : 'http://localhost:5000'
+        }/api/:path*`, // Proxy to Backend
       },
     ];
   },

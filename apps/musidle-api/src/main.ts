@@ -10,7 +10,6 @@ import http from 'http';
 import { Server } from 'socket.io';
 dotenv.config();
 
-const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const mongodb_url = process.env.MONGODB_URL || 'musidle';
 
@@ -62,8 +61,8 @@ io.on('connection', socket => {
 mongoose
   .connect(mongodb_url)
   .then(() => {
-    server.listen(port, host, () => {
-      console.log(`Musidle API is listening on http://${host}:${port}`);
+    server.listen(port, () => {
+      console.log(`Musidle API is listening on http://localhost:${port}`);
     });
   })
   .catch(error => {

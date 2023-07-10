@@ -4,8 +4,13 @@ import { io } from 'socket.io-client';
 import { authContext } from './AuthContext';
 import { AuthContextType } from '@/@types/AuthContext';
 import axios from 'axios';
+
 export const gameContext = createContext<GameContextType | null>(null);
-const socket = io('http://localhost:5000');
+const socket = io(
+  process.env.NODE_ENV == 'production'
+    ? process.env.NEXT_PUBLIC_API_HOST!
+    : 'http://localhost:5000',
+);
 function GameProvider({ children }: { children: React.ReactNode }) {
   const { authState } = useContext(authContext) as AuthContextType;
   const [players, setPlayers] = useState<player[]>([]);

@@ -13,7 +13,7 @@
         "outputPath": "dist/apps/musidle-api",
         "format": ["cjs"],
         "bundle": false,
-        "main": "apps/musidle-api/src/main.ts",
+        "main": "apps/musidle-api/src/index.ts",
         "tsConfig": "apps/musidle-api/tsconfig.app.json",
         "assets": ["apps/musidle-api/src/assets"],
         "generatePackageJson": true,

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useContext } from 'react';
 
 export default function GameLobby() {
-  const { players, addPlayer, togglePhaseOne } = useContext(gameContext) as GameContextType;
+  const { players, togglePhaseOne } = useContext(gameContext) as GameContextType;
   const { authState } = useContext(authContext) as AuthContextType;
 
   return (
@@ -17,17 +17,7 @@ export default function GameLobby() {
         <CardTitle>Game lobby</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col justify-center items-center h-full w-full">
-        <div className=" w-[250px] flex justify-between p-4">
-          <Button
-            variant={'default'}
-            onClick={() =>
-              authState._id && authState.username
-                ? addPlayer({ _id: authState._id, name: authState.username, score: 0 })
-                : null
-            }
-          >
-            Join game
-          </Button>
+        <div className="flex justify-center items-center p-4">
           <Button variant={'default'} disabled={authState.role != 'Admin'} onClick={togglePhaseOne}>
             Start game
           </Button>

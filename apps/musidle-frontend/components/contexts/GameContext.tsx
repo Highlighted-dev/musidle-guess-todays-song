@@ -4,6 +4,8 @@ import { io } from 'socket.io-client';
 import { authContext } from './AuthContext';
 import { AuthContextType } from '@/@types/AuthContext';
 import axios from 'axios';
+import useTimerStore from '@/stores/TimerStore';
+import { set } from 'mongoose';
 
 export const gameContext = createContext<GameContextType | null>(null);
 const socket = io(
@@ -13,8 +15,18 @@ const socket = io(
 );
 function GameProvider({ children }: { children: React.ReactNode }) {
   const { authState } = useContext(authContext) as AuthContextType;
+  const {
+    timer,
+    setTimer,
+    isTimerRunning,
+    setIsTimerRunning,
+    timerIntervalId,
+    setTimerIntervalId,
+  } = useTimerStore();
   const [players, setPlayers] = useState<player[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<player | null>(null);
+  const [roomId, setRoomId] = useState<string>('');
+  const [isInLobby, setIsInLobby] = useState<boolean>(false);
   const [hasPhaseOneStarted, setHasPhaseOneStarted] = useState<boolean>(false);
   const [hasPhaseTwoStarted, setHasPhaseTwoStarted] = useState<boolean>(false);
   const [hasPhaseThreeStarted, setHasPhaseThreeStarted] = useState<boolean>(false);
@@ -36,12 +48,24 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   const [round, setRound] = useState<number>(0);
   const [maxRounds, setMaxRounds] = useState<number>(2);
 
-  let random: number;
-  const addPlayer = (player: { _id: string; name: string; score: number }) => {
-    if (players.find(p => p._id === player._id)) return;
-    socket.emit('addPlayer', player);
-    setPlayers([...players, player]);
+  const handleRoomJoin = async (room_id: string) => {
+    const { data } = await axios.post(`/api/rooms/join`, {
+      room_id,
+      player: {
+        _id: authState._id,
+        name: authState.username,
+        score: 0,
+      },
+    });
+    setRoomId(room_id);
+    console.log(data.players);
+    setPlayers(data.players || []);
+    setMaxRounds(data.maxRounds || 2);
+    setRound(data.round || 0);
+    setIsInLobby(true);
   };
+
+  let random: number;
 
   const togglePhaseOne = () => {
     random = Math.floor(Math.random() * players.length);
@@ -124,6 +148,8 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       socket.emit('handlePlay');
     }
 
+    if (timer !== 0) setIsTimerRunning(true);
+
     if (audio.currentTime >= time / 1000) audio.currentTime = 0;
 
     audio.paused ? audio.play() : audio.pause();
@@ -147,7 +173,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   const searchSong = async (query: string) => {
     if (query.length < 1) return;
 
-    const response = axios.get(`http://localhost:5000/api/track/search/${query}`).then(res => {
+    const response = axios.get(`/api/track/search/${query}`).then(res => {
       return res.data;
     });
 
@@ -174,6 +200,9 @@ function GameProvider({ children }: { children: React.ReactNode }) {
 
   const handleAnswerSubmit = () => {
     if (!currentPlayer) return;
+    if (timerIntervalId !== null) clearInterval(timerIntervalId);
+    setIsTimerRunning(false);
+    setTimer(35.0);
     if (audio) audio.pause();
     let points = 0;
     if (value && value.toLowerCase() == answer.toLowerCase()) {
@@ -324,6 +353,26 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [handlePlay]);
 
   useEffect(() => {
+    if (!isTimerRunning) return;
+    let localTimer = timer;
+    if (timerIntervalId !== null) clearInterval(timerIntervalId); // Clear the previous interval
+    const newIntervalId = setInterval(() => {
+      if (localTimer <= 0) {
+        clearInterval(newIntervalId);
+        setTimer(35);
+        if (submitRef.current) {
+          submitRef.current.click();
+        }
+        setIsTimerRunning(false);
+        return;
+      }
+      localTimer -= 0.1;
+      setTimer(localTimer);
+    }, 100);
+    setTimerIntervalId(newIntervalId); // Set the new interval ID
+  }, [isTimerRunning]);
+
+  useEffect(() => {
     socket.on('answerSubmit', (score: number, player: player) => {
       updatePlayerScore(score, player);
       if (submitRef.current) {
@@ -346,7 +395,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   const values = useMemo(
     () => ({
       players,
-      addPlayer,
       hasPhaseOneStarted,
       togglePhaseOne,
       handleChooseCategory,
@@ -370,8 +418,12 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       hasPhaseTwoStarted,
       hasPhaseThreeStarted,
       handleChooseArtist,
+      handleRoomJoin,
+      isInLobby,
+      roomId,
     }),
     [
+      authState,
       players,
       hasPhaseOneStarted,
       hasPhaseTwoStarted,
@@ -385,6 +437,8 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       audioTime,
       value,
       songs,
+      isInLobby,
+      roomId,
     ],
   );
   return <gameContext.Provider value={values}>{children}</gameContext.Provider>;

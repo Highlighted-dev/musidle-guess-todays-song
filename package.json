@@ -41,7 +41,8 @@
     "tailwindcss-animate": "^1.0.5",
     "tslib": "^2.3.0",
     "utf-8-validate": "^5.0.10",
-    "ws": "8.11"
+    "ws": "8.11",
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
     "@nx/cypress": "16.5.1",

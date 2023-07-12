@@ -31,8 +31,10 @@ import {
   DialogTrigger,
   DialogFooter,
 } from '../ui/dialog';
+import useTimerStore from '@/stores/TimerStore';
 const GameMultiplayerLayout = () => {
   const { authState } = useContext(authContext) as AuthContextType;
+  const { timer } = useTimerStore();
   const {
     audio,
     answer,
@@ -193,6 +195,9 @@ const GameMultiplayerLayout = () => {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
+                  </div>
+                  <div>
+                    <Label className="text-center">{timer.toFixed(2)}s</Label>
                   </div>
                 </div>
               </div>

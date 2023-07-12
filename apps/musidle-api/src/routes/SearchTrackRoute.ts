@@ -1,5 +1,4 @@
 import express, { Router } from 'express';
-import querystring from 'querystring';
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();

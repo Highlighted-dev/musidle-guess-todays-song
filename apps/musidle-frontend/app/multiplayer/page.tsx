@@ -7,13 +7,13 @@ import GameLobby from '@/components/multiplayer/GameLobby';
 import GamePhase1 from '@/components/multiplayer/GamePhase1';
 import GamePhase2 from '@/components/multiplayer/GamePhase2';
 import GamePhase3 from '@/components/multiplayer/GamePhase3';
+import RoomSelector from '@/components/multiplayer/RoomSelector';
 
 import React, { useContext } from 'react';
 
 export default function Multiplayer() {
-  const { players, hasPhaseOneStarted, hasPhaseTwoStarted, hasPhaseThreeStarted } = useContext(
-    gameContext,
-  ) as GameContextType;
+  const { players, hasPhaseOneStarted, hasPhaseTwoStarted, hasPhaseThreeStarted, isInLobby } =
+    useContext(gameContext) as GameContextType;
   const { authState } = useContext(authContext) as AuthContextType;
 
   return (
@@ -26,8 +26,10 @@ export default function Multiplayer() {
           <GamePhase2 />
         ) : hasPhaseThreeStarted && players.find(player => player['_id'] == authState._id) ? (
           <GamePhase3 />
-        ) : (
+        ) : isInLobby ? (
           <GameLobby />
+        ) : (
+          <RoomSelector />
         )
       }
     </div>

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useContext } from 'react';
 
-export default function GameLobby() {
+export default function GameLobby(params: { room_code: string }) {
   const { players, togglePhaseOne } = useContext(gameContext) as GameContextType;
   const { authState } = useContext(authContext) as AuthContextType;
 
@@ -15,6 +15,7 @@ export default function GameLobby() {
     <Card className="h-full w-full">
       <CardHeader className=" text-center">
         <CardTitle>Game lobby</CardTitle>
+        <p>Room: {params.room_code}</p>
       </CardHeader>
       <CardContent className="flex flex-col justify-center items-center h-full w-full">
         <div className="flex justify-center items-center p-4">

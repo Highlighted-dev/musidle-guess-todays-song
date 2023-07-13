@@ -73,7 +73,7 @@ const GameMultiplayerLayout = () => {
         <CardHeader className=" text-center">
           <CardTitle>Musidle - Multiplayer</CardTitle>
           <CardDescription>
-            There are 4 stages, each with longer song time: 1 | 3 | 6 | 15 seconds. The faster you
+            There are 4 stages, each with longer song time: 1 | 3 | 6 | 12 seconds. The faster you
             guess, the more points you get. You can play the song in a stage how many times you
             want, but there are only 35 seconds to make a guess. Timer starts after you play the
             song, so use it wisely!
@@ -177,7 +177,7 @@ const GameMultiplayerLayout = () => {
                           <Label className="text-center">
                             {`You guessed: ${
                               songs.find(song => song.label.toLowerCase() === value.toLowerCase())
-                                ?.label
+                                ?.label || 'Nothing :('
                             }`}
                           </Label>
                           <Label className="text-center">The correct answer was: {answer}</Label>

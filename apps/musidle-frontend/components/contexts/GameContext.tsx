@@ -5,8 +5,7 @@ import { authContext } from './AuthContext';
 import { AuthContextType } from '@/@types/AuthContext';
 import axios from 'axios';
 import useTimerStore from '@/stores/TimerStore';
-import { set } from 'mongoose';
-
+import { useRouter } from 'next/navigation';
 export const gameContext = createContext<GameContextType | null>(null);
 const socket = io(
   process.env.NODE_ENV == 'production'
@@ -48,7 +47,10 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   const [round, setRound] = useState<number>(0);
   const [maxRounds, setMaxRounds] = useState<number>(2);
 
+  const router = useRouter();
+
   const handleRoomJoin = async (room_id: string) => {
+    if (!authState._id) return;
     const { data } = await axios.post(`/api/rooms/join`, {
       room_id,
       player: {
@@ -58,11 +60,27 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       },
     });
     setRoomId(room_id);
-    console.log(data.players);
     setPlayers(data.players || []);
     setMaxRounds(data.maxRounds || 2);
     setRound(data.round || 0);
     setIsInLobby(true);
+    router.push(`/multiplayer/${room_id}`);
+  };
+
+  const handleRoomCreate = async () => {
+    const { data } = await axios.post(`/api/rooms/create`, {
+      player: {
+        _id: authState._id,
+        name: authState.username,
+        score: 0,
+      },
+    });
+    setRoomId(data.room_code);
+    setPlayers(data.players || []);
+    setMaxRounds(data.maxRounds || 2);
+    setRound(data.round || 0);
+    setIsInLobby(true);
+    router.push(`/multiplayer/${data.room_code}`);
   };
 
   let random: number;
@@ -124,10 +142,10 @@ function GameProvider({ children }: { children: React.ReactNode }) {
         setTime(temporary_time);
         break;
       case 6000:
-        temporary_time = 15000;
+        temporary_time = 12000;
         setTime(temporary_time);
         break;
-      case 15000:
+      case 12000:
         break;
       default:
         temporary_time = 1000;
@@ -216,7 +234,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
         case 6000:
           points = 300;
           break;
-        case 15000:
+        case 12000:
           points = 100;
           break;
         default:
@@ -392,6 +410,10 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     };
   }, [audio]);
 
+  useEffect(() => {
+    if (socket.connected && authState._id) socket.emit('id', authState._id);
+  }, [authState._id]);
+
   const values = useMemo(
     () => ({
       players,
@@ -419,6 +441,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       hasPhaseThreeStarted,
       handleChooseArtist,
       handleRoomJoin,
+      handleRoomCreate,
       isInLobby,
       roomId,
     }),

@@ -15,6 +15,7 @@ export interface ISongs {
 export type GameContextType = {
   players: player[];
   handleRoomJoin: (room_id: string) => void;
+  handleRoomCreate: () => void;
   roomId: string;
   isInLobby: boolean;
   hasPhaseOneStarted: boolean;

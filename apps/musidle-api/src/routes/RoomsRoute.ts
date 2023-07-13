@@ -66,6 +66,8 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
 
 router.post('/leave', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!req.body.room_code || !req.body.player_id)
+      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     const room_code = req.body.room_code;
     const player_id = req.body.player_id;
 
@@ -82,6 +84,15 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
     await roomModel.updateOne({ room_code: room_code }, { $pull: { players: { _id: player_id } } });
 
     return res.status(200).json({ status: 'success', message: 'Player removed' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const rooms = await roomModel.find();
+    return res.json({ status: 'success', data: rooms });
   } catch (error) {
     next(error);
   }

@@ -9,8 +9,9 @@ import UserAuthenticationRoute from './routes/UserAuthenticationRoute';
 import http from 'http';
 import { Server } from 'socket.io';
 import RoomsRoute from './routes/RoomsRoute';
-import { ISocketMiddleware } from './@types';
+import { ISocketMiddleware, IUsers } from './@types';
 import errorHandler from './utils/ErrorHandler';
+import axios from 'axios';
 dotenv.config();
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
@@ -25,19 +26,12 @@ const io = new Server(server, {
   },
 });
 
-interface IUsers {
-  id: string;
-  socket_id: string;
-}
-
 const users: IUsers[] = [];
 
 io.on('connection', socket => {
-  socket.on('id', id => {
-    users.push({ id, socket_id: socket.id });
-  });
-  socket.on('addPlayer', player => {
-    socket.broadcast.emit('addPlayer', player);
+  socket.on('id', (id, room_code) => {
+    users.push({ id, socket_id: socket.id, room_code: room_code });
+    console.log(users);
   });
   socket.on('togglePhaseOne', current_player => {
     socket.broadcast.emit('togglePhaseOne', current_player);
@@ -72,6 +66,10 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     const user = users.find(user => user.socket_id === socket.id);
     if (user) {
+      axios.post('http://localhost:5000/api/rooms/leave', {
+        room_code: user.room_code,
+        player_id: user.id,
+      });
       users.splice(users.indexOf(user), 1);
     }
   });
@@ -93,7 +91,6 @@ const socketMiddleware: ISocketMiddleware = (req, res, next) => {
   return next;
 };
 server.on('request', socketMiddleware);
-
 app.use(cookieParser());
 app.use(cors());
 app.use(helmet());

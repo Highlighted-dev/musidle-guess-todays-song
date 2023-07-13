@@ -1,17 +1,13 @@
 import React, { useState, createContext, useMemo, useEffect, useContext, useRef } from 'react';
 import { GameContextType, ISongs, player } from '@/@types/GameContext';
-import { io } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import { authContext } from './AuthContext';
 import { AuthContextType } from '@/@types/AuthContext';
 import axios from 'axios';
 import useTimerStore from '@/stores/TimerStore';
 import { useRouter } from 'next/navigation';
 export const gameContext = createContext<GameContextType | null>(null);
-const socket = io(
-  process.env.NODE_ENV == 'production'
-    ? process.env.NEXT_PUBLIC_API_HOST!
-    : 'http://localhost:5000',
-);
+let socket: Socket;
 function GameProvider({ children }: { children: React.ReactNode }) {
   const { authState } = useContext(authContext) as AuthContextType;
   const {
@@ -60,6 +56,11 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       },
     });
     setRoomId(room_id);
+    socket = io(
+      process.env.NODE_ENV == 'production'
+        ? process.env.NEXT_PUBLIC_API_HOST!
+        : 'http://localhost:5000',
+    );
     setPlayers(data.players || []);
     setMaxRounds(data.maxRounds || 2);
     setRound(data.round || 0);
@@ -76,6 +77,11 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       },
     });
     setRoomId(data.room_code);
+    socket = io(
+      process.env.NODE_ENV == 'production'
+        ? process.env.NEXT_PUBLIC_API_HOST!
+        : 'http://localhost:5000',
+    );
     setPlayers(data.players || []);
     setMaxRounds(data.maxRounds || 2);
     setRound(data.round || 0);
@@ -299,6 +305,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    if (!socket) return;
     socket.on('addPlayer', (player: player) => {
       if (players.find(p => p._id === player._id)) return;
       setPlayers([...players, player]);
@@ -326,6 +333,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [players, audio, time]);
 
   useEffect(() => {
+    if (!socket) return;
     socket.on('turnChange', () => {
       handleTurnChange();
     });
@@ -335,6 +343,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [currentPlayer]);
 
   useEffect(() => {
+    if (!socket) return;
     socket.on('searchSong', songs => {
       setSongs(songs);
     });
@@ -344,6 +353,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [songs]);
 
   useEffect(() => {
+    if (!socket) return;
     socket.on('valueChange', (value: string) => {
       handleValueChange(value);
     });
@@ -353,6 +363,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [value]);
 
   useEffect(() => {
+    if (!socket) return;
     if (intervalId !== null) clearInterval(intervalId); // Clear the previous interval
     const newIntervalId = setInterval(() => {
       if (audio && audio.currentTime >= time / 1000) {
@@ -364,6 +375,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [time]);
 
   useEffect(() => {
+    if (!socket) return;
     socket.on('handlePlay', handlePlay);
     return () => {
       socket.off('handlePlay', handlePlay);
@@ -391,6 +403,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [isTimerRunning]);
 
   useEffect(() => {
+    if (!socket) return;
     socket.on('answerSubmit', (score: number, player: player) => {
       updatePlayerScore(score, player);
       if (submitRef.current) {
@@ -411,8 +424,10 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   }, [audio]);
 
   useEffect(() => {
-    if (socket.connected && authState._id) socket.emit('id', authState._id);
-  }, [authState._id]);
+    // Send user details to the server
+    if (!socket) return;
+    if (socket && authState._id && roomId) socket.emit('id', authState._id, roomId);
+  }, [authState._id, roomId, socket]);
 
   const values = useMemo(
     () => ({

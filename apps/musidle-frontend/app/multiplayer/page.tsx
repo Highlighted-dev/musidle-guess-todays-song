@@ -10,9 +10,10 @@ import { gameContext } from '@/components/contexts/GameContext';
 import { GameContextType } from '@/@types/GameContext';
 import axios from 'axios';
 import { Room } from '@/@types/Rooms';
+import { useAuthStore } from '@/stores/AuthStore';
 
 export default function Multiplayer() {
-  const { authState } = useContext(authContext) as AuthContextType;
+  const { user_id, username, email, role } = useAuthStore();
   const { handleRoomJoin, handleRoomCreate } = useContext(gameContext) as GameContextType;
 
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -23,7 +24,6 @@ export default function Multiplayer() {
       .get('/api/rooms')
       .then(res => res.data)
       .then(res => {
-        console.log(res);
         setRooms(res.data);
       });
   }, []);
@@ -62,11 +62,11 @@ export default function Multiplayer() {
           )}
         </div>
         {
-          <div className="flex justify-end items-end p-3">
+          <div className="flex justify-end items-center p-3 h-[8%]">
             <Button
               variant={'default'}
               onClick={() => handleRoomCreate()}
-              disabled={authState.role != 'Admin'}
+              disabled={role != 'Admin'}
             >
               Create room
             </Button>

@@ -1,5 +1,5 @@
 export interface Room {
-  _id: number;
+  _id: string;
   room_code: string;
   players: string[];
   maxRounds: number;

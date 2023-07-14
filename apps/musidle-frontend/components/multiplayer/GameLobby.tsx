@@ -5,11 +5,12 @@ import { authContext } from '@/components/contexts/AuthContext';
 import { gameContext } from '@/components/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuthStore } from '@/stores/AuthStore';
 import React, { useContext } from 'react';
 
 export default function GameLobby(params: { room_code: string }) {
   const { players, togglePhaseOne } = useContext(gameContext) as GameContextType;
-  const { authState } = useContext(authContext) as AuthContextType;
+  const { role } = useAuthStore();
 
   return (
     <Card className="h-full w-full">
@@ -19,7 +20,7 @@ export default function GameLobby(params: { room_code: string }) {
       </CardHeader>
       <CardContent className="flex flex-col justify-center items-center h-full w-full">
         <div className="flex justify-center items-center p-4">
-          <Button variant={'default'} disabled={authState.role != 'Admin'} onClick={togglePhaseOne}>
+          <Button variant={'default'} disabled={role != 'Admin'} onClick={togglePhaseOne}>
             Start game
           </Button>
         </div>

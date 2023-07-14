@@ -31,7 +31,6 @@ const users: IUsers[] = [];
 io.on('connection', socket => {
   socket.on('id', (id, room_code) => {
     users.push({ id, socket_id: socket.id, room_code: room_code });
-    console.log(users);
   });
   socket.on('togglePhaseOne', current_player => {
     socket.broadcast.emit('togglePhaseOne', current_player);

@@ -1,19 +1,16 @@
 import React, { useState, useEffect, createContext, useMemo } from 'react';
 import axios from 'axios';
-import { AuthContextType, IAxiosErrorRestApi, IUser } from '../../@types/AuthContext';
+import { AuthContextType, IAxiosErrorRestApi } from '../../@types/AuthContext';
 import { toast } from '../ui/use-toast';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/AuthStore';
 export const authContext = createContext<AuthContextType | null>(null);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
-  const [authState, setAuthState] = useState<IUser>({
-    _id: null,
-    username: null,
-    email: null,
-    role: null,
-  });
+  const { user_id, setUserId, username, setUsername, email, setEmail, role, setRole } =
+    useAuthStore();
   // isAuthenticated checks If user has a working token - If he has, he is authenticated so this function will return his data as a response.json().
   const isAuthenticated = async () => {
     return axios.get(`/api/auth/isAuthenticated`).then(async response => response.data);
@@ -35,12 +32,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
           return [];
         }
         // If user is logged in(there is a cookie with token), set authState to user data
-        setAuthState({
-          _id: response_data.user._id,
-          username: response_data.user.username,
-          email: response_data.user.email,
-          role: response_data.user.role,
-        });
+        setUserId(response_data.user._id);
+        setUsername(response_data.user.username);
+        setEmail(response_data.user.email);
+        setRole(response_data.user.role);
         return response_data;
       })
       .catch(err => axiosErrorHandler(err))
@@ -102,12 +97,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       },
     });
     if (response.status === 200) {
-      setAuthState({
-        _id: null,
-        username: null,
-        email: null,
-        role: null,
-      });
+      setUserId(null);
+      setUsername(null);
+      setEmail(null);
+      setRole(null);
       //TODO navigate('/Login');
     }
   };
@@ -115,10 +108,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     loadData();
   }, []);
 
-  const values = useMemo(
-    () => ({ authState, login, logout, register, loading, loadData }),
-    [authState, loading],
-  );
+  const values = useMemo(() => ({ login, logout, register, loading, loadData }), [loading]);
   return <authContext.Provider value={values}>{children}</authContext.Provider>;
 }
 

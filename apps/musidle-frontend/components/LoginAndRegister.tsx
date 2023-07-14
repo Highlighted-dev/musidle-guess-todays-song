@@ -20,9 +20,11 @@ import {
   isEmailValid,
 } from '@/utils/Validations';
 import { toast } from './ui/use-toast';
+import { useAuthStore } from '@/stores/AuthStore';
 
 const LoginAndRegister = () => {
-  const { authState, logout, login, register } = useContext(authContext) as AuthContextType;
+  const { user_id, username, email, role } = useAuthStore();
+  const { logout, login, register } = useContext(authContext) as AuthContextType;
   const usernameRef = useRef() as MutableRefObject<HTMLInputElement>;
   const emailRef = useRef() as MutableRefObject<HTMLInputElement>;
   const passwordRef = useRef() as MutableRefObject<HTMLInputElement>;
@@ -111,7 +113,7 @@ const LoginAndRegister = () => {
   };
   return (
     <>
-      {!authState.username ? (
+      {!user_id ? (
         <Dialog>
           <DialogTrigger asChild>
             <Button variant={'ghost'}>Login</Button>

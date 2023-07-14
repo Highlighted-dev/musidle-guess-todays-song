@@ -6,9 +6,10 @@ import React, { useContext } from 'react';
 import { gameContext } from '../contexts/GameContext';
 import { GameContextType } from '@/@types/GameContext';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
+import { useAuthStore } from '@/stores/AuthStore';
 
 const GamePhase2 = () => {
-  const { authState } = useContext(authContext) as AuthContextType;
+  const { user_id } = useAuthStore();
   const { handleChooseArtist, renderGame, currentPlayer } = useContext(
     gameContext,
   ) as GameContextType;
@@ -23,7 +24,7 @@ const GamePhase2 = () => {
           variant={'secondary'}
           onClick={e => handleChooseArtist(e.currentTarget.id)}
           id={`artist${i}`}
-          disabled={currentPlayer?._id == authState._id ? false : true}
+          disabled={currentPlayer?._id == user_id ? false : true}
           className="p-[25px]"
         >
           <label className="blur-sm cursor-pointer" id={`label_artist${i}`}>

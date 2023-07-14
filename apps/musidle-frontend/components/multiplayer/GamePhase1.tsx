@@ -8,9 +8,10 @@ import { gameContext } from '../contexts/GameContext';
 import { GameContextType } from '@/@types/GameContext';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { Label } from '../ui/label';
+import { useAuthStore } from '@/stores/AuthStore';
 
 export default function GamePhase1() {
-  const { authState } = useContext(authContext) as AuthContextType;
+  const { user_id } = useAuthStore();
   const { handleChooseCategory, renderGame, currentPlayer, players } = useContext(
     gameContext,
   ) as GameContextType;
@@ -31,7 +32,7 @@ export default function GamePhase1() {
                   variant={'secondary'}
                   onClick={e => handleChooseCategory(e.currentTarget.id)}
                   id="pop2"
-                  disabled={currentPlayer?._id == authState._id ? false : true}
+                  disabled={currentPlayer?._id == user_id ? false : true}
                 >
                   Pop
                 </Button>

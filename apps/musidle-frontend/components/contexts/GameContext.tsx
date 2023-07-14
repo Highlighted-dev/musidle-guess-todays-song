@@ -322,7 +322,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     return () => {
       socket.off('turnChange');
     };
-  }, [currentPlayer]);
+  }, [currentPlayer, socket]);
 
   useEffect(() => {
     if (!socket) return;
@@ -332,7 +332,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     return () => {
       socket.off('searchSong');
     };
-  }, [songs]);
+  }, [songs, socket]);
 
   useEffect(() => {
     if (!socket) return;
@@ -342,7 +342,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     return () => {
       socket.off('valueChange');
     };
-  }, [value]);
+  }, [value, socket]);
 
   useEffect(() => {
     if (!socket) return;
@@ -354,7 +354,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       }
     }, 10);
     setIntervalId(newIntervalId); // Set the new interval ID
-  }, [time]);
+  }, [time, socket]);
 
   useEffect(() => {
     if (!socket) return;
@@ -362,7 +362,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     return () => {
       socket.off('handlePlay', handlePlay);
     };
-  }, [handlePlay]);
+  }, [handlePlay, socket]);
 
   useEffect(() => {
     if (!isTimerRunning) return;
@@ -395,7 +395,7 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     return () => {
       socket.off('answerSubmit');
     };
-  }, [submitRef]);
+  }, [submitRef, socket]);
 
   useEffect(() => {
     if (!audio) return;

@@ -6,9 +6,10 @@ import { gameContext } from '../contexts/GameContext';
 import { GameContextType } from '@/@types/GameContext';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { Button } from '../ui/button';
+import { useAuthStore } from '@/stores/AuthStore';
 
 const GamePhase3 = () => {
-  const { authState } = useContext(authContext) as AuthContextType;
+  const { user_id } = useAuthStore();
   const { renderGame, currentPlayer, handlePlay } = useContext(gameContext) as GameContextType;
   return (
     <>
@@ -25,7 +26,7 @@ const GamePhase3 = () => {
               <Button
                 onClick={() => handlePlay()}
                 className="w-[30%] min-w-[50px]"
-                disabled={currentPlayer?._id != authState._id}
+                disabled={currentPlayer?._id != user_id}
               >
                 Play / Pause
               </Button>

@@ -32,8 +32,9 @@ import {
   DialogFooter,
 } from '../ui/dialog';
 import useTimerStore from '@/stores/TimerStore';
+import { useAuthStore } from '@/stores/AuthStore';
 const GameMultiplayerLayout = () => {
-  const { authState } = useContext(authContext) as AuthContextType;
+  const { user_id } = useAuthStore();
   const { timer } = useTimerStore();
   const {
     audio,
@@ -57,7 +58,7 @@ const GameMultiplayerLayout = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleDialogClose = () => {
-    if (currentPlayer?._id != authState._id) {
+    if (currentPlayer?._id != user_id) {
       if (!dialogOpen) setDialogOpen(!dialogOpen);
       return;
     }
@@ -103,7 +104,7 @@ const GameMultiplayerLayout = () => {
                         role="combobox"
                         aria-expanded={open}
                         className="w-[250px] justify-between"
-                        disabled={currentPlayer?._id != authState._id}
+                        disabled={currentPlayer?._id != user_id}
                       >
                         {value
                           ? songs.find(song => song.label.toLowerCase() === value.toLowerCase())
@@ -154,7 +155,7 @@ const GameMultiplayerLayout = () => {
                           variant={'default'}
                           onClick={handleAnswerSubmit}
                           className={
-                            currentPlayer?._id != authState._id || value === ''
+                            currentPlayer?._id != user_id || value === ''
                               ? 'pointer-events-none'
                               : ''
                           }
@@ -187,7 +188,7 @@ const GameMultiplayerLayout = () => {
                             <Button
                               className="w-[9%] min-w-[100px] justify-center"
                               onClick={handleTurnChange}
-                              disabled={currentPlayer?._id != authState._id}
+                              disabled={currentPlayer?._id != user_id}
                             >
                               Continue
                             </Button>
@@ -209,7 +210,7 @@ const GameMultiplayerLayout = () => {
             variant="ghost"
             onClick={() => handleSkip()}
             className="w-[9%] min-w-[50px]"
-            disabled={currentPlayer?._id != authState._id}
+            disabled={currentPlayer?._id != user_id}
           >
             Skip
           </Button>
@@ -227,7 +228,7 @@ const GameMultiplayerLayout = () => {
           <Button
             onClick={() => handlePlay()}
             className="w-[9%] min-w-[50px]"
-            disabled={currentPlayer?._id != authState._id}
+            disabled={currentPlayer?._id != user_id}
           >
             Play / Pause
           </Button>

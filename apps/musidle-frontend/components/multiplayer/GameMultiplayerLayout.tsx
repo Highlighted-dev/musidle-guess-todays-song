@@ -33,18 +33,13 @@ import {
 } from '../ui/dialog';
 import useTimerStore from '@/stores/TimerStore';
 import { useAuthStore } from '@/stores/AuthStore';
+import { useRoomStore } from '@/stores/RoomStore';
+import { useAudioStore } from '@/stores/AudioStore';
 const GameMultiplayerLayout = () => {
   const { user_id } = useAuthStore();
   const { timer } = useTimerStore();
   const {
-    audio,
     answer,
-    players,
-    currentPlayer,
-    handleSkip,
-    time,
-    handlePlay,
-    audioTime,
     value,
     handleValueChange,
     songs,
@@ -54,6 +49,8 @@ const GameMultiplayerLayout = () => {
     handleTurnChange,
   } = useContext(gameContext) as GameContextType;
 
+  const { players, currentPlayer } = useRoomStore();
+  const { audio, time, audioTime, handleSkip, handlePlay } = useAudioStore();
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 

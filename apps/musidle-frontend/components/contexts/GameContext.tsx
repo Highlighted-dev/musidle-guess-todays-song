@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useSocketStore } from '@/stores/SocketStore';
+import { useAudioStore } from '@/stores/AudioStore';
 export const gameContext = createContext<GameContextType | null>(null);
 
 function GameProvider({ children }: { children: React.ReactNode }) {
@@ -19,19 +20,27 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     timerIntervalId,
     setTimerIntervalId,
   } = useTimerStore();
-  const { players, setPlayers, maxRounds, round, setRound, joinRoom, room_code, createRoom } =
-    useRoomStore();
-  const [currentPlayer, setCurrentPlayer] = useState<player | null>(null);
+  const {
+    players,
+    setPlayers,
+    currentPlayer,
+    setCurrentPlayer,
+    maxRounds,
+    round,
+    setRound,
+    joinRoom,
+    room_code,
+    createRoom,
+  } = useRoomStore();
+  const { audio, setAudio, time, setTime, setAudioTime, handlePlay, intervalId, setIntervalId } =
+    useAudioStore();
+  // const [currentPlayer, setCurrentPlayer] = useState<player | null>(null);
   const [isInLobby] = useState<boolean>(false);
   const [hasPhaseOneStarted, setHasPhaseOneStarted] = useState<boolean>(false);
   const [hasPhaseTwoStarted, setHasPhaseTwoStarted] = useState<boolean>(false);
   const [hasPhaseThreeStarted, setHasPhaseThreeStarted] = useState<boolean>(false);
-  const [audio, setAudio] = useState(typeof Audio == 'undefined' ? null : new Audio());
   const [answer, setAnswer] = useState<string>('');
   const [renderGame, setRenderGame] = useState<boolean>(false);
-  const [time, setTime] = useState(1000);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null);
-  const [audioTime, setAudioTime] = useState(0);
   const [value, setValue] = useState('');
   const submitRef = useRef<HTMLButtonElement>(null);
   const [songs, setSongs] = useState<ISongs[]>([
@@ -103,57 +112,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
 
   const handleRenderGame = () => {
     setRenderGame(!renderGame);
-  };
-
-  const handleSkip = () => {
-    let temporary_time: number = time;
-    switch (time) {
-      case 1000:
-        temporary_time = 3000;
-        setTime(temporary_time);
-        break;
-      case 3000:
-        temporary_time = 6000;
-        setTime(temporary_time);
-        break;
-      case 6000:
-        temporary_time = 12000;
-        setTime(temporary_time);
-        break;
-      case 12000:
-        break;
-      default:
-        temporary_time = 1000;
-        setTime(1000);
-    }
-    socket?.emit('skip', temporary_time);
-  };
-
-  const handleAudioTimeUpdate = () => {
-    if (!audio) return;
-    setAudioTime(audio.currentTime);
-  };
-
-  const handlePlay = () => {
-    if (!audio) return;
-
-    if (currentPlayer?._id == user_id) {
-      socket?.emit('handlePlay');
-    }
-
-    if (timer !== 0) setIsTimerRunning(true);
-
-    if (audio.currentTime >= time / 1000) audio.currentTime = 0;
-
-    audio.paused ? audio.play() : audio.pause();
-    if (intervalId !== null) clearInterval(intervalId); // Clear the previous interval
-    const newIntervalId = setInterval(() => {
-      if (audio.currentTime >= time / 1000) {
-        audio.pause();
-        clearInterval(newIntervalId);
-      }
-    }, 10);
-    setIntervalId(newIntervalId);
   };
 
   const handleValueChange = (value: string) => {
@@ -380,30 +338,13 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     };
   }, [submitRef, socket]);
 
-  useEffect(() => {
-    if (!audio) return;
-    audio.addEventListener('timeupdate', handleAudioTimeUpdate);
-    return () => {
-      audio.removeEventListener('timeupdate', handleAudioTimeUpdate);
-    };
-  }, [audio]);
-
   const values = useMemo(
     () => ({
-      players,
       hasPhaseOneStarted,
       togglePhaseOne,
       handleChooseCategory,
-      audio,
       answer,
       renderGame,
-      currentPlayer,
-      handleSkip,
-      time,
-      handlePlay,
-      intervalId,
-      setIntervalId,
-      audioTime,
       value,
       handleValueChange,
       searchSong,
@@ -417,28 +358,18 @@ function GameProvider({ children }: { children: React.ReactNode }) {
       handleRoomJoin,
       handleRoomCreate,
       isInLobby,
-      room_code,
       user_id,
-      socket,
     }),
     [
       user_id,
-      players,
       hasPhaseOneStarted,
       hasPhaseTwoStarted,
       hasPhaseThreeStarted,
-      audio,
       answer,
       renderGame,
-      currentPlayer,
-      time,
-      intervalId,
-      audioTime,
       value,
       songs,
       isInLobby,
-      room_code,
-      socket,
     ],
   );
   return <gameContext.Provider value={values}>{children}</gameContext.Provider>;

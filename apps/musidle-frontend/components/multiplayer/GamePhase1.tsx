@@ -9,12 +9,12 @@ import { GameContextType } from '@/@types/GameContext';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { Label } from '../ui/label';
 import { useAuthStore } from '@/stores/AuthStore';
+import { useRoomStore } from '@/stores/RoomStore';
 
 export default function GamePhase1() {
   const { user_id } = useAuthStore();
-  const { handleChooseCategory, renderGame, currentPlayer, players } = useContext(
-    gameContext,
-  ) as GameContextType;
+  const { handleChooseCategory, renderGame } = useContext(gameContext) as GameContextType;
+  const { players, currentPlayer } = useRoomStore();
 
   return (
     <>

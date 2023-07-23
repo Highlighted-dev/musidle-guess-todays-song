@@ -7,10 +7,15 @@ import { GameContextType } from '@/@types/GameContext';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { Button } from '../ui/button';
 import { useAuthStore } from '@/stores/AuthStore';
+import { useAudioStore } from '@/stores/AudioStore';
+import { useRoomStore } from '@/stores/RoomStore';
 
 const GamePhase3 = () => {
   const { user_id } = useAuthStore();
-  const { renderGame, currentPlayer, handlePlay } = useContext(gameContext) as GameContextType;
+  const { renderGame } = useContext(gameContext) as GameContextType;
+  const { currentPlayer } = useRoomStore();
+
+  const { handlePlay } = useAudioStore();
   return (
     <>
       {renderGame ? (

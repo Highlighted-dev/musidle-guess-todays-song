@@ -6,10 +6,12 @@ import { gameContext } from '@/components/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthStore } from '@/stores/AuthStore';
+import { useRoomStore } from '@/stores/RoomStore';
 import React, { useContext } from 'react';
 
 export default function GameLobby(params: { room_code: string }) {
-  const { players, togglePhaseOne } = useContext(gameContext) as GameContextType;
+  const { togglePhaseOne } = useContext(gameContext) as GameContextType;
+  const { players } = useRoomStore();
   const { role } = useAuthStore();
 
   return (

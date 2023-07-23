@@ -13,7 +13,6 @@ export interface ISongs {
 }
 
 export type GameContextType = {
-  players: player[];
   handleRoomJoin: (room_id: string) => void;
   handleRoomCreate: () => void;
   isInLobby: boolean;
@@ -23,16 +22,8 @@ export type GameContextType = {
   hasPhaseThreeStarted: boolean;
   handleChooseCategory: (category: string) => void;
   handleChooseArtist: (artist: string) => void;
-  audio: HTMLAudioElement | null;
   answer: string;
   renderGame: boolean;
-  currentPlayer: player | null;
-  handleSkip: () => void;
-  time: number;
-  intervalId: NodeJS.Timeout | null;
-  setIntervalId: (intervalId: NodeJS.Timeout) => void;
-  handlePlay: () => void;
-  audioTime: number;
   value: string;
   handleValueChange: (value: string) => void;
   songs: ISongs[];

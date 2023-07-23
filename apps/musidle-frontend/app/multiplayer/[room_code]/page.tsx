@@ -8,15 +8,16 @@ import GamePhase3 from '@/components/multiplayer/GamePhase3';
 import React, { useContext, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/AuthStore';
+import { useRoomStore } from '@/stores/RoomStore';
 export default function Multiplayer() {
-  const { players, hasPhaseOneStarted, hasPhaseTwoStarted, hasPhaseThreeStarted, handleRoomJoin } =
+  const { hasPhaseOneStarted, hasPhaseTwoStarted, hasPhaseThreeStarted, handleRoomJoin } =
     useContext(gameContext) as GameContextType;
   const { user_id, role } = useAuthStore();
+  const { players } = useRoomStore();
   const params = useParams();
   const router = useRouter();
 
   useEffect(() => {
-    //Join room on page load if not in players array
     if (params.room_code.length > 6) {
       router.push('/multiplayer');
       return;
@@ -24,7 +25,7 @@ export default function Multiplayer() {
     if (params.room_code && !players.find(player => player['_id'] == user_id)) {
       handleRoomJoin(params.room_code);
     }
-  }, [user_id, params.room_code]);
+  }, [user_id, params.room_code, players]);
 
   return (
     <div className="rounded-md overflow-hidden w-4/6 h-4/6 min-h-[600px]">

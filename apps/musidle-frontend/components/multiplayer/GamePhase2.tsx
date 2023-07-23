@@ -7,12 +7,12 @@ import { gameContext } from '../contexts/GameContext';
 import { GameContextType } from '@/@types/GameContext';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { useAuthStore } from '@/stores/AuthStore';
+import { useRoomStore } from '@/stores/RoomStore';
 
 const GamePhase2 = () => {
   const { user_id } = useAuthStore();
-  const { handleChooseArtist, renderGame, currentPlayer } = useContext(
-    gameContext,
-  ) as GameContextType;
+  const { handleChooseArtist, renderGame } = useContext(gameContext) as GameContextType;
+  const { currentPlayer } = useRoomStore();
 
   const renderButtons = () => {
     const buttons = [];

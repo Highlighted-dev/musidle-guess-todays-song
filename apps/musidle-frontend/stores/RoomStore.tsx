@@ -15,6 +15,8 @@ interface IRoomStore {
   setMaxRounds: (maxRounds: number) => void;
   isInLobby: boolean;
   setIsInLobby: (isInLobby: boolean) => void;
+  currentPlayer: player | null;
+  setCurrentPlayer: (player: player) => void;
   joinRoom: (room_code: string) => Promise<void>;
   createRoom: () => Promise<void>;
 }
@@ -44,6 +46,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
   setIsInLobby: (isInLobby: boolean) =>
     set(() => ({
       isInLobby: isInLobby,
+    })),
+  currentPlayer: null,
+  setCurrentPlayer: (player: player) =>
+    set(() => ({
+      currentPlayer: player,
     })),
   joinRoom: async (room_code: string) => {
     if (useAuthStore.getState().user_id) {

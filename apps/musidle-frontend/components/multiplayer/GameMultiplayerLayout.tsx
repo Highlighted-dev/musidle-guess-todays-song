@@ -1,5 +1,5 @@
 'use client';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import {
@@ -20,8 +20,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 import { GameContextType } from '@/@types/GameContext';
 import { gameContext } from '../contexts/GameContext';
-import { authContext } from '../contexts/AuthContext';
-import { AuthContextType } from '@/@types/AuthContext';
 import {
   Dialog,
   DialogContent,

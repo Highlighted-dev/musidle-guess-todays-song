@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Socket, io } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { useRoomStore } from './RoomStore';
 interface ISocketStore {
   socket: Socket | null;

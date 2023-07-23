@@ -12,7 +12,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 export default function Multiplayer() {
   const { hasPhaseOneStarted, hasPhaseTwoStarted, hasPhaseThreeStarted, handleRoomJoin } =
     useContext(gameContext) as GameContextType;
-  const { user_id, role } = useAuthStore();
+  const { user_id } = useAuthStore();
   const { players } = useRoomStore();
   const params = useParams();
   const router = useRouter();

@@ -1,6 +1,4 @@
 'use client';
-import { AuthContextType } from '@/@types/AuthContext';
-import { authContext } from '@/components/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useContext } from 'react';

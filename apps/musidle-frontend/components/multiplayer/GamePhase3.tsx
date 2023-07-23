@@ -1,5 +1,3 @@
-import { AuthContextType } from '@/@types/AuthContext';
-import { authContext } from '@/components/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useContext } from 'react';
 import { gameContext } from '../contexts/GameContext';

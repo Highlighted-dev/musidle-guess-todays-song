@@ -29,7 +29,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     round,
     setRound,
     joinRoom,
-    room_code,
     createRoom,
   } = useRoomStore();
   const { audio, setAudio, time, setTime, setAudioTime, handlePlay, intervalId, setIntervalId } =

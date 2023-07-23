@@ -1,8 +1,5 @@
-import React, { useState, createContext, useMemo, useEffect, useContext, useRef } from 'react';
+import React, { useState, createContext, useMemo, useEffect, useRef } from 'react';
 import { GameContextType, ISongs, player } from '@/@types/GameContext';
-import { Socket, io } from 'socket.io-client';
-import { authContext } from './AuthContext';
-import { AuthContextType } from '@/@types/AuthContext';
 import axios from 'axios';
 import useTimerStore from '@/stores/TimerStore';
 import { useRouter } from 'next/navigation';
@@ -12,7 +9,7 @@ import { useSocketStore } from '@/stores/SocketStore';
 export const gameContext = createContext<GameContextType | null>(null);
 
 function GameProvider({ children }: { children: React.ReactNode }) {
-  const { user_id, username } = useAuthStore();
+  const { user_id } = useAuthStore();
   const { socket } = useSocketStore();
   const {
     timer,
@@ -22,19 +19,10 @@ function GameProvider({ children }: { children: React.ReactNode }) {
     timerIntervalId,
     setTimerIntervalId,
   } = useTimerStore();
-  const {
-    players,
-    setPlayers,
-    setMaxRounds,
-    maxRounds,
-    round,
-    setRound,
-    joinRoom,
-    room_code,
-    createRoom,
-  } = useRoomStore();
+  const { players, setPlayers, maxRounds, round, setRound, joinRoom, room_code, createRoom } =
+    useRoomStore();
   const [currentPlayer, setCurrentPlayer] = useState<player | null>(null);
-  const [isInLobby, setIsInLobby] = useState<boolean>(false);
+  const [isInLobby] = useState<boolean>(false);
   const [hasPhaseOneStarted, setHasPhaseOneStarted] = useState<boolean>(false);
   const [hasPhaseTwoStarted, setHasPhaseTwoStarted] = useState<boolean>(false);
   const [hasPhaseThreeStarted, setHasPhaseThreeStarted] = useState<boolean>(false);
@@ -66,7 +54,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   const handleRoomCreate = async () => {
     if (!user_id) return;
     createRoom().then(room_id => {
-      console.log(room_id);
       router.push(`/multiplayer/${room_id}`);
     });
   };
@@ -288,10 +275,6 @@ function GameProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!socket) return;
-    socket.on('addPlayer', (player: player) => {
-      if (players.find(p => p._id === player._id)) return;
-      setPlayers([...players, player]);
-    });
     if (!players.find(p => p._id === user_id)) return;
     socket.on('togglePhaseOne', current_player => {
       if (!hasPhaseOneStarted) {

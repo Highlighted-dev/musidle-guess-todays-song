@@ -1,7 +1,5 @@
 'use client';
-import { AuthContextType } from '@/@types/AuthContext';
 import { GameContextType } from '@/@types/GameContext';
-import { authContext } from '@/components/contexts/AuthContext';
 import { gameContext } from '@/components/contexts/GameContext';
 import GameLobby from '@/components/multiplayer/GameLobby';
 import GamePhase1 from '@/components/multiplayer/GamePhase1';

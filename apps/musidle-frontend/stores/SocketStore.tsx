@@ -1,10 +1,15 @@
 import { create } from 'zustand';
 import { Socket, io } from 'socket.io-client';
-
+import { useRoomStore } from './RoomStore';
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket) => void;
 }
+type player = {
+  _id: string;
+  name: string;
+  score: number;
+};
 
 export const useSocketStore = create<ISocketStore>(set => ({
   socket: null,
@@ -12,9 +17,14 @@ export const useSocketStore = create<ISocketStore>(set => ({
     set(() => ({
       socket: socket,
     })),
-  // emit: (event: string, data: any) => {
-  //   if (useSocketStore.getState().socket) {
-  //     useSocketStore.getState().socket?.emit(event, data);
-  //   }
-  // },
 }));
+
+// Connect the socket and add event listeners
+useSocketStore.subscribe(({ socket }) => {
+  if (socket) {
+    socket.on('addPlayer', (player: player) => {
+      if (useRoomStore.getState().players.find(p => p._id === player._id)) return;
+      useRoomStore.setState({ players: [...useRoomStore.getState().players, player] });
+    });
+  }
+});

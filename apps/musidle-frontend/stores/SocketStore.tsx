@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { Socket } from 'socket.io-client';
 import { useRoomStore } from './RoomStore';
+import { useAuthStore } from './AuthStore';
+import { usePhaseStore } from './PhasesStore';
+import { useAudioStore } from './AudioStore';
+import { useAnswerStore } from './AnswerStore';
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket) => void;
@@ -22,9 +26,40 @@ export const useSocketStore = create<ISocketStore>(set => ({
 // Connect the socket and add event listeners
 useSocketStore.subscribe(({ socket }) => {
   if (socket) {
+    if (!useRoomStore.getState().players.find(p => p._id === useAuthStore.getState().user_id))
+      return;
     socket.on('addPlayer', (player: player) => {
-      if (useRoomStore.getState().players.find(p => p._id === player._id)) return;
-      useRoomStore.setState({ players: [...useRoomStore.getState().players, player] });
+      const players = useRoomStore.getState().players;
+      if (players.find(p => p._id === player._id)) return;
+      useRoomStore.setState({ players: [...players, player] });
     });
+    socket.on('togglePhaseOne', current_player => {
+      if (!usePhaseStore.getState().hasPhaseOneStarted) {
+        useRoomStore.getState().setCurrentPlayer(current_player);
+      }
+      usePhaseStore.getState().setHasPhaseOneStarted(!usePhaseStore.getState().hasPhaseOneStarted);
+    });
+    socket.on('skip', (time: number) => {
+      useAudioStore.getState().setTime(time);
+    });
+    socket.on('handlePlay', () => {
+      useAudioStore.getState().handlePlay();
+    });
+    socket.on('answerSubmit', (score: number, player: player) => {
+      useRoomStore.getState().updatePlayerScore(score, player);
+      useAnswerStore.getState().handleAnswerSubmit();
+    });
+    socket.on('valueChange', (value: string) => {
+      useAnswerStore.getState().handleValueChange(value);
+    });
+    socket.on('turnChange', () => {
+      useRoomStore.getState().handleTurnChange();
+    });
+    return () => {
+      socket.off('handlePlay');
+      socket.off('answerSubmit');
+      socket.off('valueChange');
+      socket.off('turnChange');
+    };
   }
 });

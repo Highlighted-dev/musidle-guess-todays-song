@@ -1,7 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import React, { useContext } from 'react';
-import { gameContext } from '../contexts/GameContext';
-import { GameContextType } from '@/@types/GameContext';
+import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { Button } from '../ui/button';
 import { useAuthStore } from '@/stores/AuthStore';
@@ -10,9 +8,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 
 const GamePhase3 = () => {
   const { user_id } = useAuthStore();
-  const { renderGame } = useContext(gameContext) as GameContextType;
-  const { currentPlayer } = useRoomStore();
-
+  const { currentPlayer, renderGame } = useRoomStore();
   const { handlePlay } = useAudioStore();
   return (
     <>

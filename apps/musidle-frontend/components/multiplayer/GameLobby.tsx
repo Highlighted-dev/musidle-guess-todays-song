@@ -1,14 +1,13 @@
 'use client';
-import { GameContextType } from '@/@types/GameContext';
-import { gameContext } from '@/components/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthStore } from '@/stores/AuthStore';
+import { usePhaseStore } from '@/stores/PhasesStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import React, { useContext } from 'react';
 
 export default function GameLobby(params: { room_code: string }) {
-  const { togglePhaseOne } = useContext(gameContext) as GameContextType;
+  const { togglePhaseOne } = usePhaseStore();
   const { players } = useRoomStore();
   const { role } = useAuthStore();
 

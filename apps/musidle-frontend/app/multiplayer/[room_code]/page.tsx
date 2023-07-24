@@ -1,6 +1,4 @@
 'use client';
-import { GameContextType } from '@/@types/GameContext';
-import { gameContext } from '@/components/contexts/GameContext';
 import GameLobby from '@/components/multiplayer/GameLobby';
 import GamePhase1 from '@/components/multiplayer/GamePhase1';
 import GamePhase2 from '@/components/multiplayer/GamePhase2';
@@ -9,13 +7,21 @@ import React, { useContext, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
+import { usePhaseStore } from '@/stores/PhasesStore';
 export default function Multiplayer() {
-  const { hasPhaseOneStarted, hasPhaseTwoStarted, hasPhaseThreeStarted, handleRoomJoin } =
-    useContext(gameContext) as GameContextType;
+  const { hasPhaseOneStarted, hasPhaseTwoStarted, hasPhaseThreeStarted } = usePhaseStore();
+  const { joinRoom } = useRoomStore();
   const { user_id } = useAuthStore();
   const { players } = useRoomStore();
   const params = useParams();
   const router = useRouter();
+
+  const handleRoomJoin = async (room_id: string) => {
+    if (!user_id) return;
+    joinRoom(room_id).then(() => {
+      router.push(`/multiplayer/${room_id}`);
+    });
+  };
 
   useEffect(() => {
     if (params.room_code.length > 6) {

@@ -11,8 +11,8 @@ import { useRoomStore } from '@/stores/RoomStore';
 
 export default function GamePhase1() {
   const { user_id } = useAuthStore();
-  const { handleChooseCategory, renderGame } = useContext(gameContext) as GameContextType;
-  const { players, currentPlayer } = useRoomStore();
+  const { handleChooseCategory } = useContext(gameContext) as GameContextType;
+  const { players, currentPlayer, renderGame } = useRoomStore();
 
   return (
     <>

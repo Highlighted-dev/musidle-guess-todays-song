@@ -1,21 +1,33 @@
 'use client';
 
-import { AuthContextType } from '@/@types/AuthContext';
-import { authContext } from '@/components/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@radix-ui/react-label';
-import React, { useContext, useEffect, useState } from 'react';
-import { gameContext } from '@/components/contexts/GameContext';
-import { GameContextType } from '@/@types/GameContext';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Room } from '@/@types/Rooms';
 import { useAuthStore } from '@/stores/AuthStore';
+import { useRoomStore } from '@/stores/RoomStore';
 
 export default function Multiplayer() {
   const { user_id, username, email, role } = useAuthStore();
-  const { handleRoomJoin, handleRoomCreate } = useContext(gameContext) as GameContextType;
+  const { createRoom, joinRoom } = useRoomStore();
+  const router = useRouter();
 
+  const handleRoomJoin = async (room_id: string) => {
+    if (!user_id) return;
+    joinRoom(room_id).then(() => {
+      router.push(`/multiplayer/${room_id}`);
+    });
+  };
+
+  const handleRoomCreate = async () => {
+    if (!user_id) return;
+    createRoom().then(room_id => {
+      router.push(`/multiplayer/${room_id}`);
+    });
+  };
   const [rooms, setRooms] = useState<Room[]>([]);
 
   useEffect(() => {

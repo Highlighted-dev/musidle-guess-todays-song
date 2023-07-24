@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { useRoomStore } from './RoomStore';
+import { useAnswerStore } from './AnswerStore';
 
 interface ITimerStore {
   timer: number;
@@ -26,4 +28,28 @@ const useTimerStore = create<ITimerStore>(set => ({
       timerIntervalId: timerIntervalId,
     })),
 }));
+
+useTimerStore.subscribe(({ isTimerRunning, timerIntervalId }) => {
+  const { setTimer, setTimerIntervalId, setIsTimerRunning } = useTimerStore.getState();
+  const { handleAnswerSubmit } = useAnswerStore.getState();
+
+  if (isTimerRunning && timerIntervalId === null) {
+    const newIntervalId = setInterval(() => {
+      if (useTimerStore.getState().timer <= 0) {
+        clearInterval(newIntervalId);
+        setTimer(35);
+        handleAnswerSubmit();
+        setIsTimerRunning(false);
+        return;
+      }
+      setTimer(useTimerStore.getState().timer - 0.1);
+    }, 100);
+
+    setTimerIntervalId(newIntervalId); // Set the new interval ID
+  } else if (!isTimerRunning && timerIntervalId !== null) {
+    clearInterval(timerIntervalId);
+    setTimerIntervalId(null); // Clear the interval ID
+  }
+});
+
 export default useTimerStore;

@@ -9,8 +9,8 @@ import { useRoomStore } from '@/stores/RoomStore';
 
 const GamePhase2 = () => {
   const { user_id } = useAuthStore();
-  const { handleChooseArtist, renderGame } = useContext(gameContext) as GameContextType;
-  const { currentPlayer } = useRoomStore();
+  const { handleChooseArtist } = useContext(gameContext) as GameContextType;
+  const { currentPlayer, renderGame } = useRoomStore();
 
   const renderButtons = () => {
     const buttons = [];

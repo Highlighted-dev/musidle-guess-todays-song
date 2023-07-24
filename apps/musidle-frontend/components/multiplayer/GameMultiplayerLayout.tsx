@@ -33,32 +33,31 @@ import useTimerStore from '@/stores/TimerStore';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useAudioStore } from '@/stores/AudioStore';
+import { useAnswerStore } from '@/stores/AnswerStore';
 const GameMultiplayerLayout = () => {
   const { user_id } = useAuthStore();
   const { timer } = useTimerStore();
+  const { searchSong } = useContext(gameContext) as GameContextType;
   const {
     answer,
     value,
     handleValueChange,
     songs,
-    searchSong,
+    answerDialogOpen,
+    setAnswerDialogOpen,
     handleAnswerSubmit,
-    submitRef,
-    handleTurnChange,
-  } = useContext(gameContext) as GameContextType;
-
-  const { players, currentPlayer } = useRoomStore();
+  } = useAnswerStore();
+  const { players, currentPlayer, handleTurnChange } = useRoomStore();
   const { audio, time, audioTime, handleSkip, handlePlay } = useAudioStore();
   const [open, setOpen] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleDialogClose = () => {
     if (currentPlayer?._id != user_id) {
-      if (!dialogOpen) setDialogOpen(!dialogOpen);
+      if (!answerDialogOpen) setAnswerDialogOpen(!answerDialogOpen);
       return;
     }
-    setDialogOpen(!dialogOpen);
-    if (dialogOpen) {
+    setAnswerDialogOpen(!answerDialogOpen);
+    if (answerDialogOpen) {
       handleTurnChange();
     }
   };
@@ -144,11 +143,13 @@ const GameMultiplayerLayout = () => {
                     </PopoverContent>
                   </Popover>
                   <div className="pt-5">
-                    <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
-                      <DialogTrigger asChild ref={submitRef}>
+                    <Dialog open={answerDialogOpen} onOpenChange={handleDialogClose}>
+                      <DialogTrigger asChild>
                         <Button
                           variant={'default'}
-                          onClick={handleAnswerSubmit}
+                          onClick={() => {
+                            handleAnswerSubmit();
+                          }}
                           className={
                             currentPlayer?._id != user_id || value === ''
                               ? 'pointer-events-none'

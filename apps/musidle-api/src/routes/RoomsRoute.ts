@@ -18,11 +18,11 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
     const room_id = req.body.room_id;
     let room = await roomModel.findOne({ room_code: room_id });
     if (!room) {
-      await roomModel.create({
+      roomModel.create({
         room_code: room_id,
         players: [req.body.player],
         maxRounds: 2,
-        round: 0,
+        round: 1,
       });
     } else if (!room.players.some(player => player._id === req.body.player._id)) {
       await roomModel.updateOne(
@@ -55,7 +55,7 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
       room_code: room_id,
       players: [req.body.player],
       maxRounds: 2,
-      round: 0,
+      round: 1,
     });
     const room = await roomModel.findOne({ room_code: room_id });
     return res.json(room);
@@ -93,6 +93,24 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const rooms = await roomModel.find();
     return res.json({ status: 'success', data: rooms });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/changeRound', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.body.room_code)
+      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    const room_code = req.body.room_code;
+
+    const room = await roomModel.findOne({ room_code: room_code });
+
+    if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
+
+    await roomModel.updateOne({ room_code: room_code }, { $inc: { round: 1 } });
+
+    return res.status(200).json({ status: 'success', message: 'Round changed' });
   } catch (error) {
     next(error);
   }

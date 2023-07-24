@@ -72,6 +72,9 @@ io.on('connection', socket => {
       users.splice(users.indexOf(user), 1);
     }
   });
+  socket.on('changeRound', () => {
+    axios.get('http://localhost:5000/api/rooms/changeRound');
+  });
 });
 
 mongoose

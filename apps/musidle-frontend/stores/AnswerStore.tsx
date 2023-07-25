@@ -21,7 +21,6 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
   songs: [
     {
       value: 'Songs will appear here',
-      label: 'Songs will appear here',
       key: 'no-song',
     },
   ],
@@ -40,45 +39,35 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     set(() => ({
       answerDialogOpen: answerDialogOpen,
     })),
-  handleAnswerSubmit: () => {
+  handleAnswerSubmit: async () => {
     const current_player = useRoomStore.getState().currentPlayer;
     const user_id = useAuthStore.getState().user_id;
     const socket = useSocketStore.getState().socket;
 
     if (!current_player) return;
-    useAnswerStore.setState({ answerDialogOpen: !useAnswerStore.getState().answerDialogOpen });
+
+    if (current_player?._id == user_id) {
+      await axios
+        .post(`/api/rooms/checkAnswer`, {
+          room_code: useRoomStore.getState().room_code,
+          player_id: current_player._id,
+          player_answer: useAnswerStore.getState().value,
+          song_id: useAudioStore.getState().songId,
+          time: useAudioStore.getState().time,
+        })
+        .then(res => res.data)
+        .then(res => {
+          useAnswerStore.setState({ answer: res.data.answer || null });
+          useRoomStore.getState().updatePlayerScore(res.data.score, current_player);
+          socket?.emit('answerSubmit', res.data.score, current_player, res.data.answer);
+        });
+    }
     if (useTimerStore.getState().timerIntervalId !== null)
       clearInterval(useTimerStore.getState().timerIntervalId!);
     useTimerStore.getState().setIsTimerRunning(false);
     useTimerStore.getState().setTimer(35.0);
     if (useAudioStore.getState().audio) useAudioStore.getState().audio?.pause();
-    let points = 0;
-    if (
-      useAnswerStore.getState().value &&
-      useAnswerStore.getState().value.toLowerCase() ==
-        useAnswerStore.getState().answer.toLowerCase()
-    ) {
-      switch (useAudioStore.getState().time) {
-        case 1000:
-          points = 500;
-          break;
-        case 3000:
-          points = 400;
-          break;
-        case 6000:
-          points = 300;
-          break;
-        case 12000:
-          points = 100;
-          break;
-        default:
-          points = 0;
-      }
-    }
-    if (current_player?._id == user_id) {
-      useRoomStore.getState().updatePlayerScore(points, current_player);
-      socket?.emit('answerSubmit', points, current_player);
-    }
+    useAnswerStore.setState({ answerDialogOpen: !useAnswerStore.getState().answerDialogOpen });
   },
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;
@@ -95,7 +84,6 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         if (temp_songs.find(song => song.key === track.url)) return;
         temp_songs.push({
           value: `${track.artist} - ${track.name}`,
-          label: `${track.name} - ${track.artist}`,
           key: track.url,
         });
       });
@@ -107,9 +95,8 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const { currentPlayer } = useRoomStore.getState();
     const { socket } = useSocketStore.getState();
     const { user_id } = useAuthStore.getState();
-
     if (currentPlayer?._id == user_id) {
-      socket?.emit('searchSong', temp_songs.slice(0, 8));
+      socket?.emit('searchSong', useAnswerStore.getState().songs);
     }
   },
 }));

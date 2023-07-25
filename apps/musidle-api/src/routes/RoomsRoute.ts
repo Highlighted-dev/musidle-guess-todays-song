@@ -3,6 +3,7 @@ import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import roomModel from '../models/RoomModel';
 import bodyParser from 'body-parser';
+import axios from 'axios';
 dotenv.config();
 
 const jsonParser = bodyParser.json();
@@ -18,9 +19,9 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
     const room_id = req.body.room_id;
     let room = await roomModel.findOne({ room_code: room_id });
     if (!room) {
-      roomModel.create({
+      await roomModel.create({
         room_code: room_id,
-        players: [req.body.player],
+        players: [req.body.player || []],
         maxRounds: 2,
         round: 1,
       });
@@ -111,6 +112,105 @@ router.post('/changeRound', jsonParser, async (req: Request, res: Response, next
     await roomModel.updateOne({ room_code: room_code }, { $inc: { round: 1 } });
 
     return res.status(200).json({ status: 'success', message: 'Round changed' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (
+      !req.body.room_code ||
+      !req.body.player_id ||
+      !req.body.player_answer ||
+      !req.body.song_id ||
+      !req.body.time
+    )
+      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    const room_code = req.body.room_code;
+    const player_id = req.body.player_id;
+    const player_answer = req.body.player_answer;
+    const song_id = req.body.song_id;
+    const time = req.body.time;
+
+    axios
+      .get(`http://localhost:5000/api/answers/${song_id}`)
+      .then(response => response.data)
+      .then(response => {
+        const correctAnswer = response.data;
+
+        if (!correctAnswer) {
+          return res.status(404).json({ status: 'error', message: 'Answer not found' });
+        } else if (correctAnswer.value.toLowerCase() === player_answer.toLowerCase()) {
+          const score = () => {
+            switch (time) {
+              case 1000:
+                return 500;
+              case 3000:
+                return 400;
+              case 6000:
+                return 300;
+              case 12000:
+                return 100;
+              default:
+                return 0;
+            }
+          };
+
+          axios.post('http://localhost:5000/api/rooms/updateScore', {
+            room_code: room_code,
+            player_id: player_id,
+            score: score(),
+          });
+          return res.status(200).json({
+            status: 'success',
+            message: 'Correct answer',
+            data: {
+              score: score(),
+              player_id: player_id,
+              answer: correctAnswer.value,
+            },
+          });
+        } else {
+          axios.post('http://localhost:5000/api/rooms/updateScore', {
+            room_code: room_code,
+            player_id: player_id,
+            score: 0,
+          });
+          return res.status(200).json({
+            status: 'success',
+            message: 'Wrong answer',
+            data: {
+              score: 0,
+              player_id: player_id,
+              answer: correctAnswer.value,
+            },
+          });
+        }
+      });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/updateScore', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.body.room_code || !req.body.player_id || req.body.score === undefined) {
+      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    }
+    const room_code = req.body.room_code;
+    const player_id = req.body.player_id;
+    const score = req.body.score;
+
+    await roomModel.findOneAndUpdate(
+      { room_code: room_code, 'players._id': player_id },
+      { $inc: { 'players.$.score': score } },
+      { new: true },
+    );
+
+    const room = await roomModel.findOne({ room_code: room_code, 'players._id': player_id });
+    console.log(room);
+    return res.status(200).json({ status: 'success', message: 'Score updated' });
   } catch (error) {
     next(error);
   }

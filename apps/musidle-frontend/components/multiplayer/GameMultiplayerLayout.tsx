@@ -54,9 +54,9 @@ const GameMultiplayerLayout = () => {
       if (!answerDialogOpen) setAnswerDialogOpen(!answerDialogOpen);
       return;
     }
-    setAnswerDialogOpen(!answerDialogOpen);
     if (answerDialogOpen) {
       handleTurnChange();
+      setAnswerDialogOpen(!answerDialogOpen);
     }
   };
 
@@ -99,8 +99,8 @@ const GameMultiplayerLayout = () => {
                         disabled={currentPlayer?._id != user_id}
                       >
                         {value
-                          ? songs.find(song => song.label.toLowerCase() === value.toLowerCase())
-                              ?.label
+                          ? songs.find(song => song.value.toLowerCase() === value.toLowerCase())
+                              ?.value
                           : 'Select song...'}
                         <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -128,12 +128,12 @@ const GameMultiplayerLayout = () => {
                               <AiOutlineCheck
                                 className={cn(
                                   'mr-2 h-4 w-4',
-                                  value.toLowerCase() == song.label.toLowerCase()
+                                  value.toLowerCase() == song.value.toLowerCase()
                                     ? 'opacity-100'
                                     : 'opacity-0',
                                 )}
                               />
-                              {song.label}
+                              {song.value}
                             </CommandItem>
                           ))}
                         </CommandGroup>
@@ -171,8 +171,10 @@ const GameMultiplayerLayout = () => {
                         <div className="grid gap-4 py-4">
                           <Label className="text-center">
                             {`You guessed: ${
-                              songs.find(song => song.label.toLowerCase() === value.toLowerCase())
-                                ?.label || 'Nothing :('
+                              songs.find(song => song.value.toLowerCase() === value.toLowerCase())
+                                ?.value ||
+                              value ||
+                              'Nothing :('
                             }`}
                           </Label>
                           <Label className="text-center">The correct answer was: {answer}</Label>

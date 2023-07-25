@@ -12,6 +12,7 @@ import RoomsRoute from './routes/RoomsRoute';
 import { ISocketMiddleware, IUsers } from './@types';
 import errorHandler from './utils/ErrorHandler';
 import axios from 'axios';
+import AnswersRoute from './routes/AnswersRoute';
 dotenv.config();
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
@@ -50,8 +51,8 @@ io.on('connection', socket => {
   socket.on('valueChange', value => {
     socket.broadcast.emit('valueChange', value);
   });
-  socket.on('answerSubmit', (score, player) => {
-    socket.broadcast.emit('answerSubmit', score, player);
+  socket.on('answerSubmit', (score, player, answer) => {
+    socket.broadcast.emit('answerSubmit', score, player, answer);
   });
   socket.on('turnChange', () => {
     socket.broadcast.emit('turnChange');
@@ -99,4 +100,5 @@ app.use(helmet());
 app.use('/api/track/search/', SearchTrackRoute);
 app.use('/api/auth/', UserAuthenticationRoute);
 app.use('/api/rooms/', RoomsRoute);
+app.use('/api/answers/', AnswersRoute);
 app.use(errorHandler);

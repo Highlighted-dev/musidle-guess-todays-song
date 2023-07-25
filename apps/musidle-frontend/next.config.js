@@ -19,7 +19,7 @@ const nextConfig = {
         source: '/api/:path*',
         destination: `${
           process.env.NODE_ENV == 'production'
-            ? process.env.NEXT_PUBLIC_API_HOST
+            ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
             : 'http://localhost:5000'
         }/api/:path*`, // Proxy to Backend
       },

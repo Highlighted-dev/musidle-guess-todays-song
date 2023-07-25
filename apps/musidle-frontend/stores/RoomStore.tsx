@@ -66,7 +66,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         .setSocket(
           io(
             process.env.NODE_ENV == 'production'
-              ? process.env.NEXT_PUBLIC_API_HOST ?? ''
+              ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
               : 'http://localhost:5000',
           ),
         );
@@ -96,7 +96,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         .setSocket(
           io(
             process.env.NODE_ENV == 'production'
-              ? process.env.NEXT_PUBLIC_API_HOST ?? ''
+              ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
               : 'http://localhost:5000',
           ),
         );
@@ -148,7 +148,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
     setSongs([
       {
         value: 'Songs will appear here',
-        label: 'Songs will appear here',
         key: 'no-song',
       },
     ]);
@@ -169,15 +168,14 @@ export const useRoomStore = create<IRoomStore>(set => ({
   },
   handleChooseCategory: (category: string, phase = 1) => {
     const { socket } = useSocketStore.getState();
-    const { setAudio } = useAudioStore.getState();
-    const { setAnswer } = useAnswerStore.getState();
+    const { setAudio, setSongId } = useAudioStore.getState();
     const { setRenderGame, renderGame } = useRoomStore.getState();
     if (phase === 1) {
       socket?.emit('chooseCategory', category);
-      setAnswer('Payphone - Maroon 5');
+      setSongId(category);
     } else if (phase === 2) {
       socket?.emit('chooseArtist', category);
-      setAnswer('Blinding Lights - The Weeknd');
+      setSongId(category);
     }
     setAudio(new Audio(`/music/${category}.mp3`));
     setRenderGame(!renderGame);

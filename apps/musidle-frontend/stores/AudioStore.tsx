@@ -13,6 +13,8 @@ interface IAudioStore {
   setAudioTime: (audioTime: number) => void;
   intervalId: NodeJS.Timeout | null;
   setIntervalId: (intervaldId: NodeJS.Timeout | null) => void;
+  songId: string;
+  setSongId: (songId: string) => void;
   handleAudioTimeUpdate: () => void;
   handleSkip: () => void;
   handlePlay: () => void;
@@ -38,6 +40,11 @@ export const useAudioStore = create<IAudioStore>(set => ({
   setIntervalId: (intervalId: NodeJS.Timeout | null) =>
     set(() => ({
       intervalId: intervalId,
+    })),
+  songId: '',
+  setSongId: (songId: string) =>
+    set(() => ({
+      songId: songId,
     })),
   handleAudioTimeUpdate: () => {
     if (!useAudioStore.getState().audio) return;

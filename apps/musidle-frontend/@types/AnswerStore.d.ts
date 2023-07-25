@@ -1,6 +1,5 @@
 export interface ISongs {
   value: string;
-  label: string;
   key: string;
 }
 

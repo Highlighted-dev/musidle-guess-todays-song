@@ -45,27 +45,24 @@ useSocketStore.subscribe(({ socket }) => {
     });
     socket.on('chooseCategory', (category: string) => {
       const setAudio = useAudioStore.getState().setAudio;
-      const setAnswer = useAnswerStore.getState().setAnswer;
       const { setRenderGame, renderGame } = useRoomStore.getState();
 
       setAudio(new Audio(`/music/${category}.mp3`));
-      setAnswer('payphone - maroon 5');
       setRenderGame(!renderGame);
     });
     socket.on('chooseArtist', (artist: string) => {
       const setAudio = useAudioStore.getState().setAudio;
-      const setAnswer = useAnswerStore.getState().setAnswer;
       const { setRenderGame, renderGame } = useRoomStore.getState();
 
       setAudio(new Audio(`/music/${artist}.mp3`));
-      setAnswer('Blinding Lights - The Weeknd');
       setRenderGame(!renderGame);
     });
     socket.on('handlePlay', () => {
       useAudioStore.getState().handlePlay();
     });
-    socket.on('answerSubmit', (score: number, player: player) => {
+    socket.on('answerSubmit', (score: number, player: player, answer: string) => {
       useRoomStore.getState().updatePlayerScore(score, player);
+      useAnswerStore.getState().setAnswer(answer);
       useAnswerStore.getState().handleAnswerSubmit();
     });
     socket.on('valueChange', (value: string) => {

@@ -10,15 +10,7 @@ export type IAxiosErrorRestApi = AxiosError & {
   };
 };
 
-export interface IUser {
-  _id: string | null;
-  username: string | null;
-  email: string | null;
-  role: string | null;
-}
-
 export type AuthContextType = {
-  authState: IUser;
   register: (username: string, email: string, password: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;

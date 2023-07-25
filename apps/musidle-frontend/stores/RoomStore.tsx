@@ -1,32 +1,12 @@
 import axios from 'axios';
 import { create } from 'zustand';
 import { useAuthStore } from './AuthStore';
-import { player } from '@/@types/GameContext';
+import { IRoomStore, IPlayer } from '@/@types/Rooms';
 import { useSocketStore } from './SocketStore';
 import { io } from 'socket.io-client';
 import { useAnswerStore } from './AnswerStore';
 import { useAudioStore } from './AudioStore';
 import { usePhaseStore } from './PhasesStore';
-interface IRoomStore {
-  room_code: string;
-  setRoomCode: (room_code: string) => void;
-  players: player[];
-  setPlayers: (players: player[]) => void;
-  round: number;
-  setRound: (round: number) => void;
-  maxRounds: number;
-  setMaxRounds: (maxRounds: number) => void;
-  isInLobby: boolean;
-  setIsInLobby: (isInLobby: boolean) => void;
-  currentPlayer: player | null;
-  setCurrentPlayer: (player: player) => void;
-  renderGame: boolean;
-  setRenderGame: (renderGame: boolean) => void;
-  joinRoom: (room_code: string) => Promise<void>;
-  createRoom: () => Promise<void>;
-  updatePlayerScore: (points: number, player: player) => void;
-  handleTurnChange: () => void;
-}
 
 export const useRoomStore = create<IRoomStore>(set => ({
   room_code: '',
@@ -35,7 +15,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       room_code: room_code,
     })),
   players: [],
-  setPlayers: (players: player[]) =>
+  setPlayers: (players: IPlayer[]) =>
     set(() => ({
       players: players,
     })),
@@ -55,7 +35,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       isInLobby: isInLobby,
     })),
   currentPlayer: null,
-  setCurrentPlayer: (player: player) =>
+  setCurrentPlayer: (player: IPlayer) =>
     set(() => ({
       currentPlayer: player,
     })),
@@ -86,7 +66,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         .setSocket(
           io(
             process.env.NODE_ENV == 'production'
-              ? process.env.NEXT_PUBLIC_API_HOST!
+              ? process.env.NEXT_PUBLIC_API_HOST ?? ''
               : 'http://localhost:5000',
           ),
         );
@@ -116,7 +96,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         .setSocket(
           io(
             process.env.NODE_ENV == 'production'
-              ? process.env.NEXT_PUBLIC_API_HOST!
+              ? process.env.NEXT_PUBLIC_API_HOST ?? ''
               : 'http://localhost:5000',
           ),
         );
@@ -125,7 +105,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       // router.push(`/multiplayer/${room_id}`);
     }
   },
-  updatePlayerScore: (points: number, player: player) => {
+  updatePlayerScore: (points: number, player: IPlayer) => {
     const temp_players = useRoomStore.getState().players.map(p => {
       if (p._id === player._id) {
         p.score += points;
@@ -186,5 +166,20 @@ export const useRoomStore = create<IRoomStore>(set => ({
       return;
     }
     setRound(round + 1);
+  },
+  handleChooseCategory: (category: string, phase = 1) => {
+    const { socket } = useSocketStore.getState();
+    const { setAudio } = useAudioStore.getState();
+    const { setAnswer } = useAnswerStore.getState();
+    const { setRenderGame, renderGame } = useRoomStore.getState();
+    if (phase === 1) {
+      socket?.emit('chooseCategory', category);
+      setAnswer('Payphone - Maroon 5');
+    } else if (phase === 2) {
+      socket?.emit('chooseArtist', category);
+      setAnswer('Blinding Lights - The Weeknd');
+    }
+    setAudio(new Audio(`/music/${category}.mp3`));
+    setRenderGame(!renderGame);
   },
 }));

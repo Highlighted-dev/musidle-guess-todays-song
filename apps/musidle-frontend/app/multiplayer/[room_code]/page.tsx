@@ -3,7 +3,7 @@ import GameLobby from '@/components/multiplayer/GameLobby';
 import GamePhase1 from '@/components/multiplayer/GamePhase1';
 import GamePhase2 from '@/components/multiplayer/GamePhase2';
 import GamePhase3 from '@/components/multiplayer/GamePhase3';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';

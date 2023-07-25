@@ -1,9 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import React, { useContext } from 'react';
-import { gameContext } from '../contexts/GameContext';
-import { GameContextType } from '@/@types/GameContext';
+import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { Label } from '../ui/label';
 import { useAuthStore } from '@/stores/AuthStore';
@@ -11,8 +9,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 
 export default function GamePhase1() {
   const { user_id } = useAuthStore();
-  const { handleChooseCategory } = useContext(gameContext) as GameContextType;
-  const { players, currentPlayer, renderGame } = useRoomStore();
+  const { players, currentPlayer, renderGame, handleChooseCategory } = useRoomStore();
 
   return (
     <>
@@ -28,7 +25,7 @@ export default function GamePhase1() {
               <div className="flex flex-col space-y-4">
                 <Button
                   variant={'secondary'}
-                  onClick={e => handleChooseCategory(e.currentTarget.id)}
+                  onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
                   id="pop2"
                   disabled={currentPlayer?._id == user_id ? false : true}
                 >

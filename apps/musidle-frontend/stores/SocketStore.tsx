@@ -5,6 +5,7 @@ import { useAuthStore } from './AuthStore';
 import { usePhaseStore } from './PhasesStore';
 import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
+import { ISongs } from '@/@types/AnswerStore';
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket) => void;
@@ -42,6 +43,24 @@ useSocketStore.subscribe(({ socket }) => {
     socket.on('skip', (time: number) => {
       useAudioStore.getState().setTime(time);
     });
+    socket.on('chooseCategory', (category: string) => {
+      const setAudio = useAudioStore.getState().setAudio;
+      const setAnswer = useAnswerStore.getState().setAnswer;
+      const { setRenderGame, renderGame } = useRoomStore.getState();
+
+      setAudio(new Audio(`/music/${category}.mp3`));
+      setAnswer('payphone - maroon 5');
+      setRenderGame(!renderGame);
+    });
+    socket.on('chooseArtist', (artist: string) => {
+      const setAudio = useAudioStore.getState().setAudio;
+      const setAnswer = useAnswerStore.getState().setAnswer;
+      const { setRenderGame, renderGame } = useRoomStore.getState();
+
+      setAudio(new Audio(`/music/${artist}.mp3`));
+      setAnswer('Blinding Lights - The Weeknd');
+      setRenderGame(!renderGame);
+    });
     socket.on('handlePlay', () => {
       useAudioStore.getState().handlePlay();
     });
@@ -55,11 +74,16 @@ useSocketStore.subscribe(({ socket }) => {
     socket.on('turnChange', () => {
       useRoomStore.getState().handleTurnChange();
     });
+    socket.on('searchSong', (songs: ISongs[]) => {
+      useAnswerStore.setState({ songs: songs });
+    });
+
     return () => {
       socket.off('handlePlay');
       socket.off('answerSubmit');
       socket.off('valueChange');
       socket.off('turnChange');
+      socket.off('searchSong');
     };
   }
 });

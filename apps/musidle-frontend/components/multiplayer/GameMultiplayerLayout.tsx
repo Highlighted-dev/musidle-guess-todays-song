@@ -1,5 +1,5 @@
 'use client';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import {
@@ -18,8 +18,6 @@ import { cn } from '@/lib/utils';
 import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-import { GameContextType } from '@/@types/GameContext';
-import { gameContext } from '../contexts/GameContext';
 import {
   Dialog,
   DialogContent,
@@ -37,7 +35,6 @@ import { useAnswerStore } from '@/stores/AnswerStore';
 const GameMultiplayerLayout = () => {
   const { user_id } = useAuthStore();
   const { timer } = useTimerStore();
-  const { searchSong } = useContext(gameContext) as GameContextType;
   const {
     answer,
     value,
@@ -46,6 +43,7 @@ const GameMultiplayerLayout = () => {
     answerDialogOpen,
     setAnswerDialogOpen,
     handleAnswerSubmit,
+    getPossibleSongAnswers,
   } = useAnswerStore();
   const { players, currentPlayer, handleTurnChange } = useRoomStore();
   const { audio, time, audioTime, handleSkip, handlePlay } = useAudioStore();
@@ -112,7 +110,7 @@ const GameMultiplayerLayout = () => {
                         <CommandInput
                           placeholder="Search song..."
                           onValueChange={value => {
-                            searchSong(value);
+                            getPossibleSongAnswers(value);
                             handleValueChange(value);
                           }}
                           value={value}

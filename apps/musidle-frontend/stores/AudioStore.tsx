@@ -63,24 +63,22 @@ export const useAudioStore = create<IAudioStore>(set => ({
     useSocketStore.getState().socket?.emit('skip', useAudioStore.getState().time);
   },
   handlePlay: () => {
-    if (!useAudioStore.getState().audio) return;
+    const { audio } = useAudioStore.getState();
+    if (!audio) return;
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
       useSocketStore.getState().socket?.emit('handlePlay');
     }
 
     if (useTimerStore.getState().timer !== 0) useTimerStore.getState().setIsTimerRunning(true);
 
-    if (useAudioStore.getState().audio!.currentTime >= useAudioStore.getState().time / 1000)
-      useAudioStore.getState().audio!.currentTime = 0;
+    if (audio.currentTime >= useAudioStore.getState().time / 1000) audio.currentTime = 0;
 
-    useAudioStore.getState().audio?.paused
-      ? useAudioStore.getState().audio?.play()
-      : useAudioStore.getState().audio?.pause();
+    audio.paused ? audio.play() : audio.pause();
     if (useAudioStore.getState().intervalId !== null)
       clearInterval(useAudioStore.getState().intervalId!); // Clear the previous interval
     const newIntervalId = setInterval(() => {
-      if (useAudioStore.getState().audio!.currentTime >= useAudioStore.getState().time / 1000) {
-        useAudioStore.getState().audio?.pause();
+      if (audio.currentTime >= useAudioStore.getState().time / 1000) {
+        audio.pause();
         clearInterval(newIntervalId);
       }
     }, 10);

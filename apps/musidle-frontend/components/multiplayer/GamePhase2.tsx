@@ -1,16 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import React, { useContext } from 'react';
-import { gameContext } from '../contexts/GameContext';
-import { GameContextType } from '@/@types/GameContext';
+import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 
 const GamePhase2 = () => {
   const { user_id } = useAuthStore();
-  const { handleChooseArtist } = useContext(gameContext) as GameContextType;
-  const { currentPlayer, renderGame } = useRoomStore();
+  const { currentPlayer, renderGame, handleChooseCategory } = useRoomStore();
 
   const renderButtons = () => {
     const buttons = [];
@@ -20,7 +17,7 @@ const GamePhase2 = () => {
         <Button
           key={i}
           variant={'secondary'}
-          onClick={e => handleChooseArtist(e.currentTarget.id)}
+          onClick={e => handleChooseCategory(e.currentTarget.id, 2)}
           id={`artist${i}`}
           disabled={currentPlayer?._id == user_id ? false : true}
           className="p-[25px]"

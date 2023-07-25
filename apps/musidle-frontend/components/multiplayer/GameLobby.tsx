@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthStore } from '@/stores/AuthStore';
 import { usePhaseStore } from '@/stores/PhasesStore';
 import { useRoomStore } from '@/stores/RoomStore';
-import React, { useContext } from 'react';
+import React from 'react';
 
 export default function GameLobby(params: { room_code: string }) {
   const { togglePhaseOne } = usePhaseStore();

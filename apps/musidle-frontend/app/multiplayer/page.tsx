@@ -6,7 +6,7 @@ import { Label } from '@radix-ui/react-label';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Room } from '@/@types/Rooms';
+import { IRoom } from '@/@types/Rooms';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 
@@ -28,7 +28,7 @@ export default function Multiplayer() {
       router.push(`/multiplayer/${room_id}`);
     });
   };
-  const [rooms, setRooms] = useState<Room[]>([]);
+  const [rooms, setRooms] = useState<IRoom[]>([]);
 
   useEffect(() => {
     //Get all rooms

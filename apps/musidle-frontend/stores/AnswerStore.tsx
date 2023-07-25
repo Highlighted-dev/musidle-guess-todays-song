@@ -4,25 +4,8 @@ import { useAuthStore } from './AuthStore';
 import { useSocketStore } from './SocketStore';
 import useTimerStore from './TimerStore';
 import { useAudioStore } from './AudioStore';
-
-export interface ISongs {
-  value: string;
-  label: string;
-  key: string;
-}
-
-interface IAnswerStore {
-  answer: string;
-  setAnswer: (answer: string) => void;
-  value: string;
-  setValue: (value: string) => void;
-  songs: ISongs[];
-  setSongs: (songs: ISongs[]) => void;
-  answerDialogOpen: boolean;
-  setAnswerDialogOpen: (answerDialogOpen: boolean) => void;
-  handleValueChange: (value: string) => void;
-  handleAnswerSubmit: () => void;
-}
+import axios from 'axios';
+import { IAnswerStore, ISongs } from '@/@types/AnswerStore';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   answer: '',
@@ -92,9 +75,41 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
           points = 0;
       }
     }
-    useRoomStore.getState().updatePlayerScore(points, current_player);
     if (current_player?._id == user_id) {
+      useRoomStore.getState().updatePlayerScore(points, current_player);
       socket?.emit('answerSubmit', points, current_player);
+    }
+  },
+  getPossibleSongAnswers: async (query: string) => {
+    if (query.length < 1) return;
+
+    const response = axios.get(`/api/track/search/${query}`).then(res => {
+      return res.data;
+    });
+
+    const data = await response;
+    const temp_songs: ISongs[] = [];
+    if (data.length > 0) {
+      data.map((track: any) => {
+        // Check if the song is already in the songs state
+        if (temp_songs.find(song => song.key === track.url)) return;
+        temp_songs.push({
+          value: `${track.artist} - ${track.name}`,
+          label: `${track.name} - ${track.artist}`,
+          key: track.url,
+        });
+      });
+      useAnswerStore.setState({ songs: temp_songs.slice(0, 8) }); // Update the songs state with the new search results
+    } else {
+      useAnswerStore.setState({ songs: [] }); // Clear the songs state if there are no search results
+    }
+
+    const { currentPlayer } = useRoomStore.getState();
+    const { socket } = useSocketStore.getState();
+    const { user_id } = useAuthStore.getState();
+
+    if (currentPlayer?._id == user_id) {
+      socket?.emit('searchSong', temp_songs.slice(0, 8));
     }
   },
 }));

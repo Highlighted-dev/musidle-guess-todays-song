@@ -9,7 +9,8 @@ interface IPlayer {
 interface IRoomModel {
   room_code: string;
   players: IPlayer[];
-  maxRounds: number;
+  maxRoundsPhaseOne: number;
+  maxRoundsPhaseTwo: number;
   round: number;
 }
 
@@ -17,7 +18,8 @@ const roomSchema = new Schema<IRoomModel>(
   {
     room_code: { type: String, required: true },
     players: { type: [], required: true, unique: true },
-    maxRounds: { type: Number, required: true },
+    maxRoundsPhaseOne: { type: Number, default: 2 },
+    maxRoundsPhaseTwo: { type: Number, default: 2 },
     round: { type: Number, required: true },
   },
   { versionKey: false },

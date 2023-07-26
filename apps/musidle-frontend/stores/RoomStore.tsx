@@ -25,11 +25,17 @@ export const useRoomStore = create<IRoomStore>(set => ({
     set(() => ({
       round: round,
     })),
-  maxRounds: 2,
-  setMaxRounds: (maxRounds: number) =>
+  maxRoundsPhaseOne: 2,
+  setMaxRoundsPhaseOne: (maxRoundsPhaseOne: number) =>
     set(() => ({
-      maxRounds: maxRounds,
+      maxRoundsPhaseOne: maxRoundsPhaseOne,
     })),
+  maxRoundsPhaseTwo: 2,
+  setMaxRoundsPhaseTwo: (maxRoundsPhaseTwo: number) =>
+    set(() => ({
+      maxRoundsPhaseTwo: maxRoundsPhaseTwo,
+    })),
+
   isInLobby: false,
   setIsInLobby: (isInLobby: boolean) =>
     set(() => ({
@@ -58,7 +64,8 @@ export const useRoomStore = create<IRoomStore>(set => ({
       set(() => ({
         room_code: room_code,
         players: data.players,
-        maxRounds: data.maxRounds,
+        maxRoundsPhaseOne: data.maxRoundsPhaseOne,
+        maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
         round: data.round,
         isInLobby: true,
       }));
@@ -89,7 +96,8 @@ export const useRoomStore = create<IRoomStore>(set => ({
       set(() => ({
         room_code: data.room_code,
         players: data.players,
-        maxRounds: data.maxRounds,
+        maxRoundsPhaseOne: data.maxRoundsPhaseOne,
+        maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
         round: data.round,
         isInLobby: true,
       }));
@@ -117,14 +125,23 @@ export const useRoomStore = create<IRoomStore>(set => ({
     useRoomStore.setState({ players: temp_players });
   },
   handleTurnChange: () => {
-    const { players, currentPlayer, round, setRound, maxRounds, setCurrentPlayer, setRenderGame } =
-      useRoomStore.getState();
+    const {
+      players,
+      currentPlayer,
+      round,
+      maxRoundsPhaseOne,
+      maxRoundsPhaseTwo,
+      setRound,
+      setCurrentPlayer,
+      setRenderGame,
+    } = useRoomStore.getState();
     const { socket } = useSocketStore.getState();
     const { setAnswerDialogOpen, setValue, setAnswer, setSongs } = useAnswerStore.getState();
     const { setAudioTime, setAudio, setTime, intervalId } = useAudioStore.getState();
     const { user_id } = useAuthStore.getState();
     const {
       hasPhaseOneStarted,
+      hasPhaseTwoStarted,
       setHasPhaseOneStarted,
       setHasPhaseTwoStarted,
       setHasPhaseThreeStarted,
@@ -154,15 +171,15 @@ export const useRoomStore = create<IRoomStore>(set => ({
       },
     ]);
     setRenderGame(false);
-    if (maxRounds === round) {
-      if (hasPhaseOneStarted) {
-        setHasPhaseTwoStarted(true);
-        setHasPhaseOneStarted(false);
-      } else {
-        handleFinal();
-        setHasPhaseTwoStarted(false);
-        setHasPhaseThreeStarted(true);
-      }
+    if (maxRoundsPhaseOne === round && hasPhaseOneStarted) {
+      setHasPhaseTwoStarted(true);
+      setHasPhaseOneStarted(false);
+      setRound(1);
+      return;
+    } else if (maxRoundsPhaseTwo === round && hasPhaseTwoStarted) {
+      handleFinal();
+      setHasPhaseTwoStarted(false);
+      setHasPhaseThreeStarted(true);
       setRound(1);
       return;
     }

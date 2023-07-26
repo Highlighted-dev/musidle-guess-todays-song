@@ -10,8 +10,10 @@ export interface IRoomStore {
   setPlayers: (players: player[]) => void;
   round: number;
   setRound: (round: number) => void;
-  maxRounds: number;
-  setMaxRounds: (maxRounds: number) => void;
+  maxRoundsPhaseOne: number;
+  setMaxRoundsPhaseOne: (maxRounds: number) => void;
+  maxRoundsPhaseTwo: number;
+  setMaxRoundsPhaseTwo: (maxRounds: number) => void;
   isInLobby: boolean;
   setIsInLobby: (isInLobby: boolean) => void;
   currentPlayer: player | null;
@@ -27,7 +29,8 @@ export interface IRoomStore {
 export interface IRoom {
   _id: string;
   room_code: string;
-  players: string[];
-  maxRounds: number;
+  players: player[];
+  maxRoundsPhaseOne: number;
+  maxRoundsPhaseTwo: number;
   round: number;
 }

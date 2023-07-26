@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { useAnswerStore } from './AnswerStore';
+import { useRoomStore } from './RoomStore';
+import { useAuthStore } from './AuthStore';
 
 interface ITimerStore {
   timer: number;
@@ -37,7 +39,8 @@ useTimerStore.subscribe(({ isTimerRunning, timerIntervalId }) => {
       if (useTimerStore.getState().timer <= 0) {
         clearInterval(newIntervalId);
         setTimer(35);
-        handleAnswerSubmit();
+        if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id)
+          handleAnswerSubmit();
         setIsTimerRunning(false);
         return;
       }

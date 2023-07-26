@@ -52,7 +52,12 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
     await roomModel.create({
       room_code: room_id,
       players: [req.body.player],
-      maxRounds: 2,
+      maxRoundsPhaseOne: req.body.maxRoundsPhaseOne
+        ? req.body.maxRoundsPhaseOne
+        : roomModel.schema.obj?.maxRoundsPhaseTwo,
+      maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo
+        ? req.body.maxRoundsPhaseTwo
+        : roomModel.schema.obj?.maxRoundsPhaseTwo,
       round: 1,
     });
     const room = await roomModel.findOne({ room_code: room_id });

@@ -40,6 +40,10 @@ export default function Multiplayer() {
   };
 
   useEffect(() => {
+    getRooms();
+  }, [user_id]);
+
+  useEffect(() => {
     const interval = setInterval(() => getRooms(), 12000);
     return () => {
       clearInterval(interval);

@@ -32,35 +32,33 @@ const users: IUsers[] = [];
 io.on('connection', socket => {
   socket.on('id', (id, room_code) => {
     users.push({ id, socket_id: socket.id, room_code: room_code });
+    socket.join(room_code);
   });
-  socket.on('togglePhaseOne', current_player => {
-    socket.broadcast.emit('togglePhaseOne', current_player);
+  socket.on('togglePhaseOne', (current_player, room_code) => {
+    socket.broadcast.to(room_code).emit('togglePhaseOne', current_player);
   });
-  socket.on('chooseCategory', category => {
-    socket.broadcast.emit('chooseCategory', category);
+  socket.on('chooseCategory', (category, room_code) => {
+    socket.broadcast.to(room_code).emit('chooseCategory', category);
   });
-  socket.on('handlePlay', () => {
-    socket.broadcast.emit('handlePlay');
+  socket.on('handlePlay', room_code => {
+    socket.broadcast.to(room_code).emit('handlePlay');
   });
-  socket.on('skip', time => {
-    socket.broadcast.emit('skip', time);
+  socket.on('skip', (time, room_code) => {
+    socket.broadcast.to(room_code).emit('skip', time);
   });
-  socket.on('searchSong', songs => {
-    socket.broadcast.emit('searchSong', songs);
+  socket.on('searchSong', (songs, room_code) => {
+    socket.broadcast.to(room_code).emit('searchSong', songs);
   });
-  socket.on('valueChange', value => {
-    socket.broadcast.emit('valueChange', value);
+  socket.on('valueChange', (value, room_code) => {
+    socket.broadcast.to(room_code).emit('valueChange', value);
   });
-  socket.on('answerSubmit', (score, player, answer) => {
-    socket.broadcast.emit('answerSubmit', score, player, answer);
+  socket.on('answerSubmit', (score, player, answer, room_code) => {
+    socket.broadcast.to(room_code).emit('answerSubmit', score, player, answer);
   });
-  socket.on('turnChange', () => {
-    socket.broadcast.emit('turnChange');
+  socket.on('turnChange', room_code => {
+    socket.broadcast.to(room_code).emit('turnChange');
   });
-  socket.on('togglePhaseTwo', () => {
-    socket.broadcast.emit('togglePhaseTwo');
-  });
-  socket.on('chooseArtist', artist => {
+  socket.on('chooseArtist', (artist, room_code) => {
     socket.broadcast.emit('chooseArtist', artist);
   });
   socket.on('disconnect', () => {

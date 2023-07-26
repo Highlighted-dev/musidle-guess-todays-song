@@ -67,13 +67,15 @@ export const useAudioStore = create<IAudioStore>(set => ({
       default:
         useAudioStore.setState({ time: 1000 });
     }
-    useSocketStore.getState().socket?.emit('skip', useAudioStore.getState().time);
+    useSocketStore
+      .getState()
+      .socket?.emit('skip', useAudioStore.getState().time, useRoomStore.getState().room_code);
   },
   handlePlay: () => {
     const { audio } = useAudioStore.getState();
     if (!audio) return;
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
-      useSocketStore.getState().socket?.emit('handlePlay');
+      useSocketStore.getState().socket?.emit('handlePlay', useRoomStore.getState().room_code);
     }
 
     if (useTimerStore.getState().timer !== 0) useTimerStore.getState().setIsTimerRunning(true);

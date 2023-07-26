@@ -7,6 +7,7 @@ import { io } from 'socket.io-client';
 import { useAnswerStore } from './AnswerStore';
 import { useAudioStore } from './AudioStore';
 import { usePhaseStore } from './PhasesStore';
+import { use } from 'react';
 
 export const useRoomStore = create<IRoomStore>(set => ({
   room_code: '',
@@ -61,6 +62,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         round: data.round,
         isInLobby: true,
       }));
+      //set socket the to the room
       useSocketStore
         .getState()
         .setSocket(
@@ -130,7 +132,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     } = usePhaseStore.getState();
     if (!currentPlayer) return;
     if (currentPlayer?._id == user_id) {
-      socket?.emit('turnChange');
+      socket?.emit('turnChange', useRoomStore.getState().room_code);
     }
     const index = players.findIndex(p => p._id === currentPlayer._id);
     if (index === players.length - 1) {
@@ -169,12 +171,12 @@ export const useRoomStore = create<IRoomStore>(set => ({
   handleChooseCategory: (category: string, phase = 1) => {
     const { socket } = useSocketStore.getState();
     const { setAudio, setSongId } = useAudioStore.getState();
-    const { setRenderGame, renderGame } = useRoomStore.getState();
+    const { setRenderGame, renderGame, room_code } = useRoomStore.getState();
     if (phase === 1) {
-      socket?.emit('chooseCategory', category);
+      socket?.emit('chooseCategory', category, room_code);
       setSongId(category);
     } else if (phase === 2) {
-      socket?.emit('chooseArtist', category);
+      socket?.emit('chooseArtist', category, room_code);
       setSongId(category);
     }
     setAudio(new Audio(`/music/${category}.mp3`));

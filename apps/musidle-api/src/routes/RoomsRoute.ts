@@ -26,11 +26,8 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         round: 1,
       });
     } else if (!room.players.some(player => player._id === req.body.player._id)) {
-      await roomModel.updateOne(
-        { room_code: req.body.room_id },
-        { $push: { players: req.body.player } },
-      );
-      (req as ICustomRequest).io.emit('addPlayer', req.body.player);
+      await roomModel.updateOne({ room_code: room_id }, { $push: { players: req.body.player } });
+      (req as ICustomRequest).io.in(room_id).emit('addPlayer', req.body.player);
     }
     room = await roomModel.findOne({ room_code: room_id });
     return res.json(room);

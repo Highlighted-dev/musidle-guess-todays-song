@@ -34,26 +34,33 @@ export const usePhaseStore = create<IPhasesStore>(set => ({
       hasPhaseThreeStarted: hasPhaseThreeStarted,
     })),
   togglePhaseOne: () => {
+    const { socket } = useSocketStore.getState();
+
     usePhaseStore.getState().random = Math.floor(
       Math.random() * useRoomStore.getState().players.length,
     );
     const current_player = useRoomStore.getState().players[usePhaseStore.getState().random];
-    useSocketStore.getState().socket?.emit('togglePhaseOne', current_player);
+
+    socket?.emit('togglePhaseOne', current_player, useRoomStore.getState().room_code);
     if (!usePhaseStore.getState().hasPhaseOneStarted) {
       useRoomStore.setState({ currentPlayer: current_player });
     }
     usePhaseStore.getState().setHasPhaseOneStarted(!usePhaseStore.getState().hasPhaseOneStarted);
   },
   handleFinal: () => {
-    useSocketStore.getState().socket?.emit('handleFinal');
+    const { socket } = useSocketStore.getState();
+    const { players, setCurrentPlayer, room_code } = useRoomStore.getState();
+    const { setAudio } = useAudioStore.getState();
+
+    socket?.emit('handleFinal', room_code);
     if (useRoomStore.getState().currentPlayer) {
       //Get the player with the highest score
-      const finalist = useRoomStore
-        .getState()
-        .players.reduce((prev, current) => (prev.score > current.score ? prev : current));
-      useRoomStore.getState().setCurrentPlayer(finalist);
+      const finalist = players.reduce((prev, current) =>
+        prev.score > current.score ? prev : current,
+      );
+      setCurrentPlayer(finalist);
     }
-    useAudioStore.getState().setAudio(new Audio(`/music/final1.mp3`));
+    setAudio(new Audio(`/music/final1.mp3`));
     useAnswerStore.setState({ answer: 'Payphone - Maroon 5' });
   },
 }));

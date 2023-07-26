@@ -30,7 +30,9 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     })),
   handleValueChange: (value: string) => {
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
-      useSocketStore.getState().socket?.emit('valueChange', value);
+      useSocketStore
+        .getState()
+        .socket?.emit('valueChange', value, useRoomStore.getState().room_code);
     }
     useAnswerStore.setState({ value: value });
   },
@@ -40,17 +42,17 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       answerDialogOpen: answerDialogOpen,
     })),
   handleAnswerSubmit: async () => {
-    const current_player = useRoomStore.getState().currentPlayer;
+    const { currentPlayer, room_code } = useRoomStore.getState();
     const user_id = useAuthStore.getState().user_id;
     const socket = useSocketStore.getState().socket;
 
-    if (!current_player) return;
+    if (!currentPlayer) return;
 
-    if (current_player?._id == user_id) {
+    if (currentPlayer?._id == user_id) {
       await axios
         .post(`/api/rooms/checkAnswer`, {
           room_code: useRoomStore.getState().room_code,
-          player_id: current_player._id,
+          player_id: currentPlayer._id,
           player_answer: useAnswerStore.getState().value,
           song_id: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,
@@ -58,8 +60,8 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         .then(res => res.data)
         .then(res => {
           useAnswerStore.setState({ answer: res.data.answer || null });
-          useRoomStore.getState().updatePlayerScore(res.data.score, current_player);
-          socket?.emit('answerSubmit', res.data.score, current_player, res.data.answer);
+          useRoomStore.getState().updatePlayerScore(res.data.score, currentPlayer);
+          socket?.emit('answerSubmit', res.data.score, currentPlayer, res.data.answer, room_code);
         });
     }
     if (useTimerStore.getState().timerIntervalId !== null)
@@ -96,7 +98,11 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const { socket } = useSocketStore.getState();
     const { user_id } = useAuthStore.getState();
     if (currentPlayer?._id == user_id) {
-      socket?.emit('searchSong', useAnswerStore.getState().songs);
+      socket?.emit(
+        'searchSong',
+        useAnswerStore.getState().songs,
+        useRoomStore.getState().room_code,
+      );
     }
   },
 }));

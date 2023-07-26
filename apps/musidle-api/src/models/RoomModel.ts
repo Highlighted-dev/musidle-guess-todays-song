@@ -18,7 +18,7 @@ const roomSchema = new Schema<IRoomModel>(
   {
     room_code: { type: String, required: true },
     players: { type: [], required: true, unique: true },
-    maxRoundsPhaseOne: { type: Number, default: 2 },
+    maxRoundsPhaseOne: { type: Number, default: 4 },
     maxRoundsPhaseTwo: { type: Number, default: 2 },
     round: { type: Number, required: true },
   },

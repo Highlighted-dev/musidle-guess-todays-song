@@ -49,15 +49,16 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
         break;
       }
     }
+    //roomModel.schema.paths.maxRoundsPhaseOne.options.default just means get the default value assigned to maxRoundsPhaseOne in the schema
     await roomModel.create({
       room_code: room_id,
       players: [req.body.player],
       maxRoundsPhaseOne: req.body.maxRoundsPhaseOne
         ? req.body.maxRoundsPhaseOne
-        : roomModel.schema.obj?.maxRoundsPhaseTwo,
+        : roomModel.schema.paths.maxRoundsPhaseOne.options.default,
       maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo
         ? req.body.maxRoundsPhaseTwo
-        : roomModel.schema.obj?.maxRoundsPhaseTwo,
+        : roomModel.schema.paths.maxRoundsPhaseTwo.options.default,
       round: 1,
     });
     const room = await roomModel.findOne({ room_code: room_id });

@@ -116,13 +116,7 @@ router.post('/changeRound', jsonParser, async (req: Request, res: Response, next
 
 router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (
-      !req.body.room_code ||
-      !req.body.player_id ||
-      !req.body.player_answer ||
-      !req.body.song_id ||
-      !req.body.time
-    )
+    if (!req.body.room_code || !req.body.player_id || !req.body.song_id || !req.body.time)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     const room_code = req.body.room_code;
     const player_id = req.body.player_id;
@@ -135,7 +129,6 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
       .then(response => response.data)
       .then(response => {
         const correctAnswer = response.data;
-
         if (!correctAnswer) {
           return res.status(404).json({ status: 'error', message: 'Answer not found' });
         } else if (correctAnswer.value.toLowerCase() === player_answer.toLowerCase()) {

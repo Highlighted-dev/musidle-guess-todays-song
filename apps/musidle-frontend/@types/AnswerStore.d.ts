@@ -4,7 +4,7 @@ export interface ISongs {
 }
 
 export interface IAnswerStore {
-  answer: string;
+  answer: string | null;
   setAnswer: (answer: string) => void;
   value: string;
   setValue: (value: string) => void;

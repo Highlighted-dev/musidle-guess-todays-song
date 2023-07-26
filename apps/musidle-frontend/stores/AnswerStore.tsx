@@ -9,7 +9,7 @@ import { IAnswerStore, ISongs } from '@/@types/AnswerStore';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   answer: '',
-  setAnswer: (answer: string) =>
+  setAnswer: (answer: string | null) =>
     set(() => ({
       answer: answer,
     })),
@@ -45,8 +45,6 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const { currentPlayer, room_code } = useRoomStore.getState();
     const user_id = useAuthStore.getState().user_id;
     const socket = useSocketStore.getState().socket;
-
-    if (!currentPlayer) return;
 
     if (currentPlayer?._id == user_id) {
       await axios

@@ -161,7 +161,7 @@ const GameMultiplayerLayout = () => {
                         <DialogHeader>
                           <DialogTitle className=" text-center">Your guess was</DialogTitle>
                           <DialogDescription className=" text-center">
-                            {value.toLowerCase() == answer.toLowerCase() ? (
+                            {answer && value.toLowerCase() == answer.toLowerCase() ? (
                               <Label className="text-green-500 font-bold">CORRECT</Label>
                             ) : (
                               <Label className="text-red-700 font-bold">INCORRECT</Label>

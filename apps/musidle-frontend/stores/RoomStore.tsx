@@ -7,7 +7,7 @@ import { io } from 'socket.io-client';
 import { useAnswerStore } from './AnswerStore';
 import { useAudioStore } from './AudioStore';
 import { usePhaseStore } from './PhasesStore';
-import { use } from 'react';
+import { toast } from '@/components/ui/use-toast';
 
 export const useRoomStore = create<IRoomStore>(set => ({
   room_code: '',
@@ -198,5 +198,33 @@ export const useRoomStore = create<IRoomStore>(set => ({
     }
     setAudio(new Audio(`/music/${category}.mp3`));
     setRenderGame(!renderGame);
+  },
+  async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {
+    if (maxRoundsPhaseOne < 1 || maxRoundsPhaseTwo < 1) return;
+    if (maxRoundsPhaseOne > 400 || maxRoundsPhaseTwo > 200) return;
+
+    //if either of maxRounds is NaN, then use the current value
+    const mxRoundsPhaseOne = isNaN(maxRoundsPhaseOne)
+      ? useRoomStore.getState().maxRoundsPhaseOne
+      : maxRoundsPhaseOne;
+    const mxRoundsPhaseTwo = isNaN(maxRoundsPhaseTwo)
+      ? useRoomStore.getState().maxRoundsPhaseTwo
+      : maxRoundsPhaseTwo;
+
+    await axios
+      .put(`/api/rooms/settings`, {
+        room_code: useRoomStore.getState().room_code,
+        maxRoundsPhaseOne: mxRoundsPhaseOne,
+        maxRoundsPhaseTwo: mxRoundsPhaseTwo,
+      })
+      .then(res => {
+        if (res.status === 200) {
+          toast({
+            variant: 'default',
+            title: 'Success!',
+            description: res.data.message,
+          });
+        }
+      });
   },
 }));

@@ -205,8 +205,31 @@ router.post('/updateScore', jsonParser, async (req: Request, res: Response, next
     );
 
     const room = await roomModel.findOne({ room_code: room_code, 'players._id': player_id });
-    console.log(room);
     return res.status(200).json({ status: 'success', message: 'Score updated' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+//update settings
+router.put('/settings', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.body.room_code || !req.body.maxRoundsPhaseOne || !req.body.maxRoundsPhaseTwo) {
+      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    }
+    const room_code = req.body.room_code;
+    const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
+    const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
+
+    await roomModel.findOneAndUpdate(
+      { room_code: room_code },
+      { maxRoundsPhaseOne: maxRoundsPhaseOne, maxRoundsPhaseTwo: maxRoundsPhaseTwo },
+    );
+    (req as ICustomRequest).io
+      .in(room_code)
+      .emit('roomSettingsUpdate', maxRoundsPhaseOne, maxRoundsPhaseTwo);
+
+    return res.status(200).json({ status: 'success', message: 'Settings updated' });
   } catch (error) {
     next(error);
   }

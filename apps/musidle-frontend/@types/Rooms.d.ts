@@ -25,6 +25,7 @@ export interface IRoomStore {
   updatePlayerScore: (points: number, player: player) => void;
   handleTurnChange: () => void;
   handleChooseCategory: (category: string, phase: number) => void;
+  updateSettings: (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => void;
 }
 export interface IRoom {
   _id: string;

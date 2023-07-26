@@ -74,6 +74,13 @@ useSocketStore.subscribe(({ socket }) => {
     socket.on('searchSong', (songs: ISongs[]) => {
       useAnswerStore.setState({ songs: songs });
     });
+    socket.on('roomSettingsUpdate', (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => {
+      console.log('xd');
+      useRoomStore.setState({
+        maxRoundsPhaseOne: maxRoundsPhaseOne,
+        maxRoundsPhaseTwo: maxRoundsPhaseTwo,
+      });
+    });
 
     return () => {
       socket.off('handlePlay');

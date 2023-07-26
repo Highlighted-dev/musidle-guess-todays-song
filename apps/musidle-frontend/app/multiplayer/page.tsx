@@ -30,14 +30,20 @@ export default function Multiplayer() {
   };
   const [rooms, setRooms] = useState<IRoom[]>([]);
 
-  useEffect(() => {
-    //Get all rooms
+  const getRooms = async () => {
     axios
       .get('/api/rooms')
       .then(res => res.data)
       .then(res => {
         setRooms(res.data);
       });
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => getRooms(), 12000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   return (

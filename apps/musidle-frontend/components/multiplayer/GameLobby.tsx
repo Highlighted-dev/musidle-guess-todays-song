@@ -85,7 +85,9 @@ export default function GameLobby(params: { room_code: string }) {
             <h1 className="font-bold text-xl text-center py-2">Players</h1>
             <ul className="grid grid-cols-2 gap-2">
               {players.map((player, index) => (
-                <li key={index}>{player.name}</li>
+                <li key={index} className="text-center">
+                  {player.name}
+                </li>
               ))}
             </ul>
           </div>

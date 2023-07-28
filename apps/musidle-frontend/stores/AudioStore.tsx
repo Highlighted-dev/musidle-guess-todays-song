@@ -3,6 +3,7 @@ import { useSocketStore } from './SocketStore';
 import { useAuthStore } from './AuthStore';
 import { useRoomStore } from './RoomStore';
 import useTimerStore from './TimerStore';
+import { usePhaseStore } from './PhasesStore';
 
 interface IAudioStore {
   audio: HTMLAudioElement | null;
@@ -73,12 +74,13 @@ export const useAudioStore = create<IAudioStore>(set => ({
   },
   handlePlay: () => {
     const { audio } = useAudioStore.getState();
+    const { setIsTimerRunning, setTimer } = useTimerStore.getState();
     if (!audio) return;
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
       useSocketStore.getState().socket?.emit('handlePlay', useRoomStore.getState().room_code);
     }
 
-    if (useTimerStore.getState().timer !== 0) useTimerStore.getState().setIsTimerRunning(true);
+    if (useTimerStore.getState().timer !== 0) setIsTimerRunning(true);
 
     if (audio.currentTime >= useAudioStore.getState().time / 1000) audio.currentTime = 0;
 
@@ -89,6 +91,10 @@ export const useAudioStore = create<IAudioStore>(set => ({
       if (audio.currentTime >= useAudioStore.getState().time / 1000) {
         audio.pause();
         clearInterval(newIntervalId);
+      }
+      if (audio.paused && usePhaseStore.getState().hasPhaseThreeStarted) {
+        clearInterval(newIntervalId);
+        setIsTimerRunning(false);
       }
     }, 10);
     useAudioStore.getState().setIntervalId(newIntervalId);

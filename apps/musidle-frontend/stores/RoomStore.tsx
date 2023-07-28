@@ -51,6 +51,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
     set(() => ({
       renderGame: renderGame,
     })),
+  turnChangeDialogOpen: false,
+  setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) =>
+    set(() => ({
+      turnChangeDialogOpen: turnChangeDialogOpen,
+    })),
   joinRoom: async (room_code: string) => {
     if (useAuthStore.getState().user_id) {
       const { data } = await axios.post(`/api/rooms/join`, {
@@ -134,6 +139,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       setRound,
       setCurrentPlayer,
       setRenderGame,
+      setTurnChangeDialogOpen,
     } = useRoomStore.getState();
     const { socket } = useSocketStore.getState();
     const { setAnswerDialogOpen, setValue, setAnswer, setSongs } = useAnswerStore.getState();
@@ -171,6 +177,10 @@ export const useRoomStore = create<IRoomStore>(set => ({
       },
     ]);
     setRenderGame(false);
+    setTurnChangeDialogOpen(true);
+    setTimeout(() => {
+      useRoomStore.setState({ turnChangeDialogOpen: false });
+    }, 4000);
     if (maxRoundsPhaseOne === round && hasPhaseOneStarted) {
       setHasPhaseTwoStarted(true);
       setHasPhaseOneStarted(false);
@@ -183,6 +193,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
       setRound(1);
       return;
     }
+    // toast({
+    //   title: 'Round ' + (round + 1),
+    //   description: <h1 className=" font-bold text-base ">{currentPlayer.name}&apos;s turn</h1>,
+    //   duration: 4000,
+    // });
     setRound(round + 1);
   },
   handleChooseCategory: (category: string, phase = 1) => {

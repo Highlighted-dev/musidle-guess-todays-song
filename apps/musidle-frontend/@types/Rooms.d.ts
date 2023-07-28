@@ -20,6 +20,8 @@ export interface IRoomStore {
   setCurrentPlayer: (player: player) => void;
   renderGame: boolean;
   setRenderGame: (renderGame: boolean) => void;
+  turnChangeDialogOpen: boolean;
+  setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
   joinRoom: (room_code: string) => Promise<void>;
   createRoom: () => Promise<void>;
   updatePlayerScore: (points: number, player: player) => void;

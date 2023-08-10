@@ -12,6 +12,7 @@ interface IRoomModel {
   maxRoundsPhaseOne: number;
   maxRoundsPhaseTwo: number;
   round: number;
+  inSelectMode: boolean;
 }
 
 const roomSchema = new Schema<IRoomModel>(
@@ -21,6 +22,7 @@ const roomSchema = new Schema<IRoomModel>(
     maxRoundsPhaseOne: { type: Number, default: 4 },
     maxRoundsPhaseTwo: { type: Number, default: 2 },
     round: { type: Number, required: true },
+    inSelectMode: { type: Boolean, required: true },
   },
   { versionKey: false },
 );

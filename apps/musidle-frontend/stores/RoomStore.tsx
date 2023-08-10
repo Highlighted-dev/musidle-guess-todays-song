@@ -153,6 +153,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       setHasPhaseThreeStarted,
       handleFinal,
     } = usePhaseStore.getState();
+
     if (!currentPlayer) return;
     if (currentPlayer?._id == user_id) {
       socket?.emit('turnChange', useRoomStore.getState().room_code);
@@ -184,22 +185,16 @@ export const useRoomStore = create<IRoomStore>(set => ({
     if (maxRoundsPhaseOne === round && hasPhaseOneStarted) {
       setHasPhaseTwoStarted(true);
       setHasPhaseOneStarted(false);
-      setRound(1);
-      return;
-    } else if (maxRoundsPhaseTwo === round && hasPhaseTwoStarted) {
+    } else if (maxRoundsPhaseOne + maxRoundsPhaseTwo === round && hasPhaseTwoStarted) {
       handleFinal();
       setHasPhaseTwoStarted(false);
       setHasPhaseThreeStarted(true);
       setRound(1);
       return;
     }
-    // toast({
-    //   title: 'Round ' + (round + 1),
-    //   description: <h1 className=" font-bold text-base ">{currentPlayer.name}&apos;s turn</h1>,
-    //   duration: 4000,
-    // });
     setRound(round + 1);
   },
+
   handleChooseCategory: (category: string, phase = 1) => {
     const { socket } = useSocketStore.getState();
     const { setAudio, setSongId } = useAudioStore.getState();

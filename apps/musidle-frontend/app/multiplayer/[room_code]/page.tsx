@@ -50,6 +50,7 @@ export default function Multiplayer() {
       }, 900);
       return () => {
         clearInterval(timer);
+        setProgress(0);
       };
     }
   }, [turnChangeDialogOpen]);

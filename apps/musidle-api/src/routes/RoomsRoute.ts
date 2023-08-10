@@ -21,9 +21,15 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
     if (!room) {
       await roomModel.create({
         room_code: room_id,
-        players: [req.body.player || []],
-        maxRounds: 2,
+        players: [req.body.player],
+        maxRoundsPhaseOne: req.body.maxRoundsPhaseOne
+          ? req.body.maxRoundsPhaseOne
+          : roomModel.schema.paths.maxRoundsPhaseOne.options.default,
+        maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo
+          ? req.body.maxRoundsPhaseTwo
+          : roomModel.schema.paths.maxRoundsPhaseTwo.options.default,
         round: 1,
+        inSelectMode: true,
       });
     } else if (!room.players.some(player => player._id === req.body.player._id)) {
       await roomModel.updateOne({ room_code: room_id }, { $push: { players: req.body.player } });
@@ -60,6 +66,7 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
         ? req.body.maxRoundsPhaseTwo
         : roomModel.schema.paths.maxRoundsPhaseTwo.options.default,
       round: 1,
+      inSelectMode: true,
     });
     const room = await roomModel.findOne({ room_code: room_id });
     return res.json(room);

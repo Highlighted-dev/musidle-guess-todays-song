@@ -13,6 +13,7 @@ import { ISocketMiddleware, IUsers } from './@types';
 import errorHandler from './utils/ErrorHandler';
 import axios from 'axios';
 import AnswersRoute from './routes/AnswersRoute';
+import roomModel from './models/RoomModel';
 dotenv.config();
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
@@ -37,7 +38,8 @@ io.on('connection', socket => {
   socket.on('togglePhaseOne', (current_player, room_code) => {
     socket.broadcast.to(room_code).emit('togglePhaseOne', current_player);
   });
-  socket.on('chooseCategory', (category, room_code) => {
+  socket.on('chooseCategory', async (category, room_code) => {
+    await roomModel.updateOne({ room_code: room_code }, { inSelectMode: false });
     socket.broadcast.to(room_code).emit('chooseCategory', category);
   });
   socket.on('handlePlay', room_code => {
@@ -55,11 +57,13 @@ io.on('connection', socket => {
   socket.on('answerSubmit', (score, player, answer, room_code) => {
     socket.broadcast.to(room_code).emit('answerSubmit', score, player, answer);
   });
-  socket.on('turnChange', room_code => {
+  socket.on('turnChange', async room_code => {
+    await roomModel.updateOne({ room_code: room_code }, { inSelectMode: true, $inc: { round: 1 } });
     socket.broadcast.to(room_code).emit('turnChange');
   });
-  socket.on('chooseArtist', (artist, room_code) => {
-    socket.broadcast.emit('chooseArtist', artist);
+  socket.on('chooseArtist', async (artist, room_code) => {
+    await roomModel.updateOne({ room_code: room_code }, { inSelectMode: false });
+    socket.broadcast.to(room_code).emit('chooseArtist', artist);
   });
   socket.on('disconnect', () => {
     const user = users.find(user => user.socket_id === socket.id);

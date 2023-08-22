@@ -17,6 +17,13 @@ interface ICustomRequest extends Request {
 router.post('/join', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const room_id = req.body.room_id;
+
+    //check if player is in any other room
+
+    // const player_room = await roomModel.find({ 'players._id': req.body.player._id });
+    // console.log(player_room[0]);
+    // if (player_room.length > 0) return res.json(player_room[0]);
+
     let room = await roomModel.findOne({ room_code: room_id });
     if (!room) {
       await roomModel.create({
@@ -29,7 +36,8 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
           ? req.body.maxRoundsPhaseTwo
           : roomModel.schema.paths.maxRoundsPhaseTwo.options.default,
         round: 1,
-        inSelectMode: true,
+        isInGameLobby: true,
+        isInSelectMode: true,
       });
     } else if (!room.players.some(player => player._id === req.body.player._id)) {
       await roomModel.updateOne({ room_code: room_id }, { $push: { players: req.body.player } });
@@ -66,7 +74,8 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
         ? req.body.maxRoundsPhaseTwo
         : roomModel.schema.paths.maxRoundsPhaseTwo.options.default,
       round: 1,
-      inSelectMode: true,
+      isInGameLobby: true,
+      isInSelectMode: true,
     });
     const room = await roomModel.findOne({ room_code: room_id });
     return res.json(room);

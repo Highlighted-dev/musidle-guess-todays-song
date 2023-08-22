@@ -36,13 +36,8 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     }
     useAnswerStore.setState({ value: value });
   },
-  answerDialogOpen: false,
-  setAnswerDialogOpen: (answerDialogOpen: boolean) =>
-    set(() => ({
-      answerDialogOpen: answerDialogOpen,
-    })),
   handleAnswerSubmit: async () => {
-    const { currentPlayer, room_code } = useRoomStore.getState();
+    const { currentPlayer, room_code, handleTurnChange } = useRoomStore.getState();
     const user_id = useAuthStore.getState().user_id;
     const socket = useSocketStore.getState().socket;
 
@@ -67,7 +62,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     useTimerStore.getState().setIsTimerRunning(false);
     useTimerStore.getState().setTimer(35.0);
     if (useAudioStore.getState().audio) useAudioStore.getState().audio?.pause();
-    useAnswerStore.setState({ answerDialogOpen: !useAnswerStore.getState().answerDialogOpen });
+    handleTurnChange();
   },
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;

@@ -35,12 +35,19 @@ io.on('connection', socket => {
     users.push({ id, socket_id: socket.id, room_code: room_code });
     socket.join(room_code);
   });
-  socket.on('togglePhaseOne', (current_player, room_code) => {
+  socket.on('togglePhaseOne', async (current_player, room_code) => {
+    await roomModel.updateOne(
+      { room_code: room_code },
+      { current_player: current_player, isInGameLobby: false },
+    );
     socket.broadcast.to(room_code).emit('togglePhaseOne', current_player);
   });
-  socket.on('chooseCategory', async (category, room_code) => {
-    await roomModel.updateOne({ room_code: room_code }, { inSelectMode: false });
-    socket.broadcast.to(room_code).emit('chooseCategory', category);
+  socket.on('chooseCategory', async (song_id, room_code) => {
+    await roomModel.updateOne(
+      { room_code: room_code },
+      { isInSelectMode: false, song_id: song_id },
+    );
+    socket.broadcast.to(room_code).emit('chooseCategory', song_id);
   });
   socket.on('handlePlay', room_code => {
     socket.broadcast.to(room_code).emit('handlePlay');
@@ -57,23 +64,26 @@ io.on('connection', socket => {
   socket.on('answerSubmit', (score, player, answer, room_code) => {
     socket.broadcast.to(room_code).emit('answerSubmit', score, player, answer);
   });
-  socket.on('turnChange', async room_code => {
-    await roomModel.updateOne({ room_code: room_code }, { inSelectMode: true, $inc: { round: 1 } });
+  socket.on('turnChange', async (current_player, room_code) => {
+    await roomModel.updateOne(
+      { room_code: room_code },
+      { current_player: current_player, isInSelectMode: true, $inc: { round: 1 } },
+    );
     socket.broadcast.to(room_code).emit('turnChange');
   });
-  socket.on('chooseArtist', async (artist, room_code) => {
-    await roomModel.updateOne({ room_code: room_code }, { inSelectMode: false });
-    socket.broadcast.to(room_code).emit('chooseArtist', artist);
+  socket.on('chooseArtist', async (song_id, room_code) => {
+    await roomModel.updateOne({ room_code: room_code }, { inSelectMode: false, song_id: song_id });
+    socket.broadcast.to(room_code).emit('chooseArtist', song_id);
   });
   socket.on('disconnect', () => {
-    const user = users.find(user => user.socket_id === socket.id);
-    if (user) {
-      axios.post('http://localhost:5000/api/rooms/leave', {
-        room_code: user.room_code,
-        player_id: user.id,
-      });
-      users.splice(users.indexOf(user), 1);
-    }
+    // const user = users.find(user => user.socket_id === socket.id);
+    // if (user) {
+    //   axios.post('http://localhost:5000/api/rooms/leave', {
+    //     room_code: user.room_code,
+    //     player_id: user.id,
+    //   });
+    //   users.splice(users.indexOf(user), 1);
+    // }
   });
   socket.on('changeRound', () => {
     axios.get('http://localhost:5000/api/rooms/changeRound');

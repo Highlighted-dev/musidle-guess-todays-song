@@ -38,23 +38,23 @@ useSocketStore.subscribe(({ socket }) => {
       if (!usePhaseStore.getState().hasPhaseOneStarted) {
         useRoomStore.getState().setCurrentPlayer(current_player);
       }
-      usePhaseStore.getState().setHasPhaseOneStarted(!usePhaseStore.getState().hasPhaseOneStarted);
+      useRoomStore.getState().setIsInLobby(false);
     });
     socket.on('skip', (time: number) => {
       useAudioStore.getState().setTime(time);
     });
-    socket.on('chooseCategory', (category: string) => {
+    socket.on('chooseCategory', (song_id: string) => {
       const setAudio = useAudioStore.getState().setAudio;
       const { setRenderGame, renderGame } = useRoomStore.getState();
 
-      setAudio(new Audio(`/music/${category}.mp3`));
+      setAudio(new Audio(`/music/${song_id}.mp3`));
       setRenderGame(!renderGame);
     });
-    socket.on('chooseArtist', (artist: string) => {
+    socket.on('chooseArtist', (song_id: string) => {
       const setAudio = useAudioStore.getState().setAudio;
       const { setRenderGame, renderGame } = useRoomStore.getState();
 
-      setAudio(new Audio(`/music/${artist}.mp3`));
+      setAudio(new Audio(`/music/${song_id}.mp3`));
       setRenderGame(!renderGame);
     });
     socket.on('handlePlay', () => {

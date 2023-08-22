@@ -10,8 +10,6 @@ export interface IAnswerStore {
   setValue: (value: string) => void;
   songs: ISongs[];
   setSongs: (songs: ISongs[]) => void;
-  answerDialogOpen: boolean;
-  setAnswerDialogOpen: (answerDialogOpen: boolean) => void;
   handleValueChange: (value: string) => void;
   handleAnswerSubmit: () => void;
   getPossibleSongAnswers: (query: string) => void;

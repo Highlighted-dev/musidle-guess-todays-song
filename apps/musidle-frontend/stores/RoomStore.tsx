@@ -57,6 +57,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       turnChangeDialogOpen: turnChangeDialogOpen,
     })),
   joinRoom: async (room_code: string) => {
+    const { setAudio, setSongId } = useAudioStore.getState();
     if (useAuthStore.getState().user_id) {
       const { data } = await axios.post(`/api/rooms/join`, {
         room_id: room_code,
@@ -69,11 +70,15 @@ export const useRoomStore = create<IRoomStore>(set => ({
       set(() => ({
         room_code: room_code,
         players: data.players,
+        currentPlayer: data.current_player,
         maxRoundsPhaseOne: data.maxRoundsPhaseOne,
         maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
         round: data.round,
-        isInLobby: true,
+        isInLobby: data.isInGameLobby,
+        renderGame: !data.isInSelectMode,
       }));
+      setSongId(data.song_id);
+      setAudio(new Audio(`/music/${data.song_id}.mp3`));
       //set socket the to the room
       useSocketStore
         .getState()
@@ -101,10 +106,12 @@ export const useRoomStore = create<IRoomStore>(set => ({
       set(() => ({
         room_code: data.room_code,
         players: data.players,
+        currentPlayer: data.current_player,
         maxRoundsPhaseOne: data.maxRoundsPhaseOne,
         maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
         round: data.round,
-        isInLobby: true,
+        isInLobby: data.isInGameLobby,
+        renderGame: !data.isInSelectMode,
       }));
       useSocketStore
         .getState()
@@ -142,7 +149,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       setTurnChangeDialogOpen,
     } = useRoomStore.getState();
     const { socket } = useSocketStore.getState();
-    const { setAnswerDialogOpen, setValue, setAnswer, setSongs } = useAnswerStore.getState();
+    const { setValue, setAnswer, setSongs } = useAnswerStore.getState();
     const { setAudioTime, setAudio, setTime, intervalId } = useAudioStore.getState();
     const { user_id } = useAuthStore.getState();
     const {
@@ -155,32 +162,38 @@ export const useRoomStore = create<IRoomStore>(set => ({
     } = usePhaseStore.getState();
 
     if (!currentPlayer) return;
-    if (currentPlayer?._id == user_id) {
-      socket?.emit('turnChange', useRoomStore.getState().room_code);
-    }
+
     const index = players.findIndex(p => p._id === currentPlayer._id);
     if (index === players.length - 1) {
       setCurrentPlayer(players[0]);
     } else {
       setCurrentPlayer(players[index + 1]);
     }
+
+    //As the state does not update immediately, we are checking if the current player WAS the user
+    if (currentPlayer?._id == user_id) {
+      socket?.emit(
+        'turnChange',
+        useRoomStore.getState().currentPlayer,
+        useRoomStore.getState().room_code,
+      );
+    }
     if (intervalId !== null) clearInterval(intervalId);
-    setAnswerDialogOpen(false);
     setAudioTime(0);
     setAudio(null);
-    setValue('');
-    setAnswer('');
     setTime(1000);
-    setSongs([
-      {
-        value: 'Songs will appear here',
-        key: 'no-song',
-      },
-    ]);
     setRenderGame(false);
     setTurnChangeDialogOpen(true);
     setTimeout(() => {
       useRoomStore.setState({ turnChangeDialogOpen: false });
+      setValue('');
+      setAnswer('');
+      setSongs([
+        {
+          value: 'Songs will appear here',
+          key: 'no-song',
+        },
+      ]);
     }, 4000);
     if (maxRoundsPhaseOne === round && hasPhaseOneStarted) {
       setHasPhaseTwoStarted(true);
@@ -195,23 +208,35 @@ export const useRoomStore = create<IRoomStore>(set => ({
     setRound(round + 1);
   },
 
-  handleChooseCategory: (category: string, phase = 1) => {
+  handleChooseCategory: (song_id: string, phase = 1) => {
     const { socket } = useSocketStore.getState();
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setRenderGame, renderGame, room_code } = useRoomStore.getState();
     if (phase === 1) {
-      socket?.emit('chooseCategory', category, room_code);
-      setSongId(category);
+      socket?.emit('chooseCategory', song_id, room_code);
+      setSongId(song_id);
     } else if (phase === 2) {
-      socket?.emit('chooseArtist', category, room_code);
-      setSongId(category);
+      socket?.emit('chooseArtist', song_id, room_code);
+      setSongId(song_id);
     }
-    setAudio(new Audio(`/music/${category}.mp3`));
+    setAudio(new Audio(`/music/${song_id}.mp3`));
     setRenderGame(!renderGame);
   },
   async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {
-    if (maxRoundsPhaseOne < 1 || maxRoundsPhaseTwo < 1) return;
-    if (maxRoundsPhaseOne > 400 || maxRoundsPhaseTwo > 200) return;
+    if (
+      maxRoundsPhaseOne < 1 ||
+      maxRoundsPhaseTwo < 1 ||
+      maxRoundsPhaseOne > 400 ||
+      maxRoundsPhaseTwo > 200
+    ) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Please enter a valid number of rounds\nPhase 1: 1-400\nPhase 2: 1-200`,
+        style: { whiteSpace: 'pre-line' },
+      });
+      return;
+    }
 
     //if either of maxRounds is NaN, then use the current value
     const mxRoundsPhaseOne = isNaN(maxRoundsPhaseOne)

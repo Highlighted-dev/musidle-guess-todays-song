@@ -45,7 +45,7 @@ export const usePhaseStore = create<IPhasesStore>(set => ({
     if (!usePhaseStore.getState().hasPhaseOneStarted) {
       useRoomStore.setState({ currentPlayer: current_player });
     }
-    usePhaseStore.getState().setHasPhaseOneStarted(!usePhaseStore.getState().hasPhaseOneStarted);
+    useRoomStore.getState().setIsInLobby(false);
   },
   handleFinal: () => {
     const { socket } = useSocketStore.getState();

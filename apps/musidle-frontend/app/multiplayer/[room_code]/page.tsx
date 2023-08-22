@@ -16,11 +16,22 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
+import { Label } from '@/components/ui/label';
+import { useAnswerStore } from '@/stores/AnswerStore';
 export default function Multiplayer() {
-  const { hasPhaseOneStarted, hasPhaseTwoStarted, hasPhaseThreeStarted } = usePhaseStore();
-  const { joinRoom, turnChangeDialogOpen } = useRoomStore();
+  const { hasPhaseTwoStarted, hasPhaseThreeStarted } = usePhaseStore();
+  const {
+    joinRoom,
+    turnChangeDialogOpen,
+    players,
+    round,
+    currentPlayer,
+    maxRoundsPhaseOne,
+    maxRoundsPhaseTwo,
+    isInLobby,
+  } = useRoomStore();
   const { user_id } = useAuthStore();
-  const { players, round, currentPlayer } = useRoomStore();
+  const { value, answer, songs } = useAnswerStore();
   const [progress, setProgress] = React.useState(0);
   const params = useParams();
   const router = useRouter();
@@ -67,6 +78,22 @@ export default function Multiplayer() {
           <DialogHeader>
             <DialogTitle className="text-center">Round {round}</DialogTitle>
           </DialogHeader>
+          <h1 className="text-base text-center">
+            {answer && value.toLowerCase() == answer.toLowerCase() ? (
+              <Label className="text-green-500 font-bold"> CORRECT</Label>
+            ) : (
+              <Label className="text-red-700 font-bold"> INCORRECT</Label>
+            )}
+          </h1>
+          <Label className="text-center">
+            {`You guessed: ${
+              songs.find(song => song.value.toLowerCase() === value.toLowerCase())?.value ||
+              value ||
+              'Nothing :('
+            }`}
+          </Label>
+          <Label className="text-center">The correct answer was: {answer}</Label>
+          <br />
           <h1 className="text-bold text-base">{currentPlayer?.name}&apos;s turn</h1>
           <DialogFooter className="text-center">
             <Progress value={progress} />
@@ -75,11 +102,15 @@ export default function Multiplayer() {
       </Dialog>
       {
         //If game has started and user is in players array, render GamePhase1, else render GameLobby
-        hasPhaseOneStarted && players.find(player => player['_id'] == user_id) ? (
+        !isInLobby &&
+        round <= maxRoundsPhaseOne &&
+        players.find(player => player['_id'] == user_id) ? (
           <GamePhase1 />
-        ) : hasPhaseTwoStarted && players.find(player => player['_id'] == user_id) ? (
+        ) : !isInLobby &&
+          round <= maxRoundsPhaseOne + maxRoundsPhaseTwo &&
+          players.find(player => player['_id'] == user_id) ? (
           <GamePhase2 />
-        ) : hasPhaseThreeStarted && players.find(player => player['_id'] == user_id) ? (
+        ) : !isInLobby && players.find(player => player['_id'] == user_id) ? (
           <GamePhase3 />
         ) : (
           <GameLobby room_code={params.room_code} />

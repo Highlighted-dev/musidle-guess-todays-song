@@ -44,7 +44,6 @@ const GamePhase3 = () => {
           </CardHeader>
           <CardContent className="flex flex-col justify-center items-center">
             <h1 className="text-center">Finalist: {currentPlayer?.name}</h1>
-
             <div className="p-16">
               <div className="grid grid-cols-4 gap-4 ">{renderToggles()}</div>
             </div>

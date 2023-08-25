@@ -172,12 +172,14 @@ export const useRoomStore = create<IRoomStore>(set => ({
 
     //As the state does not update immediately, we are checking if the current player WAS the user
     if (currentPlayer?._id == user_id) {
+      console.log(currentPlayer);
       socket?.emit(
         'turnChange',
         useRoomStore.getState().currentPlayer,
         useRoomStore.getState().room_code,
       );
     }
+
     if (intervalId !== null) clearInterval(intervalId);
     setAudioTime(0);
     setAudio(null);

@@ -62,7 +62,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     useTimerStore.getState().setIsTimerRunning(false);
     useTimerStore.getState().setTimer(35.0);
     if (useAudioStore.getState().audio) useAudioStore.getState().audio?.pause();
-    handleTurnChange();
+    if (currentPlayer?._id == user_id) handleTurnChange();
   },
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;

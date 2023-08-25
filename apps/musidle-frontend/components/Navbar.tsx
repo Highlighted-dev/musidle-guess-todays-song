@@ -46,13 +46,23 @@ const Navbar = () => {
       description:
         'Ever wanted to play "Guess the song" type of game with your friends? Join a room and try it out!',
     },
+    {
+      title: 'Musidle Wiki (COMING SOON)',
+      href: '/',
+      description: 'Learn more about music and how to play it.',
+    },
+    {
+      title: '???',
+      href: '/',
+      description: 'Coming soon!',
+    },
   ];
 
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Gamemodes</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[300px] gap-3 p-4 md:w-[600px] md:grid-cols-2 lg:w-[750px]">
               {components.map(component => (

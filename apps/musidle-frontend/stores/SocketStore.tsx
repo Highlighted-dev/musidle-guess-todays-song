@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { Socket } from 'socket.io-client';
 import { useRoomStore } from './RoomStore';
 import { useAuthStore } from './AuthStore';
-import { usePhaseStore } from './PhasesStore';
 import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
 import { ISongs } from '@/@types/AnswerStore';
@@ -35,7 +34,7 @@ useSocketStore.subscribe(({ socket }) => {
       useRoomStore.setState({ players: [...players, player] });
     });
     socket.on('togglePhaseOne', current_player => {
-      if (!usePhaseStore.getState().hasPhaseOneStarted) {
+      if (useRoomStore.getState().isInLobby) {
         useRoomStore.getState().setCurrentPlayer(current_player);
       }
       useRoomStore.getState().setIsInLobby(false);
@@ -43,14 +42,7 @@ useSocketStore.subscribe(({ socket }) => {
     socket.on('skip', (time: number) => {
       useAudioStore.getState().setTime(time);
     });
-    socket.on('chooseCategory', (song_id: string) => {
-      const setAudio = useAudioStore.getState().setAudio;
-      const { setRenderGame, renderGame } = useRoomStore.getState();
-
-      setAudio(new Audio(`/music/${song_id}.mp3`));
-      setRenderGame(!renderGame);
-    });
-    socket.on('chooseArtist', (song_id: string) => {
+    socket.on('chooseSong', (song_id: string) => {
       const setAudio = useAudioStore.getState().setAudio;
       const { setRenderGame, renderGame } = useRoomStore.getState();
 
@@ -75,7 +67,6 @@ useSocketStore.subscribe(({ socket }) => {
       useAnswerStore.setState({ songs: songs });
     });
     socket.on('roomSettingsUpdate', (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => {
-      console.log('xd');
       useRoomStore.setState({
         maxRoundsPhaseOne: maxRoundsPhaseOne,
         maxRoundsPhaseTwo: maxRoundsPhaseTwo,

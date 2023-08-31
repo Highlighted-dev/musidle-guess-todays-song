@@ -21,9 +21,11 @@ export interface IRoomStore {
   renderGame: boolean;
   setRenderGame: (renderGame: boolean) => void;
   turnChangeDialogOpen: boolean;
+  random: number;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
   joinRoom: (room_code: string) => Promise<void>;
   createRoom: () => Promise<void>;
+  startGame: () => void;
   updatePlayerScore: (points: number, player: player) => void;
   handleTurnChange: () => void;
   handleChooseCategory: (category: string, phase: number) => void;

@@ -7,7 +7,6 @@ import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
-import { usePhaseStore } from '@/stores/PhasesStore';
 import {
   Dialog,
   DialogContent,
@@ -19,7 +18,6 @@ import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
 import { useAnswerStore } from '@/stores/AnswerStore';
 export default function Multiplayer() {
-  const { hasPhaseTwoStarted, hasPhaseThreeStarted } = usePhaseStore();
   const {
     joinRoom,
     turnChangeDialogOpen,
@@ -101,7 +99,7 @@ export default function Multiplayer() {
         </DialogContent>
       </Dialog>
       {
-        //If game has started and user is in players array, render GamePhase1, else render GameLobby
+        //If game has started and user is in players array, render GamePhase, else render GameLobby
         !isInLobby &&
         round <= maxRoundsPhaseOne &&
         players.find(player => player['_id'] == user_id) ? (

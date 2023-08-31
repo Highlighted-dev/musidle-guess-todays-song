@@ -18,15 +18,6 @@ import { cn } from '@/lib/utils';
 import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from '../ui/dialog';
 import useTimerStore from '@/stores/TimerStore';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
@@ -36,9 +27,9 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
 const GameMultiplayerLayout = () => {
   const { user_id } = useAuthStore();
   const { timer } = useTimerStore();
-  const { answer, value, handleValueChange, songs, handleAnswerSubmit, getPossibleSongAnswers } =
+  const { value, handleValueChange, songs, handleAnswerSubmit, getPossibleSongAnswers } =
     useAnswerStore();
-  const { players, currentPlayer, handleTurnChange } = useRoomStore();
+  const { players, currentPlayer } = useRoomStore();
   const { audio, time, audioTime, handleSkip, handlePlay } = useAudioStore();
   const [open, setOpen] = useState(false);
 

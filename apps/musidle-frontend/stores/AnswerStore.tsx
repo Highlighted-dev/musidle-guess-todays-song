@@ -52,7 +52,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         })
         .then(res => res.data)
         .then(res => {
-          useAnswerStore.setState({ answer: res.data.answer || null });
+          useAnswerStore.getState().setAnswer(res.data.answer || null);
           useRoomStore.getState().updatePlayerScore(res.data.score, currentPlayer);
           socket?.emit('answerSubmit', res.data.score, currentPlayer, res.data.answer, room_code);
         });

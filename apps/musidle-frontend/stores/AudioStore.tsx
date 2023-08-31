@@ -3,7 +3,6 @@ import { useSocketStore } from './SocketStore';
 import { useAuthStore } from './AuthStore';
 import { useRoomStore } from './RoomStore';
 import useTimerStore from './TimerStore';
-import { usePhaseStore } from './PhasesStore';
 
 interface IAudioStore {
   audio: HTMLAudioElement | null;
@@ -75,6 +74,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
   handlePlay: () => {
     const { audio } = useAudioStore.getState();
     const { setIsTimerRunning, setTimer } = useTimerStore.getState();
+    const { maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
     if (!audio) return;
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
       useSocketStore.getState().socket?.emit('handlePlay', useRoomStore.getState().room_code);
@@ -92,7 +92,10 @@ export const useAudioStore = create<IAudioStore>(set => ({
         audio.pause();
         clearInterval(newIntervalId);
       }
-      if (audio.paused && usePhaseStore.getState().hasPhaseThreeStarted) {
+      if (
+        audio.paused &&
+        !(useRoomStore.getState().round <= maxRoundsPhaseOne + maxRoundsPhaseTwo)
+      ) {
         clearInterval(newIntervalId);
         setIsTimerRunning(false);
       }

@@ -42,12 +42,12 @@ io.on('connection', socket => {
     );
     socket.broadcast.to(room_code).emit('togglePhaseOne', current_player);
   });
-  socket.on('chooseCategory', async (song_id, room_code) => {
+  socket.on('chooseSong', async (song_id, room_code) => {
     await roomModel.updateOne(
       { room_code: room_code },
       { isInSelectMode: false, song_id: song_id },
     );
-    socket.broadcast.to(room_code).emit('chooseCategory', song_id);
+    socket.broadcast.to(room_code).emit('chooseSong', song_id);
   });
   socket.on('handlePlay', room_code => {
     socket.broadcast.to(room_code).emit('handlePlay');
@@ -71,10 +71,6 @@ io.on('connection', socket => {
     );
     socket.broadcast.to(room_code).emit('turnChange');
   });
-  socket.on('chooseArtist', async (song_id, room_code) => {
-    await roomModel.updateOne({ room_code: room_code }, { inSelectMode: false, song_id: song_id });
-    socket.broadcast.to(room_code).emit('chooseArtist', song_id);
-  });
   socket.on('disconnect', () => {
     // const user = users.find(user => user.socket_id === socket.id);
     // if (user) {
@@ -84,9 +80,6 @@ io.on('connection', socket => {
     //   });
     //   users.splice(users.indexOf(user), 1);
     // }
-  });
-  socket.on('changeRound', () => {
-    axios.get('http://localhost:5000/api/rooms/changeRound');
   });
 });
 

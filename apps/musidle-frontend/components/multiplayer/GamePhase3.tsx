@@ -15,19 +15,29 @@ import useTimerStore from '@/stores/TimerStore';
 import { Slider } from '../ui/slider';
 import { cn } from '@/lib/utils';
 import { useAnswerStore } from '@/stores/AnswerStore';
+import { useGameFinalStore } from '@/stores/GameFinalStore';
 const GamePhase3 = () => {
   const { user_id } = useAuthStore();
-  const { currentPlayer, renderGame } = useRoomStore();
+  const { currentPlayer, renderGame, handleChooseCategory } = useRoomStore();
   const { handlePlay, audio } = useAudioStore();
   const { timer } = useTimerStore();
-  const { value, handleValueChange, songs, handleAnswerSubmit, getPossibleSongAnswers } =
-    useAnswerStore();
-
-  const [completedSongs, setCompletedSongs] = useState<string[]>([]);
+  const { value, handleValueChange, songs, getPossibleSongAnswers } = useAnswerStore();
+  const { completedSongs, handleFinalAnswerSubmit } = useGameFinalStore();
   const [open, setOpen] = useState(false);
 
-  const handleTogglePress = (toggle_id: string) => {
-    if (toggle_id in completedSongs) return;
+  const handleTogglePress = (final_song_id: string) => {
+    if (completedSongs.includes(final_song_id)) return;
+    handleChooseCategory(final_song_id, 3);
+    for (let i = 1; i <= 6; i++) {
+      const element = document.getElementById(`final${i}`);
+      if (element && element.id != final_song_id) {
+        element.setAttribute('data-state', 'off');
+        element.setAttribute('aria-pressed', 'false');
+      } else {
+        element?.setAttribute('data-state', 'on');
+        element?.setAttribute('aria-pressed', 'true');
+      }
+    }
   };
 
   const renderToggles = () => {
@@ -37,12 +47,12 @@ const GamePhase3 = () => {
       buttons.push(
         <Toggle
           className="col-span-1 p-4"
-          disabled={currentPlayer?._id != user_id || `toggle${i}` in completedSongs}
-          id={`toggle${i}`}
+          disabled={currentPlayer?._id != user_id || completedSongs.includes(`final${i}`)}
+          id={`final${i}`}
           key={i}
           defaultPressed={i == 1 ? true : false}
           onPressedChange={() => {
-            handleTogglePress(`toggle${i}`);
+            handleTogglePress(`final${i}`);
           }}
         >
           <Label className="cursor-pointer">{i}</Label>
@@ -133,7 +143,7 @@ const GamePhase3 = () => {
               <Button
                 variant={'default'}
                 onClick={() => {
-                  handleAnswerSubmit();
+                  handleFinalAnswerSubmit();
                 }}
                 className={
                   currentPlayer?._id != user_id || value === ''

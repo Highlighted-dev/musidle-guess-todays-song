@@ -42,10 +42,10 @@ io.on('connection', socket => {
     );
     socket.broadcast.to(room_code).emit('togglePhaseOne', current_player);
   });
-  socket.on('chooseSong', async (song_id, room_code) => {
+  socket.on('chooseSong', async (song_id: string, room_code) => {
     await roomModel.updateOne(
       { room_code: room_code },
-      { isInSelectMode: false, song_id: song_id },
+      { isInSelectMode: song_id.includes('final') ? true : false, song_id: song_id },
     );
     socket.broadcast.to(room_code).emit('chooseSong', song_id);
   });

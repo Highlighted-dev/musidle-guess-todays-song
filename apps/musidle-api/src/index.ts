@@ -29,10 +29,51 @@ const io = new Server(server, {
 });
 
 const users: IUsers[] = [];
+const usersToBeDeleted: IUsers[] = [];
+
+//set interval to check if there are no users that are connected to socket in a room
+//TODO This function definitly not scalable and its poorly written, should be replaced in future
+setInterval(async () => {
+  const rooms = await roomModel.find();
+  rooms.forEach(async room => {
+    //check if user is in room
+    let usersInRoom = users.filter(user => user.room_code === room.room_code);
+    console.log(usersInRoom, usersInRoom.length);
+    if (usersInRoom.length >= 1) {
+      //check if user is in room and is connected to socket
+      usersInRoom.forEach(async user => {
+        const socket = io.sockets.sockets.get(user.socket_id);
+        if (!socket) {
+          users.splice(users.indexOf(user), 1);
+          usersToBeDeleted.push(user);
+          return;
+        }
+      });
+    } else {
+      usersInRoom = usersToBeDeleted.filter(user => user.room_code === room.room_code);
+      if (usersInRoom.length >= 1) {
+        //Remove every user from room
+        usersInRoom.forEach(async user => {
+          await axios.post('http://localhost:5000/api/rooms/leave', {
+            room_code: user.room_code,
+            player_id: user.id,
+          });
+          usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
+        });
+      }
+    }
+    return;
+  });
+}, 120000);
 
 io.on('connection', socket => {
   socket.on('id', (id, room_code) => {
     users.push({ id, socket_id: socket.id, room_code: room_code });
+    //if user is in usersToBeDeleted array, remove him from there
+    const user = usersToBeDeleted.find(user => user.id === id);
+    if (user) {
+      usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
+    }
     socket.join(room_code);
   });
   socket.on('togglePhaseOne', async (current_player, room_code) => {
@@ -74,10 +115,10 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     // const user = users.find(user => user.socket_id === socket.id);
     // if (user) {
-    //   axios.post('http://localhost:5000/api/rooms/leave', {
-    //     room_code: user.room_code,
-    //     player_id: user.id,
-    //   });
+    // axios.post('http://localhost:5000/api/rooms/leave', {
+    //   room_code: user.room_code,
+    //   player_id: user.id,
+    // });
     //   users.splice(users.indexOf(user), 1);
     // }
   });

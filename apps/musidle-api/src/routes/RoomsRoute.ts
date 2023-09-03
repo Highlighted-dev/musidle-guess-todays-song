@@ -40,8 +40,14 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         isInSelectMode: true,
       });
     } else if (!room.players.some(player => player._id === req.body.player._id)) {
-      await roomModel.updateOne({ room_code: room_id }, { $push: { players: req.body.player } });
-      (req as ICustomRequest).io.in(room_id).emit('addPlayer', req.body.player);
+      // await roomModel.updateOne({ room_code: room_id }, { $push: { players: req.body.player } });
+
+      const room = await roomModel.findOneAndUpdate(
+        { room_code: room_id },
+        { $push: { players: req.body.player } },
+        { new: true },
+      );
+      (req as ICustomRequest).io.in(room_id).emit('updatePlayerList', room?.players);
     }
     room = await roomModel.findOne({ room_code: room_id });
     return res.json(room);
@@ -91,7 +97,7 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
     const room_code = req.body.room_code;
     const player_id = req.body.player_id;
 
-    const room = await roomModel.findOne({ room_code: room_code });
+    let room = await roomModel.findOne({ room_code: room_code });
 
     if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
 
@@ -101,9 +107,13 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
       return res.status(200).json({ status: 'success', message: 'Room deleted' });
     }
 
-    await roomModel.updateOne({ room_code: room_code }, { $pull: { players: { _id: player_id } } });
+    room = await roomModel.findOneAndUpdate(
+      { room_code: room_code },
+      { $pull: { players: { _id: player_id } } },
+      { new: true },
+    );
 
-    return res.status(200).json({ status: 'success', message: 'Player removed' });
+    return res.status(200).json(room);
   } catch (error) {
     next(error);
   }
@@ -223,7 +233,6 @@ router.post('/updateScore', jsonParser, async (req: Request, res: Response, next
       { new: true },
     );
 
-    const room = await roomModel.findOne({ room_code: room_code, 'players._id': player_id });
     return res.status(200).json({ status: 'success', message: 'Score updated' });
   } catch (error) {
     next(error);

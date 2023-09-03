@@ -33,9 +33,7 @@ const GameEndScreen = () => {
             variant="secondary"
             className="w-full"
             onClick={() => {
-              leaveRoom().then(() => {
-                router.push('/');
-              });
+              leaveRoom(router);
             }}
           >
             Leave Game

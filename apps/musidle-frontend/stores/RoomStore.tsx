@@ -9,6 +9,7 @@ import { useAudioStore } from './AudioStore';
 import { toast } from '@/components/ui/use-toast';
 import { useGameFinalStore } from './GameFinalStore';
 import useTimerStore from './TimerStore';
+import { Router } from 'next/router';
 
 export const useRoomStore = create<IRoomStore>(set => ({
   room_code: '',
@@ -131,7 +132,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       // router.push(`/multiplayer/${room_id}`);
     }
   },
-  leaveRoom: async () => {
+  leaveRoom: async (router: Router) => {
     const { room_code } = useRoomStore.getState();
     const { user_id } = useAuthStore.getState();
     if (user_id) {
@@ -140,6 +141,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         player_id: user_id,
       });
       useSocketStore.getState().setSocket(null);
+      router.push('/multiplayer');
       useRoomStore.setState({
         room_code: '',
         players: [],

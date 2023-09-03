@@ -5,6 +5,7 @@ import { useAuthStore } from './AuthStore';
 import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
 import { ISongs } from '@/@types/AnswerStore';
+import { IPlayer } from '@/@types/Rooms';
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
@@ -28,10 +29,9 @@ useSocketStore.subscribe(({ socket }) => {
   if (socket) {
     if (!useRoomStore.getState().players.find(p => p._id === useAuthStore.getState().user_id))
       return;
-    socket.on('addPlayer', (player: player) => {
-      const players = useRoomStore.getState().players;
-      if (players.find(p => p._id === player._id)) return;
-      useRoomStore.setState({ players: [...players, player] });
+    socket.on('updatePlayerList', (players: IPlayer[]) => {
+      console.log('updatePlayerList', players);
+      useRoomStore.setState({ players: players });
     });
     socket.on('togglePhaseOne', current_player => {
       if (useRoomStore.getState().isInLobby) {

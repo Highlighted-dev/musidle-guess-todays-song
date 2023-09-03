@@ -42,24 +42,27 @@ setInterval(async () => {
       //check if user is in room and is connected to socket
       usersInRoom.forEach(async user => {
         const socket = io.sockets.sockets.get(user.socket_id);
-        if (!socket) {
+        if (socket == undefined) {
           users.splice(users.indexOf(user), 1);
           usersToBeDeleted.push(user);
           return;
         }
       });
-    } else {
-      usersInRoom = usersToBeDeleted.filter(user => user.room_code === room.room_code);
-      if (usersInRoom.length >= 1) {
-        //Remove every user from room
-        usersInRoom.forEach(async user => {
-          await axios.post('http://localhost:5000/api/rooms/leave', {
+    }
+    usersInRoom = usersToBeDeleted.filter(user => user.room_code === room.room_code);
+    if (usersInRoom.length >= 1) {
+      //Remove every user from room
+      usersInRoom.forEach(async user => {
+        await axios
+          .post('http://localhost:5000/api/rooms/leave', {
             room_code: user.room_code,
             player_id: user.id,
+          })
+          .then(res => {
+            usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
+            io.in(user.room_code!).emit('updatePlayerList', res.data.players);
           });
-          usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
-        });
-      }
+      });
     }
     return;
   });
@@ -122,16 +125,16 @@ io.on('connection', socket => {
       });
     socket.broadcast.to(room_code).emit('timerUpdate', timer);
   });
-  socket.on('disconnect', () => {
-    // const user = users.find(user => user.socket_id === socket.id);
-    // if (user) {
-    // axios.post('http://localhost:5000/api/rooms/leave', {
-    //   room_code: user.room_code,
-    //   player_id: user.id,
-    // });
-    //   users.splice(users.indexOf(user), 1);
-    // }
-  });
+  // socket.on('disconnect', () => {
+  // const user = users.find(user => user.socket_id === socket.id);
+  // if (user) {
+  // axios.post('http://localhost:5000/api/rooms/leave', {
+  //   room_code: user.room_code,
+  //   player_id: user.id,
+  // });
+  //   users.splice(users.indexOf(user), 1);
+  // }
+  // });
 });
 
 mongoose

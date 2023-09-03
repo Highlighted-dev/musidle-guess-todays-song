@@ -37,7 +37,7 @@ const GameMultiplayerLayout = () => {
     <>
       <Card className="h-full w-full">
         <CardHeader className=" text-center">
-          <div className="flex justify-between items-center justify-center">
+          <div className="flex justify-between items-center">
             <label className=" w-24 font-semibold text-xs flex justify-center items-center">
               v0.37
             </label>
@@ -148,7 +148,7 @@ const GameMultiplayerLayout = () => {
                 </Popover>
 
                 <div className="p-2 flex justify-center items-center">
-                  <Label className="text-center">{timer.toFixed(2)}s</Label>
+                  <Label className="text-center">{timer}s</Label>
                 </div>
               </div>
             </AlertTitle>

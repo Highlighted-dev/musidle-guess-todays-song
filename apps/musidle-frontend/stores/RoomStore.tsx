@@ -8,6 +8,7 @@ import { useAnswerStore } from './AnswerStore';
 import { useAudioStore } from './AudioStore';
 import { toast } from '@/components/ui/use-toast';
 import { useGameFinalStore } from './GameFinalStore';
+import useTimerStore from './TimerStore';
 
 export const useRoomStore = create<IRoomStore>(set => ({
   room_code: '',
@@ -59,6 +60,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
   random: 0,
   joinRoom: async (room_code: string) => {
     const { setAudio, setSongId } = useAudioStore.getState();
+    const { setTimer } = useTimerStore.getState();
     if (useAuthStore.getState().user_id) {
       const { data } = await axios.post(`/api/rooms/join`, {
         room_id: room_code,
@@ -78,6 +80,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         isInLobby: data.isInGameLobby,
         renderGame: !data.isInSelectMode,
       }));
+      setTimer(data.timer);
       setSongId(data.song_id);
       setAudio(new Audio(`/music/${data.song_id}.mp3`));
       //set socket the to the room
@@ -128,6 +131,28 @@ export const useRoomStore = create<IRoomStore>(set => ({
       // router.push(`/multiplayer/${room_id}`);
     }
   },
+  leaveRoom: async () => {
+    const { room_code } = useRoomStore.getState();
+    const { user_id } = useAuthStore.getState();
+    if (user_id) {
+      await axios.post(`/api/rooms/leave`, {
+        room_code: room_code,
+        player_id: user_id,
+      });
+      useSocketStore.getState().setSocket(null);
+      useRoomStore.setState({
+        room_code: '',
+        players: [],
+        currentPlayer: null,
+        maxRoundsPhaseOne: 2,
+        maxRoundsPhaseTwo: 2,
+        round: 1,
+        isInLobby: false,
+        renderGame: false,
+      });
+      return;
+    }
+  },
   startGame: () => {
     const { socket } = useSocketStore.getState();
 
@@ -171,6 +196,10 @@ export const useRoomStore = create<IRoomStore>(set => ({
 
     if (!currentPlayer) return;
 
+    if (round > maxRoundsPhaseOne + maxRoundsPhaseTwo) {
+      //EndGame()
+    }
+
     const index = players.findIndex(p => p._id === currentPlayer._id);
     if (index === players.length - 1) {
       setCurrentPlayer(players[0]);
@@ -192,7 +221,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
     setAudio(null);
     setTime(1000);
     setRenderGame(false);
-    console.log(answer);
     setTurnChangeDialogOpen(true);
     setTimeout(() => {
       useRoomStore.setState({ turnChangeDialogOpen: false });

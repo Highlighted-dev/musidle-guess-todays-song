@@ -86,7 +86,7 @@ const GamePhase3 = () => {
                 Play / Pause
               </Button>
             </div>
-            <Label className="py-2">Time left: {timer.toFixed(2)}s</Label>
+            <Label className="py-2">Time left: {timer}s</Label>
           </CardContent>
           <div className="flex flex-col w-full justify-center items-center h-[150px]">
             <Popover open={open} onOpenChange={setOpen}>

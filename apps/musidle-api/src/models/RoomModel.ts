@@ -16,6 +16,7 @@ interface IRoomModel {
   round: number;
   isInGameLobby: boolean;
   isInSelectMode: boolean;
+  timer: number;
 }
 
 const roomSchema = new Schema<IRoomModel>(
@@ -29,6 +30,7 @@ const roomSchema = new Schema<IRoomModel>(
     round: { type: Number, required: true },
     isInGameLobby: { type: Boolean, required: true },
     isInSelectMode: { type: Boolean, required: true },
+    timer: { type: Number, default: 35 },
   },
   { versionKey: false },
 );

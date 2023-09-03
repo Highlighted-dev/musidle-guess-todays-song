@@ -17,6 +17,7 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
 import { useAnswerStore } from '@/stores/AnswerStore';
+import GameEndScreen from '@/components/multiplayer/GameEndScreen';
 export default function Multiplayer() {
   const {
     joinRoom,
@@ -46,10 +47,10 @@ export default function Multiplayer() {
       router.push('/multiplayer');
       return;
     }
-    if (params.room_code && !players.find(player => player['_id'] == user_id)) {
+    if (params.room_code && user_id) {
       handleRoomJoin(params.room_code);
     }
-  }, [user_id, params.room_code, players]);
+  }, [user_id, params.room_code]);
 
   useEffect(() => {
     if (turnChangeDialogOpen) {
@@ -108,8 +109,12 @@ export default function Multiplayer() {
           round <= maxRoundsPhaseOne + maxRoundsPhaseTwo &&
           players.find(player => player['_id'] == user_id) ? (
           <GamePhase2 />
-        ) : !isInLobby && players.find(player => player['_id'] == user_id) ? (
+        ) : !isInLobby &&
+          round <= maxRoundsPhaseOne + maxRoundsPhaseTwo + 1 &&
+          players.find(player => player['_id'] == user_id) ? (
           <GamePhase3 />
+        ) : !isInLobby && players.find(player => player['_id'] == user_id) ? (
+          <GameEndScreen />
         ) : (
           <GameLobby room_code={params.room_code} />
         )

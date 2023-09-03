@@ -199,6 +199,9 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
             },
           });
         }
+      })
+      .catch(error => {
+        return res.status(500).json({ status: 'error', message: error.message });
       });
   } catch (error) {
     next(error);
@@ -246,6 +249,20 @@ router.put('/settings', jsonParser, async (req: Request, res: Response, next: Ne
       .emit('roomSettingsUpdate', maxRoundsPhaseOne, maxRoundsPhaseTwo);
 
     return res.status(200).json({ status: 'success', message: 'Settings updated' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+//update timer
+router.put('/timer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.body.room_code) {
+      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    }
+    const room_code = req.body.room_code;
+    const timer = req.body.timer > 0 ? req.body.timer : 0;
+    await roomModel.updateOne({ room_code: room_code }, { timer: timer });
   } catch (error) {
     next(error);
   }

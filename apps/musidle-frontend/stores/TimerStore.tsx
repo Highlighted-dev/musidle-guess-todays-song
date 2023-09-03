@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { useAnswerStore } from './AnswerStore';
 import { useRoomStore } from './RoomStore';
 import { useAuthStore } from './AuthStore';
+import { useSocketStore } from './SocketStore';
 
 interface ITimerStore {
   timer: number;
@@ -33,9 +34,17 @@ const useTimerStore = create<ITimerStore>(set => ({
 useTimerStore.subscribe(({ isTimerRunning, timerIntervalId }) => {
   const { setTimer, setTimerIntervalId, setIsTimerRunning } = useTimerStore.getState();
   const { handleAnswerSubmit } = useAnswerStore.getState();
-
+  const { socket } = useSocketStore.getState();
   if (isTimerRunning && timerIntervalId === null) {
     const newIntervalId = setInterval(() => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
+        socket?.emit(
+          'timerUpdate',
+          useRoomStore.getState().room_code,
+          useTimerStore.getState().timer - 1,
+        );
+      }
+      setTimer(useTimerStore.getState().timer - 1);
       if (useTimerStore.getState().timer <= 0) {
         clearInterval(newIntervalId);
         setTimer(35);
@@ -44,8 +53,7 @@ useTimerStore.subscribe(({ isTimerRunning, timerIntervalId }) => {
         setIsTimerRunning(false);
         return;
       }
-      setTimer(useTimerStore.getState().timer - 0.1);
-    }, 100);
+    }, 1000);
 
     setTimerIntervalId(newIntervalId); // Set the new interval ID
   } else if (!isTimerRunning && timerIntervalId !== null) {

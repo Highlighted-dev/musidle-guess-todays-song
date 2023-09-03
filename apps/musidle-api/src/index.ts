@@ -38,7 +38,6 @@ setInterval(async () => {
   rooms.forEach(async room => {
     //check if user is in room
     let usersInRoom = users.filter(user => user.room_code === room.room_code);
-    console.log(usersInRoom, usersInRoom.length);
     if (usersInRoom.length >= 1) {
       //check if user is in room and is connected to socket
       usersInRoom.forEach(async user => {
@@ -111,6 +110,17 @@ io.on('connection', socket => {
       { current_player: current_player, isInSelectMode: true, $inc: { round: 1 } },
     );
     socket.broadcast.to(room_code).emit('turnChange');
+  });
+  socket.on('timerUpdate', async (room_code, timer) => {
+    await axios
+      .put('http://localhost:5000/api/rooms/timer', {
+        timer: timer,
+        room_code: room_code,
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    socket.broadcast.to(room_code).emit('timerUpdate', timer);
   });
   socket.on('disconnect', () => {
     // const user = users.find(user => user.socket_id === socket.id);

@@ -25,6 +25,7 @@ export interface IRoomStore {
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
   joinRoom: (room_code: string) => Promise<void>;
   createRoom: () => Promise<void>;
+  leaveRoom: () => Promise<void>;
   startGame: () => void;
   updatePlayerScore: (points: number, player: player) => void;
   handleTurnChange: () => void;

@@ -7,7 +7,7 @@ import { useAnswerStore } from './AnswerStore';
 import { ISongs } from '@/@types/AnswerStore';
 interface ISocketStore {
   socket: Socket | null;
-  setSocket: (socket: Socket) => void;
+  setSocket: (socket: Socket | null) => void;
 }
 type player = {
   _id: string;
@@ -17,7 +17,7 @@ type player = {
 
 export const useSocketStore = create<ISocketStore>(set => ({
   socket: null,
-  setSocket: (socket: Socket) =>
+  setSocket: (socket: Socket | null) =>
     set(() => ({
       socket: socket,
     })),

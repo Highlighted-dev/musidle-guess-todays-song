@@ -44,4 +44,4 @@ Thumbs.db
 # Env files
 .env
 
-deploy_api.sh
+deploy.sh

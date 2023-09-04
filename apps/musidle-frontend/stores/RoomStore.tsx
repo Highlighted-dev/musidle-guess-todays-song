@@ -10,6 +10,8 @@ import { toast } from '@/components/ui/use-toast';
 import { useGameFinalStore } from './GameFinalStore';
 import useTimerStore from './TimerStore';
 import { Router } from 'next/router';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const useRoomStore = create<IRoomStore>(set => ({
   room_code: '',

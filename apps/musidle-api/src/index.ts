@@ -42,6 +42,7 @@ setInterval(async () => {
       //check if user is in room and is connected to socket
       usersInRoom.forEach(async user => {
         const socket = io.sockets.sockets.get(user.socket_id);
+        console.log(user, socket);
         if (socket == undefined) {
           users.splice(users.indexOf(user), 1);
           usersToBeDeleted.push(user);
@@ -70,9 +71,14 @@ setInterval(async () => {
 
 io.on('connection', socket => {
   socket.on('id', (id, room_code) => {
+    //if user is already in users array, remove him from there
+    let user = users.find(user => user.id === id);
+    if (user) {
+      users.splice(users.indexOf(user), 1);
+    }
     users.push({ id, socket_id: socket.id, room_code: room_code });
     //if user is in usersToBeDeleted array, remove him from there
-    const user = usersToBeDeleted.find(user => user.id === id);
+    user = usersToBeDeleted.find(user => user.id === id);
     if (user) {
       usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
     }

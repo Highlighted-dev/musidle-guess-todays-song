@@ -247,11 +247,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
   handleChooseCategory: (song_id: string, phase = 1) => {
     const { socket } = useSocketStore.getState();
     const { setAudio, setSongId } = useAudioStore.getState();
-    const { setRenderGame, renderGame, room_code } = useRoomStore.getState();
+    const { setRenderGame, room_code } = useRoomStore.getState();
     socket?.emit('chooseSong', song_id, room_code);
     setSongId(song_id);
     setAudio(new Audio(`/music/${song_id}.mp3`));
-    if (phase != 3) setRenderGame(!renderGame);
+    if (phase != 3) setRenderGame(true);
   },
   async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {
     if (

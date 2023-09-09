@@ -23,7 +23,7 @@ import { toast } from './ui/use-toast';
 import { useAuthStore } from '@/stores/AuthStore';
 
 const LoginAndRegister = () => {
-  const { user_id, username, email, role } = useAuthStore();
+  const { user_id } = useAuthStore();
   const { logout, login, register } = useContext(authContext) as AuthContextType;
   const usernameRef = useRef() as MutableRefObject<HTMLInputElement>;
   const emailRef = useRef() as MutableRefObject<HTMLInputElement>;
@@ -133,11 +133,30 @@ const LoginAndRegister = () => {
                   <CardContent className="space-y-2">
                     <div className="space-y-1">
                       <Label htmlFor="email">E-mail</Label>
-                      <Input id="email" placeholder="user" ref={emailRef} />
+                      <Input
+                        id="email"
+                        placeholder="user"
+                        ref={emailRef}
+                        onKeyDown={event => {
+                          if (event.key === 'Enter') {
+                            handleSignIn();
+                          }
+                        }}
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="password">Password</Label>
-                      <Input id="password" placeholder="******" type="password" ref={passwordRef} />
+                      <Input
+                        id="password"
+                        placeholder="******"
+                        type="password"
+                        ref={passwordRef}
+                        onKeyDown={event => {
+                          if (event.key === 'Enter') {
+                            handleSignIn();
+                          }
+                        }}
+                      />
                     </div>
                   </CardContent>
                   <CardFooter>

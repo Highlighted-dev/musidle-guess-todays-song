@@ -14,6 +14,7 @@ import errorHandler from './utils/ErrorHandler';
 import axios from 'axios';
 import AnswersRoute from './routes/AnswersRoute';
 import roomModel from './models/RoomModel';
+import Timer from './utils/Timer';
 dotenv.config();
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
@@ -97,7 +98,8 @@ io.on('connection', socket => {
     );
     socket.broadcast.to(room_code).emit('chooseSong', song_id);
   });
-  socket.on('handlePlay', room_code => {
+  socket.on('handlePlay', (room_code, timer) => {
+    Timer(room_code, timer, io).start();
     socket.broadcast.to(room_code).emit('handlePlay');
   });
   socket.on('skip', (time, room_code) => {
@@ -119,29 +121,18 @@ io.on('connection', socket => {
     );
     socket.broadcast.to(room_code).emit('turnChange');
   });
-  socket.on('timerUpdate', async (room_code, timer) => {
-    console.log('1');
-    await axios
-      .put('http://localhost:5000/api/rooms/timer', {
-        timer: timer,
-        room_code: room_code,
-      })
-      .then(res => {
-        socket.broadcast.to(room_code).emit('timerUpdate', timer);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  });
-  // socket.on('disconnect', () => {
-  // const user = users.find(user => user.socket_id === socket.id);
-  // if (user) {
-  // axios.post('http://localhost:5000/api/rooms/leave', {
-  //   room_code: user.room_code,
-  //   player_id: user.id,
-  // });
-  //   users.splice(users.indexOf(user), 1);
-  // }
+  // socket.on('timerUpdate', async (room_code, timer) => {
+  //   await axios
+  //     .put('http://localhost:5000/api/rooms/timer', {
+  //       timer: timer,
+  //       room_code: room_code,
+  //     })
+  //     .then(res => {
+  //       socket.broadcast.to(room_code).emit('timerUpdate', timer);
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
   // });
 });
 

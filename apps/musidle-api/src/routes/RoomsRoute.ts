@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import roomModel from '../models/RoomModel';
 import bodyParser from 'body-parser';
 import axios from 'axios';
+import Timer from '../utils/Timer';
 dotenv.config();
 
 const jsonParser = bodyParser.json();
@@ -266,18 +267,11 @@ router.put('/settings', jsonParser, async (req: Request, res: Response, next: Ne
 //update timer
 router.put('/timer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.room_code) {
-      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
-    }
-    const room_code = req.body.room_code;
-    const timer = req.body.timer > 0 ? req.body.timer : 0;
-    await roomModel.updateOne({ room_code: room_code }, { timer: timer });
-    return res.status(200).json({
-      status: 'success',
-      data: {
-        timer: timer,
-      },
-    });
+    // const timer = req.body.timer;
+    // const room_code = req.body.room_code;
+    // const io = (req as ICustomRequest).io;
+    // Timer(room_code,timer,io).start;
+    return res.status(200).json({ status: 'success', message: 'Timer updated' });
   } catch (error) {
     next(error);
   }

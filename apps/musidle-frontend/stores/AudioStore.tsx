@@ -73,18 +73,17 @@ export const useAudioStore = create<IAudioStore>(set => ({
   },
   handlePlay: () => {
     const { audio } = useAudioStore.getState();
-    const { setIsTimerRunning, setTimer } = useTimerStore.getState();
     const { maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
     if (!audio) return;
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
-      useSocketStore.getState().socket?.emit('handlePlay', useRoomStore.getState().room_code);
+      useSocketStore
+        .getState()
+        .socket?.emit(
+          'handlePlay',
+          useRoomStore.getState().room_code,
+          useTimerStore.getState().timer,
+        );
     }
-
-    if (
-      useTimerStore.getState().timer !== 0 &&
-      useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id
-    )
-      setIsTimerRunning(true);
 
     if (audio.currentTime >= useAudioStore.getState().time / 1000) audio.currentTime = 0;
 
@@ -101,7 +100,6 @@ export const useAudioStore = create<IAudioStore>(set => ({
         !(useRoomStore.getState().round <= maxRoundsPhaseOne + maxRoundsPhaseTwo)
       ) {
         clearInterval(newIntervalId);
-        setIsTimerRunning(false);
       }
     }, 10);
     useAudioStore.getState().setIntervalId(newIntervalId);

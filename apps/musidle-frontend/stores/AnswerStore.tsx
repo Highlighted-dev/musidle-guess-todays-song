@@ -57,9 +57,6 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
           socket?.emit('answerSubmit', res.data.score, currentPlayer, res.data.answer, room_code);
         });
     }
-    if (useTimerStore.getState().timerIntervalId !== null)
-      clearInterval(useTimerStore.getState().timerIntervalId!);
-    useTimerStore.getState().setIsTimerRunning(false);
     useTimerStore.getState().setTimer(35.0);
     if (useAudioStore.getState().audio) useAudioStore.getState().audio?.pause();
     if (currentPlayer?._id == user_id) handleTurnChange();

@@ -18,7 +18,7 @@ import { useAnswerStore } from '@/stores/AnswerStore';
 import { useGameFinalStore } from '@/stores/GameFinalStore';
 const GamePhase3 = () => {
   const { user_id } = useAuthStore();
-  const { currentPlayer, renderGame, handleChooseCategory } = useRoomStore();
+  const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const { handlePlay, audio } = useAudioStore();
   const { timer } = useTimerStore();
   const { value, handleValueChange, songs, getPossibleSongAnswers } = useAnswerStore();
@@ -65,7 +65,7 @@ const GamePhase3 = () => {
 
   return (
     <>
-      {renderGame ? (
+      {selectMode ? (
         <GameMultiplayerLayout />
       ) : (
         <Card className="h-full w-full">

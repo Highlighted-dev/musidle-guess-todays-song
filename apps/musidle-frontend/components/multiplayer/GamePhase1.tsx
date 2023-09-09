@@ -9,11 +9,11 @@ import { useRoomStore } from '@/stores/RoomStore';
 
 export default function GamePhase1() {
   const { user_id } = useAuthStore();
-  const { players, currentPlayer, renderGame, handleChooseCategory } = useRoomStore();
+  const { players, currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
 
   return (
     <>
-      {renderGame ? (
+      {selectMode ? (
         <GameMultiplayerLayout />
       ) : (
         <>

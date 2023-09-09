@@ -45,10 +45,10 @@ useSocketStore.subscribe(({ socket }) => {
     });
     socket.on('chooseSong', (song_id: string) => {
       const setAudio = useAudioStore.getState().setAudio;
-      const { setRenderGame } = useRoomStore.getState();
+      const { setSelectMode } = useRoomStore.getState();
 
       setAudio(new Audio(`/music/${song_id}.mp3`));
-      setRenderGame(true);
+      setSelectMode(true);
     });
     socket.on('handlePlay', () => {
       useAudioStore.getState().handlePlay();

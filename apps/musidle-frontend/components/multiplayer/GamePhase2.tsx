@@ -7,7 +7,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 
 const GamePhase2 = () => {
   const { user_id } = useAuthStore();
-  const { currentPlayer, renderGame, handleChooseCategory } = useRoomStore();
+  const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
 
   const renderButtons = () => {
     const buttons = [];
@@ -34,7 +34,7 @@ const GamePhase2 = () => {
 
   return (
     <>
-      {renderGame ? (
+      {selectMode ? (
         <GameMultiplayerLayout />
       ) : (
         <Card className="h-full w-full">

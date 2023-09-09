@@ -18,8 +18,8 @@ export interface IRoomStore {
   setIsInLobby: (isInLobby: boolean) => void;
   currentPlayer: player | null;
   setCurrentPlayer: (player: player) => void;
-  renderGame: boolean;
-  setRenderGame: (renderGame: boolean) => void;
+  selectMode: boolean;
+  setSelectMode: (renderGame: boolean) => void;
   turnChangeDialogOpen: boolean;
   random: number;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;

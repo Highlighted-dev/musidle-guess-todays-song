@@ -31,7 +31,7 @@ const Timer = (room_code: string, timer: number, io: Server) => {
   };
 
   const stop = () => {
-    clearInterval(interval);
+    clearInterval(activeTimers[room_code]);
     delete activeTimers[room_code];
   };
 

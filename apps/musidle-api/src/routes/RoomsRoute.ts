@@ -156,7 +156,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
     const player_answer = req.body.player_answer;
     const song_id = req.body.song_id;
     const time = req.body.time;
-
+    Timer(room_code, 0, (req as ICustomRequest).io).stop();
     axios
       .get(`http://localhost:5000/api/answers/${song_id}`)
       .then(response => response.data)
@@ -259,19 +259,6 @@ router.put('/settings', jsonParser, async (req: Request, res: Response, next: Ne
       .emit('roomSettingsUpdate', maxRoundsPhaseOne, maxRoundsPhaseTwo);
 
     return res.status(200).json({ status: 'success', message: 'Settings updated' });
-  } catch (error) {
-    next(error);
-  }
-});
-
-//update timer
-router.put('/timer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    // const timer = req.body.timer;
-    // const room_code = req.body.room_code;
-    // const io = (req as ICustomRequest).io;
-    // Timer(room_code,timer,io).start;
-    return res.status(200).json({ status: 'success', message: 'Timer updated' });
   } catch (error) {
     next(error);
   }

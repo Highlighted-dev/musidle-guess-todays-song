@@ -39,7 +39,7 @@ const GameMultiplayerLayout = () => {
         <CardHeader className=" text-center">
           <div className="flex justify-between items-center">
             <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-              v0.37
+              v0.48
             </label>
             <CardTitle className="flex justify-center items-center">
               Musidle - Multiplayer
@@ -80,7 +80,14 @@ const GameMultiplayerLayout = () => {
                   className={cn('py-4', 'h-4')}
                 />
                 <Label>
-                  {time / 1000} {time / 1000 === 1 ? 'second' : 'seconds'}
+                  {
+                    {
+                      1: 'Stage 1',
+                      3: 'Stage 2',
+                      6: 'Stage 3',
+                      12: 'Stage 4',
+                    }[time / 1000]
+                  }
                 </Label>
               </div>
               <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
@@ -158,10 +165,10 @@ const GameMultiplayerLayout = () => {
           <Button
             variant="ghost"
             onClick={() => handleSkip()}
-            className="w-[9%] min-w-[50px]"
+            className="w-[10%] min-w-[50px]"
             disabled={currentPlayer?._id != user_id}
           >
-            Skip
+            Change stage
           </Button>
           <div className="w-1/4 text-center">
             <Slider

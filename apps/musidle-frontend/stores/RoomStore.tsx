@@ -50,10 +50,10 @@ export const useRoomStore = create<IRoomStore>(set => ({
     set(() => ({
       currentPlayer: player,
     })),
-  renderGame: false,
-  setRenderGame: (renderGame: boolean) =>
+  selectMode: false,
+  setSelectMode: (selectMode: boolean) =>
     set(() => ({
-      renderGame: renderGame,
+      selectMode: selectMode,
     })),
   turnChangeDialogOpen: false,
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) =>
@@ -81,7 +81,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
         round: data.round,
         isInLobby: data.isInGameLobby,
-        renderGame: !data.isInSelectMode,
+        selectMode: !data.isInSelectMode,
       }));
       setTimer(data.timer);
       setSongId(data.song_id);
@@ -118,7 +118,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
         round: data.round,
         isInLobby: data.isInGameLobby,
-        renderGame: !data.isInSelectMode,
+        selectMode: !data.isInSelectMode,
       }));
       useSocketStore
         .getState()
@@ -152,7 +152,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         maxRoundsPhaseTwo: 2,
         round: 1,
         isInLobby: false,
-        renderGame: false,
+        selectMode: false,
       });
       return;
     }
@@ -189,7 +189,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       maxRoundsPhaseTwo,
       setRound,
       setCurrentPlayer,
-      setRenderGame,
+      setSelectMode,
       setTurnChangeDialogOpen,
     } = useRoomStore.getState();
     const { socket } = useSocketStore.getState();
@@ -225,7 +225,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     setAudioTime(0);
     setAudio(null);
     setTime(1000);
-    setRenderGame(false);
+    setSelectMode(false);
     setTurnChangeDialogOpen(true);
     setTimeout(() => {
       useRoomStore.setState({ turnChangeDialogOpen: false });
@@ -247,11 +247,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
   handleChooseCategory: (song_id: string, phase = 1) => {
     const { socket } = useSocketStore.getState();
     const { setAudio, setSongId } = useAudioStore.getState();
-    const { setRenderGame, room_code } = useRoomStore.getState();
+    const { setSelectMode, room_code } = useRoomStore.getState();
     socket?.emit('chooseSong', song_id, room_code);
     setSongId(song_id);
     setAudio(new Audio(`/music/${song_id}.mp3`));
-    if (phase != 3) setRenderGame(true);
+    if (phase != 3) setSelectMode(true);
   },
   async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {
     if (

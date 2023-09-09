@@ -223,7 +223,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
 
     if (intervalId !== null) clearInterval(intervalId);
     setAudioTime(0);
-    setAudio(null);
+    setAudio(new Audio());
     setTime(1000);
     setSelectMode(false);
     setTurnChangeDialogOpen(true);

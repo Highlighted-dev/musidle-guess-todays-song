@@ -35,15 +35,18 @@ useSocketStore.subscribe(({ socket }) => {
       useRoomStore.setState({ players: players });
     });
     socket.on('togglePhaseOne', current_player => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       if (useRoomStore.getState().isInLobby) {
         useRoomStore.getState().setCurrentPlayer(current_player);
       }
       useRoomStore.getState().setIsInLobby(false);
     });
     socket.on('skip', (time: number) => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       useAudioStore.getState().setTime(time);
     });
     socket.on('chooseSong', (song_id: string) => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       const setAudio = useAudioStore.getState().setAudio;
       const { setSelectMode } = useRoomStore.getState();
 
@@ -51,23 +54,29 @@ useSocketStore.subscribe(({ socket }) => {
       setSelectMode(true);
     });
     socket.on('handlePlay', () => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       useAudioStore.getState().handlePlay();
     });
     socket.on('answerSubmit', (score: number, player: player, answer: string) => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       useRoomStore.getState().updatePlayerScore(score, player);
       useAnswerStore.getState().setAnswer(answer);
       useAnswerStore.getState().handleAnswerSubmit();
     });
     socket.on('valueChange', (value: string) => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       useAnswerStore.getState().handleValueChange(value);
     });
     socket.on('turnChange', () => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       useRoomStore.getState().handleTurnChange();
     });
     socket.on('searchSong', (songs: ISongs[]) => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       useAnswerStore.setState({ songs: songs });
     });
     socket.on('roomSettingsUpdate', (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => {
+      if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) return;
       useRoomStore.setState({
         maxRoundsPhaseOne: maxRoundsPhaseOne,
         maxRoundsPhaseTwo: maxRoundsPhaseTwo,

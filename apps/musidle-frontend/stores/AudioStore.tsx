@@ -6,7 +6,7 @@ import useTimerStore from './TimerStore';
 
 interface IAudioStore {
   audio: HTMLAudioElement | null;
-  setAudio: (audio: HTMLAudioElement | null) => void;
+  setAudio: (audio: HTMLAudioElement) => void;
   time: number;
   setTime: (time: number) => void;
   audioTime: number;
@@ -21,8 +21,8 @@ interface IAudioStore {
 }
 
 export const useAudioStore = create<IAudioStore>(set => ({
-  audio: null,
-  setAudio: (audio: HTMLAudioElement | null) =>
+  audio: new Audio(),
+  setAudio: (audio: HTMLAudioElement) =>
     set(() => ({
       audio: audio,
     })),
@@ -75,6 +75,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
     const { audio } = useAudioStore.getState();
     const { maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
     if (!audio) return;
+    console.log('handlePlay');
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
       useSocketStore
         .getState()

@@ -80,7 +80,11 @@ export const useAudioStore = create<IAudioStore>(set => ({
       useSocketStore.getState().socket?.emit('handlePlay', useRoomStore.getState().room_code);
     }
 
-    if (useTimerStore.getState().timer !== 0) setIsTimerRunning(true);
+    if (
+      useTimerStore.getState().timer !== 0 &&
+      useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id
+    )
+      setIsTimerRunning(true);
 
     if (audio.currentTime >= useAudioStore.getState().time / 1000) audio.currentTime = 0;
 

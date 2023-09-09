@@ -217,6 +217,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         'turnChange',
         useRoomStore.getState().currentPlayer,
         useRoomStore.getState().room_code,
+        35,
       );
     }
 

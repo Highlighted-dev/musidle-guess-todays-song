@@ -6,6 +6,7 @@ import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
 import { ISongs } from '@/@types/AnswerStore';
 import { IPlayer } from '@/@types/Rooms';
+import useTimerStore from './TimerStore';
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
@@ -71,6 +72,9 @@ useSocketStore.subscribe(({ socket }) => {
         maxRoundsPhaseOne: maxRoundsPhaseOne,
         maxRoundsPhaseTwo: maxRoundsPhaseTwo,
       });
+    });
+    socket.on('timerUpdate', (timer: number) => {
+      useTimerStore.getState().setTimer(timer);
     });
 
     return () => {

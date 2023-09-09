@@ -42,13 +42,12 @@ setInterval(async () => {
       //check if user is in room and is connected to socket
       usersInRoom.forEach(async user => {
         const socket = io.sockets.sockets.get(user.socket_id);
-        console.log(user, socket);
         if (socket == undefined) {
           users.splice(users.indexOf(user), 1);
           usersToBeDeleted.push(user);
-          return;
         }
       });
+      return;
     }
     usersInRoom = usersToBeDeleted.filter(user => user.room_code === room.room_code);
     if (usersInRoom.length >= 1) {
@@ -113,23 +112,26 @@ io.on('connection', socket => {
   socket.on('answerSubmit', (score, player, answer, room_code) => {
     socket.broadcast.to(room_code).emit('answerSubmit', score, player, answer);
   });
-  socket.on('turnChange', async (current_player, room_code) => {
+  socket.on('turnChange', async (current_player, room_code, timer) => {
     await roomModel.updateOne(
       { room_code: room_code },
-      { current_player: current_player, isInSelectMode: true, $inc: { round: 1 } },
+      { current_player: current_player, isInSelectMode: true, $inc: { round: 1 }, timer: timer },
     );
     socket.broadcast.to(room_code).emit('turnChange');
   });
   socket.on('timerUpdate', async (room_code, timer) => {
+    console.log('1');
     await axios
       .put('http://localhost:5000/api/rooms/timer', {
         timer: timer,
         room_code: room_code,
       })
+      .then(res => {
+        socket.broadcast.to(room_code).emit('timerUpdate', timer);
+      })
       .catch(error => {
         console.log(error);
       });
-    socket.broadcast.to(room_code).emit('timerUpdate', timer);
   });
   // socket.on('disconnect', () => {
   // const user = users.find(user => user.socket_id === socket.id);

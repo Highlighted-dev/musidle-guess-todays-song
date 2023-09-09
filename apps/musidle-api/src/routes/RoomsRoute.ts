@@ -272,6 +272,12 @@ router.put('/timer', jsonParser, async (req: Request, res: Response, next: NextF
     const room_code = req.body.room_code;
     const timer = req.body.timer > 0 ? req.body.timer : 0;
     await roomModel.updateOne({ room_code: room_code }, { timer: timer });
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        timer: timer,
+      },
+    });
   } catch (error) {
     next(error);
   }

@@ -221,6 +221,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         'turnChange',
         useRoomStore.getState().currentPlayer,
         useRoomStore.getState().room_code,
+        useAudioStore.getState().songId,
         35,
       );
     }
@@ -248,13 +249,21 @@ export const useRoomStore = create<IRoomStore>(set => ({
     }
   },
 
-  handleChooseCategory: (song_id: string, phase = 1) => {
+  handleChooseCategory: async (song_id: string, phase = 1) => {
     const { socket } = useSocketStore.getState();
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setSelectMode, room_code } = useRoomStore.getState();
-    socket?.emit('chooseSong', song_id, room_code);
-    setSongId(song_id);
-    setAudio(new Audio(`/music/${song_id}.mp3`));
+    const song = await axios
+      .post(`/api/songs/chooseSong`, {
+        room_code: room_code,
+        song_id: song_id,
+      })
+      .then(res => {
+        return res.data.data.song_id;
+      });
+    socket?.emit('chooseSong', song, room_code);
+    setSongId(song);
+    setAudio(new Audio(`/music/${song}.mp3`));
     if (phase != 3) setSelectMode(true);
   },
   async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {

@@ -26,7 +26,7 @@ export default function GamePhase1() {
                 <Button
                   variant={'secondary'}
                   onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
-                  id="pop2"
+                  id="pop"
                   disabled={currentPlayer?._id == user_id ? false : true}
                 >
                   Pop

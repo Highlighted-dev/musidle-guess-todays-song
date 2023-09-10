@@ -75,7 +75,6 @@ export const useAudioStore = create<IAudioStore>(set => ({
     const { audio } = useAudioStore.getState();
     const { maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
     if (!audio) return;
-    console.log('handlePlay');
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
       useSocketStore
         .getState()

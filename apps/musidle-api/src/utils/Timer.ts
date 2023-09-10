@@ -7,7 +7,7 @@ interface ActiveTimers {
 
 const activeTimers: ActiveTimers = {};
 
-const Timer = (room_code: string, timer: number, io: Server) => {
+const Timer = (room_code: string, timer = 0, io: Server) => {
   let interval: NodeJS.Timeout;
 
   const start = () => {

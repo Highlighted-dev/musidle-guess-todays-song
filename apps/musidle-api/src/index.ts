@@ -12,7 +12,7 @@ import RoomsRoute from './routes/RoomsRoute';
 import { ISocketMiddleware, IUsers } from './@types';
 import errorHandler from './utils/ErrorHandler';
 import axios from 'axios';
-import AnswersRoute from './routes/AnswersRoute';
+import AnswersRoute from './routes/SongsRoute';
 import roomModel from './models/RoomModel';
 import Timer from './utils/Timer';
 dotenv.config();
@@ -114,10 +114,16 @@ io.on('connection', socket => {
   socket.on('answerSubmit', (score, player, answer, room_code) => {
     socket.to(room_code).emit('answerSubmit', score, player, answer);
   });
-  socket.on('turnChange', async (current_player, room_code, timer) => {
+  socket.on('turnChange', async (current_player, room_code, song_id, timer) => {
     await roomModel.updateOne(
-      { room_code: room_code },
-      { current_player: current_player, isInSelectMode: true, $inc: { round: 1 }, timer: timer },
+      { room_code: room_code, 'songs.song_id': song_id },
+      {
+        current_player: current_player,
+        isInSelectMode: true,
+        $inc: { round: 1 },
+        timer: timer,
+        $set: { 'songs.$.completed': true },
+      },
     );
     socket.to(room_code).emit('turnChange');
   });
@@ -145,5 +151,5 @@ app.use(helmet());
 app.use('/api/track/search/', SearchTrackRoute);
 app.use('/api/auth/', UserAuthenticationRoute);
 app.use('/api/rooms/', RoomsRoute);
-app.use('/api/answers/', AnswersRoute);
+app.use('/api/songs/', AnswersRoute);
 app.use(errorHandler);

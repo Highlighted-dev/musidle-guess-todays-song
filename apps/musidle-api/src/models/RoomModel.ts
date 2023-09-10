@@ -17,6 +17,15 @@ interface IRoomModel {
   isInGameLobby: boolean;
   isInSelectMode: boolean;
   timer: number;
+  songs: [
+    {
+      song_id: string;
+      category: string;
+      value: string;
+      key: string;
+      completed: boolean;
+    },
+  ];
 }
 
 const roomSchema = new Schema<IRoomModel>(
@@ -31,6 +40,15 @@ const roomSchema = new Schema<IRoomModel>(
     isInGameLobby: { type: Boolean, required: true },
     isInSelectMode: { type: Boolean, required: true },
     timer: { type: Number, default: 35 },
+    songs: [
+      {
+        song_id: { type: String, required: true },
+        category: { type: String, required: true },
+        value: { type: String, required: true },
+        key: { type: String, required: true },
+        completed: { type: Boolean, default: false },
+      },
+    ],
   },
   { versionKey: false },
 );

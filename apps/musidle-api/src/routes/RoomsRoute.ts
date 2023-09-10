@@ -27,6 +27,12 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
 
     let room = await roomModel.findOne({ room_code: room_id });
     if (!room) {
+      const songs = await axios
+        .post('http://localhost:5000/api/songs/possibleSongs', {
+          maxRoundsPhaseOne: req.body.maxRoundsPhaseOne,
+          maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo,
+        })
+        .then(response => response.data);
       await roomModel.create({
         room_code: room_id,
         players: [req.body.player],
@@ -39,10 +45,9 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         round: 1,
         isInGameLobby: true,
         isInSelectMode: true,
+        songs: songs.data.songs,
       });
     } else if (!room.players.some(player => player._id === req.body.player._id)) {
-      // await roomModel.updateOne({ room_code: room_id }, { $push: { players: req.body.player } });
-
       const room = await roomModel.findOneAndUpdate(
         { room_code: room_id },
         { $push: { players: req.body.player } },
@@ -71,6 +76,12 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
       }
     }
     //roomModel.schema.paths.maxRoundsPhaseOne.options.default just means get the default value assigned to maxRoundsPhaseOne in the schema
+    const songs = await axios
+      .post('http://localhost:5000/api/songs/possibleSongs', {
+        maxRoundsPhaseOne: req.body.maxRoundsPhaseOne,
+        maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo,
+      })
+      .then(response => response.data);
     await roomModel.create({
       room_code: room_id,
       players: [req.body.player],
@@ -83,6 +94,7 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
       round: 1,
       isInGameLobby: true,
       isInSelectMode: true,
+      songs: songs.data.songs,
     });
     const room = await roomModel.findOne({ room_code: room_id });
     return res.json(room);
@@ -129,6 +141,18 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.get('/:room_code', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const room_code = req.params.room_code;
+
+    const room = await roomModel.findOne({ room_code: room_code });
+    if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
+    return res.status(200).json({ status: 'success', data: room });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/changeRound', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.body.room_code)
@@ -158,7 +182,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
     const time = req.body.time;
     Timer(room_code, 0, (req as ICustomRequest).io).stop();
     axios
-      .get(`http://localhost:5000/api/answers/${song_id}`)
+      .get(`http://localhost:5000/api/songs/${song_id}`)
       .then(response => response.data)
       .then(response => {
         const correctAnswer = response.data;

@@ -87,15 +87,17 @@ export const useRoomStore = create<IRoomStore>(set => ({
       setSongId(data.song_id);
       setAudio(new Audio(`/music/${data.song_id}.mp3`));
       //set socket the to the room
-      useSocketStore
-        .getState()
-        .setSocket(
-          io(
-            process.env.NODE_ENV == 'production'
-              ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
-              : 'http://localhost:5000',
-          ),
-        );
+      if (!useSocketStore.getState().socket) {
+        useSocketStore
+          .getState()
+          .setSocket(
+            io(
+              process.env.NODE_ENV == 'production'
+                ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
+                : 'http://localhost:5000',
+            ),
+          );
+      }
       useSocketStore.getState().socket?.emit('id', useAuthStore.getState().user_id, room_code);
       return;
       // router.push(`/multiplayer/${room_id}`);
@@ -120,15 +122,17 @@ export const useRoomStore = create<IRoomStore>(set => ({
         isInLobby: data.isInGameLobby,
         selectMode: !data.isInSelectMode,
       }));
-      useSocketStore
-        .getState()
-        .setSocket(
-          io(
-            process.env.NODE_ENV == 'production'
-              ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
-              : 'http://localhost:5000',
-          ),
-        );
+      if (!useSocketStore.getState().socket) {
+        useSocketStore
+          .getState()
+          .setSocket(
+            io(
+              process.env.NODE_ENV == 'production'
+                ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
+                : 'http://localhost:5000',
+            ),
+          );
+      }
       useSocketStore.getState().socket?.emit('id', useAuthStore.getState().user_id, data.room_code);
       return data.room_code;
       // router.push(`/multiplayer/${room_id}`);
@@ -223,7 +227,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
 
     if (intervalId !== null) clearInterval(intervalId);
     setAudioTime(0);
-    setAudio(new Audio());
+    setAudio(null);
     setTime(1000);
     setSelectMode(false);
     setTurnChangeDialogOpen(true);

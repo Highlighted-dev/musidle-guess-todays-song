@@ -89,51 +89,38 @@ io.on('connection', socket => {
       { room_code: room_code },
       { current_player: current_player, isInGameLobby: false },
     );
-    socket.broadcast.to(room_code).emit('togglePhaseOne', current_player);
+    socket.to(room_code).emit('togglePhaseOne', current_player);
   });
   socket.on('chooseSong', async (song_id: string, room_code) => {
     await roomModel.updateOne(
       { room_code: room_code },
       { isInSelectMode: song_id.includes('final') ? true : false, song_id: song_id },
     );
-    socket.broadcast.to(room_code).emit('chooseSong', song_id);
+    socket.to(room_code).emit('chooseSong', song_id);
   });
   socket.on('handlePlay', (room_code, timer) => {
     Timer(room_code, timer, io).start();
-    socket.broadcast.to(room_code).emit('handlePlay');
+    socket.to(room_code).emit('handlePlay');
   });
   socket.on('skip', (time, room_code) => {
-    socket.broadcast.to(room_code).emit('skip', time);
+    socket.to(room_code).emit('skip', time);
   });
   socket.on('searchSong', (songs, room_code) => {
-    socket.broadcast.to(room_code).emit('searchSong', songs);
+    socket.to(room_code).emit('searchSong', songs);
   });
   socket.on('valueChange', (value, room_code) => {
-    socket.broadcast.to(room_code).emit('valueChange', value);
+    socket.to(room_code).emit('valueChange', value);
   });
   socket.on('answerSubmit', (score, player, answer, room_code) => {
-    socket.broadcast.to(room_code).emit('answerSubmit', score, player, answer);
+    socket.to(room_code).emit('answerSubmit', score, player, answer);
   });
   socket.on('turnChange', async (current_player, room_code, timer) => {
     await roomModel.updateOne(
       { room_code: room_code },
       { current_player: current_player, isInSelectMode: true, $inc: { round: 1 }, timer: timer },
     );
-    socket.broadcast.to(room_code).emit('turnChange');
+    socket.to(room_code).emit('turnChange');
   });
-  // socket.on('timerUpdate', async (room_code, timer) => {
-  //   await axios
-  //     .put('http://localhost:5000/api/rooms/timer', {
-  //       timer: timer,
-  //       room_code: room_code,
-  //     })
-  //     .then(res => {
-  //       socket.broadcast.to(room_code).emit('timerUpdate', timer);
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
-  // });
 });
 
 mongoose

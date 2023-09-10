@@ -6,7 +6,7 @@ import useTimerStore from './TimerStore';
 
 interface IAudioStore {
   audio: HTMLAudioElement | null;
-  setAudio: (audio: HTMLAudioElement) => void;
+  setAudio: (audio: HTMLAudioElement | null) => void;
   time: number;
   setTime: (time: number) => void;
   audioTime: number;
@@ -21,8 +21,8 @@ interface IAudioStore {
 }
 
 export const useAudioStore = create<IAudioStore>(set => ({
-  audio: new Audio(),
-  setAudio: (audio: HTMLAudioElement) =>
+  audio: null,
+  setAudio: (audio: HTMLAudioElement | null) =>
     set(() => ({
       audio: audio,
     })),

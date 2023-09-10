@@ -47,7 +47,7 @@ export default function Multiplayer() {
       router.push('/multiplayer');
       return;
     }
-    if (params.room_code && user_id) {
+    if (params.room_code && user_id && !players.find(player => player['_id'] == user_id)) {
       handleRoomJoin(params.room_code);
     }
   }, [user_id, params.room_code]);

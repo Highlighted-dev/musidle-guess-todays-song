@@ -84,6 +84,7 @@ router.post(
       const songs = await axios.get('http://localhost:5000/api/songs');
       const songsPhaseOne = songs.data.data.filter((song: any) => song.category === 'pop');
       const songsPhaseTwo = songs.data.data.filter((song: any) => song.category === 'artists');
+      const songsPhaseThree = songs.data.data.filter((song: any) => song.category === 'final');
 
       const shuffle = (array: any) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -98,7 +99,8 @@ router.post(
       const possibleSongs = {
         songs: songsPhaseOne
           .slice(0, maxRoundsPhaseOne)
-          .concat(songsPhaseTwo.slice(0, maxRoundsPhaseTwo)),
+          .concat(songsPhaseTwo.slice(0, maxRoundsPhaseTwo))
+          .concat(songsPhaseThree),
       };
       return res.json({ message: 'Songs found', data: possibleSongs });
     } catch (error) {
@@ -121,6 +123,11 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
     const songs = room.data.data.songs;
 
     //get all songs with category == song_id in songs array
+    if (song_id.includes('final')) {
+      const finalSongs = songs.filter((song: any) => song.song_id === song_id);
+      return res.json({ message: 'Song found', data: finalSongs[0] });
+    }
+
     const songsWithCategory = songs.filter((song: any) => song.category === song_id);
 
     //Now loop through the songs and choose random song that does not have song.completed === true

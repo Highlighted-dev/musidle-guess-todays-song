@@ -120,114 +120,122 @@ export default function GameSingleplayerLayout() {
   };
   return (
     <Card className="h-full w-full">
-      <CardHeader className=" text-center">
-        <CardTitle>Musidle - Guess Today&apos;s Music</CardTitle>
-        <CardDescription>You will have 1 | 3 | 6 | 15 seconds to guess it!</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Alert className="flex justify-center items-center">
-          <AlertTitle className="h-[340px]">
-            <div className="py-8 text-center">
+      {true ? (
+        <div className="flex justify-center items-center h-full w-full">
+          <Label className=" text-xl">Singleplayer under construction 🏗️</Label>
+        </div>
+      ) : (
+        <>
+          <CardHeader className=" text-center">
+            <CardTitle>Musidle - Guess Today&apos;s Music</CardTitle>
+            <CardDescription>You will have 1 | 3 | 6 | 15 seconds to guess it!</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Alert className="flex justify-center items-center">
+              <AlertTitle className="h-[340px]">
+                <div className="py-8 text-center">
+                  <Slider
+                    value={[audioTime]}
+                    min={0}
+                    max={time / 1000}
+                    disabled
+                    className={cn('py-4', 'h-4')}
+                  />
+                  <Label>
+                    {time / 1000} {time / 1000 === 1 ? 'second' : 'seconds'}
+                  </Label>
+                </div>
+                <div className="text-center w-[250px]">
+                  <div className="pb-8">
+                    <Popover open={open} onOpenChange={setOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-[250px] justify-between"
+                        >
+                          {value
+                            ? songs.find(song => song.label.toLowerCase() === value.toLowerCase())
+                                ?.label
+                            : 'Select song...'}
+                          <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[300px] p-0">
+                        <Command shouldFilter={false}>
+                          <CommandInput
+                            placeholder="Search song..."
+                            onValueChange={value => {
+                              searchSong(value);
+                              setValue(value);
+                            }}
+                            value={value}
+                          />
+
+                          <CommandGroup>
+                            {songs.map(song => (
+                              <CommandItem
+                                key={song.key}
+                                onSelect={currentValue => {
+                                  setValue(currentValue === value ? '' : currentValue);
+                                  setOpen(false);
+                                }}
+                              >
+                                <AiOutlineCheck
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    value.toLowerCase() == song.label.toLowerCase()
+                                      ? 'opacity-100'
+                                      : 'opacity-0',
+                                  )}
+                                />
+                                {song.label}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="pt-8">
+                    {value === '' ? null : value.toLowerCase() == 'blinding lights - the weeknd' ? (
+                      <label className=" text-green-500">You were right!</label>
+                    ) : (
+                      <Label>
+                        <label className=" text-red-700">You were Wrong! </label>
+                        <label>
+                          The correct answer was
+                          <br /> The Weeknd - Blinding Lights
+                        </label>
+                      </Label>
+                    )}
+                  </div>
+                </div>
+              </AlertTitle>
+            </Alert>
+          </CardContent>
+          <CardFooter className="flex justify-between text-center">
+            <Button variant="ghost" onClick={() => handleSkip()} className="w-[9%] min-w-[50px]">
+              Skip
+            </Button>
+            <div className="w-1/4 text-center">
               <Slider
-                value={[audioTime]}
+                onValueChange={value => (audio ? (audio.volume = value[0] / 100) : null)}
                 min={0}
-                max={time / 1000}
-                disabled
+                max={100}
+                step={1}
+                defaultValue={[100]}
                 className={cn('py-4', 'h-4')}
               />
-              <Label>
-                {time / 1000} {time / 1000 === 1 ? 'second' : 'seconds'}
-              </Label>
+              <Label>Volume</Label>
             </div>
-            <div className="text-center w-[250px]">
-              <div className="pb-8">
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={open}
-                      className="w-[250px] justify-between"
-                    >
-                      {value
-                        ? songs.find(song => song.label.toLowerCase() === value.toLowerCase())
-                            ?.label
-                        : 'Select song...'}
-                      <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0">
-                    <Command shouldFilter={false}>
-                      <CommandInput
-                        placeholder="Search song..."
-                        onValueChange={value => {
-                          searchSong(value);
-                          setValue(value);
-                        }}
-                        value={value}
-                      />
-
-                      <CommandGroup>
-                        {songs.map(song => (
-                          <CommandItem
-                            key={song.key}
-                            onSelect={currentValue => {
-                              setValue(currentValue === value ? '' : currentValue);
-                              setOpen(false);
-                            }}
-                          >
-                            <AiOutlineCheck
-                              className={cn(
-                                'mr-2 h-4 w-4',
-                                value.toLowerCase() == song.label.toLowerCase()
-                                  ? 'opacity-100'
-                                  : 'opacity-0',
-                              )}
-                            />
-                            {song.label}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className="pt-8">
-                {value === '' ? null : value.toLowerCase() == 'blinding lights - the weeknd' ? (
-                  <label className=" text-green-500">You were right!</label>
-                ) : (
-                  <Label>
-                    <label className=" text-red-700">You were Wrong! </label>
-                    <label>
-                      The correct answer was
-                      <br /> The Weeknd - Blinding Lights
-                    </label>
-                  </Label>
-                )}
-              </div>
-            </div>
-          </AlertTitle>
-        </Alert>
-      </CardContent>
-      <CardFooter className="flex justify-between text-center">
-        <Button variant="ghost" onClick={() => handleSkip()} className="w-[9%] min-w-[50px]">
-          Skip
-        </Button>
-        <div className="w-1/4 text-center">
-          <Slider
-            onValueChange={value => (audio ? (audio.volume = value[0] / 100) : null)}
-            min={0}
-            max={100}
-            step={1}
-            defaultValue={[100]}
-            className={cn('py-4', 'h-4')}
-          />
-          <Label>Volume</Label>
-        </div>
-        <Button onClick={() => handlePlay()} className="w-[9%] min-w-[50px]">
-          Play / Pause
-        </Button>
-      </CardFooter>
+            <Button onClick={() => handlePlay()} className="w-[9%] min-w-[50px]">
+              Play / Pause
+            </Button>
+          </CardFooter>
+        </>
+      )}
     </Card>
   );
 }

@@ -18,7 +18,7 @@ const GamePhase2 = () => {
           key={i}
           variant={'secondary'}
           onClick={e => handleChooseCategory(e.currentTarget.id, 2)}
-          id={`artist${i}`}
+          id={`artists`}
           disabled={currentPlayer?._id == user_id ? false : true}
           className="p-[25px]"
         >

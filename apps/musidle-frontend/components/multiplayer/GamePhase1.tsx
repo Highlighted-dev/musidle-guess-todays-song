@@ -10,6 +10,16 @@ import { useRoomStore } from '@/stores/RoomStore';
 export default function GamePhase1() {
   const { user_id } = useAuthStore();
   const { players, currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
+  const categories = [
+    'pop',
+    'rock',
+    'hip-hop/rap',
+    'polish songs',
+    'electronic',
+    'game and movie soundtracks',
+    'jazz/classical music',
+    'disco polo',
+  ];
 
   return (
     <>
@@ -23,21 +33,17 @@ export default function GamePhase1() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col space-y-4">
-                <Button
-                  variant={'secondary'}
-                  onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
-                  id="pop"
-                  disabled={currentPlayer?._id == user_id ? false : true}
-                >
-                  Pop
-                </Button>
-                <Button variant={'secondary'}>Rock</Button>
-                <Button variant={'secondary'}>Hip-Hop/Rap</Button>
-                <Button variant={'secondary'}>Polish songs</Button>
-                <Button variant={'secondary'}>Electronic</Button>
-                <Button variant={'secondary'}>Game & Movie Soundtracks</Button>
-                <Button variant={'secondary'}>Jazz/Classical Music</Button>
-                <Button variant={'secondary'}>Disco polo</Button>
+                {categories.map((category, index) => (
+                  <Button
+                    variant={'secondary'}
+                    onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
+                    id={category}
+                    disabled={currentPlayer?._id == user_id ? false : true}
+                    key={index}
+                  >
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </Button>
+                ))}
               </div>
             </CardContent>
           </Card>

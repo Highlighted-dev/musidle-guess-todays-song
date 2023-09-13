@@ -18,6 +18,7 @@ import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import GameEndScreen from '@/components/multiplayer/GameEndScreen';
+import { useSocketStore } from '@/stores/SocketStore';
 export default function Multiplayer() {
   const {
     joinRoom,
@@ -47,7 +48,11 @@ export default function Multiplayer() {
       router.push('/multiplayer');
       return;
     }
-    if (params.room_code && user_id && !players.find(player => player['_id'] == user_id)) {
+    if (
+      params.room_code &&
+      user_id &&
+      !players.find(player => player['_id'] == user_id && !useSocketStore.getState().socket)
+    ) {
       handleRoomJoin(params.room_code);
     }
   }, [user_id, params.room_code]);

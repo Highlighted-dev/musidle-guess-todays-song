@@ -11,6 +11,8 @@ interface IAudioStore {
   setTime: (time: number) => void;
   audioTime: number;
   setAudioTime: (audioTime: number) => void;
+  volume: number;
+  setVolume: (volume: number) => void;
   intervalId: NodeJS.Timeout | null;
   setIntervalId: (intervaldId: NodeJS.Timeout | null) => void;
   songId: string;
@@ -35,6 +37,11 @@ export const useAudioStore = create<IAudioStore>(set => ({
   setAudioTime: (audioTime: number) =>
     set(() => ({
       audioTime: audioTime,
+    })),
+  volume: 0.4,
+  setVolume: (volume: number) =>
+    set(() => ({
+      volume: volume,
     })),
   intervalId: null,
   setIntervalId: (intervalId: NodeJS.Timeout | null) =>

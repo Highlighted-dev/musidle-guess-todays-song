@@ -86,6 +86,10 @@ export const useRoomStore = create<IRoomStore>(set => ({
       setTimer(data.timer);
       setSongId(data.song_id);
       setAudio(new Audio(`/music/${data.song_id}.mp3`));
+      const audio = useAudioStore.getState().audio;
+      if (audio) {
+        audio.volume = useAudioStore.getState().volume;
+      }
       //set socket the to the room
       if (!useSocketStore.getState().socket) {
         useSocketStore
@@ -265,6 +269,10 @@ export const useRoomStore = create<IRoomStore>(set => ({
     if (phase == 3) useAudioStore.getState().audio?.pause();
     setSongId(song);
     setAudio(new Audio(`/music/${song}.mp3`));
+    const audio = useAudioStore.getState().audio;
+    if (audio) {
+      audio.volume = useAudioStore.getState().volume;
+    }
     if (phase != 3) setSelectMode(true);
   },
   async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {

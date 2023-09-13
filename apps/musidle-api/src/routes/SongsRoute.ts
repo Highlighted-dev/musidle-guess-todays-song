@@ -4,6 +4,7 @@ import songModel from '../models/SongModel';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import axios from 'axios';
+import categoryModel from '../models/CategoryModel';
 dotenv.config();
 
 const jsonParser = bodyParser.json();
@@ -81,10 +82,17 @@ router.post(
     try {
       const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
       const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
-      const songs = await axios.get('http://localhost:5000/api/songs');
-      const songsPhaseOne = songs.data.data.filter((song: any) => song.category === 'pop');
-      const songsPhaseTwo = songs.data.data.filter((song: any) => song.category === 'artists');
-      const songsPhaseThree = songs.data.data.filter((song: any) => song.category === 'final');
+      const songs = await axios.get('http://localhost:5000/api/songs').then(res => res.data);
+
+      const categories = await categoryModel
+        .find()
+        .then(res => res.map((category: any) => category.category));
+
+      //filter songs by category
+      const songsPhaseOne = songs.data.filter((song: any) => categories.includes(song.category));
+
+      const songsPhaseTwo = songs.data.filter((song: any) => song.category === 'artists');
+      const songsPhaseThree = songs.data.filter((song: any) => song.category === 'final');
 
       const shuffle = (array: any) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -120,7 +128,7 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
       return res.status(404).json({ message: 'Room not found' });
     }
 
-    const songs = room.data.data.songs;
+    const songs = room.data.songs;
 
     //get all songs with category == song_id in songs array
     if (song_id.includes('final')) {

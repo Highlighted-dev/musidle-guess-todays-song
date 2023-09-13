@@ -19,6 +19,11 @@ const Timer = (room_code: string, timer = 0, io: Server) => {
     interval = setInterval(async () => {
       if (timer > 0) {
         timer--;
+        const room = await roomModel.find({ room_code: room_code });
+        if (!room) {
+          stop();
+          return;
+        }
         await roomModel.updateOne({ room_code: room_code }, { timer: timer });
         io.in(room_code).emit('timerUpdate', timer);
       } else {

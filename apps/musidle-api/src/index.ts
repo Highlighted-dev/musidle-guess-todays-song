@@ -15,6 +15,7 @@ import axios from 'axios';
 import AnswersRoute from './routes/SongsRoute';
 import roomModel from './models/RoomModel';
 import Timer from './utils/Timer';
+import CategoriesRoute from './routes/CategoriesRoute';
 dotenv.config();
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
@@ -152,4 +153,5 @@ app.use('/api/track/search/', SearchTrackRoute);
 app.use('/api/auth/', UserAuthenticationRoute);
 app.use('/api/rooms/', RoomsRoute);
 app.use('/api/songs/', AnswersRoute);
+app.use('/api/categories/', CategoriesRoute);
 app.use(errorHandler);

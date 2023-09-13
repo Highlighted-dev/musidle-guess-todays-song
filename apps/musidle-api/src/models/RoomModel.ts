@@ -21,8 +21,6 @@ interface IRoomModel {
     {
       song_id: string;
       category: string;
-      value: string;
-      key: string;
       completed: boolean;
     },
   ];
@@ -44,8 +42,6 @@ const roomSchema = new Schema<IRoomModel>(
       {
         song_id: { type: String, required: true },
         category: { type: String, required: true },
-        value: { type: String, required: true },
-        key: { type: String, required: true },
         completed: { type: Boolean, default: false },
       },
     ],

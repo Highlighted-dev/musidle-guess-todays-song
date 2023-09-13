@@ -35,7 +35,7 @@ export default function Multiplayer() {
       .get('/api/rooms')
       .then(res => res.data)
       .then(res => {
-        setRooms(res.data);
+        setRooms(res.rooms);
       });
   };
 

@@ -117,7 +117,8 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
     // If the player is the only one in the room, delete the room
     if (room.players.length === 1) {
       await roomModel.deleteOne({ room_code: room_code });
-      return res.status(200).json({ status: 'success', message: 'Room deleted' });
+      Timer(room_code, 0, (req as ICustomRequest).io).stop();
+      return res.status(200).json({ message: 'Room deleted' });
     }
 
     room = await roomModel.findOneAndUpdate(
@@ -135,7 +136,7 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const rooms = await roomModel.find();
-    return res.json({ status: 'success', data: rooms });
+    return res.status(200).json({ rooms });
   } catch (error) {
     next(error);
   }
@@ -146,26 +147,8 @@ router.get('/:room_code', async (req: Request, res: Response, next: NextFunction
     const room_code = req.params.room_code;
 
     const room = await roomModel.findOne({ room_code: room_code });
-    if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
-    return res.status(200).json({ status: 'success', data: room });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post('/changeRound', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (!req.body.room_code)
-      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
-    const room_code = req.body.room_code;
-
-    const room = await roomModel.findOne({ room_code: room_code });
-
-    if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
-
-    await roomModel.updateOne({ room_code: room_code }, { $inc: { round: 1 } });
-
-    return res.status(200).json({ status: 'success', message: 'Round changed' });
+    if (!room) return res.status(404).json({ message: 'Room not found' });
+    return res.status(200).json(room);
   } catch (error) {
     next(error);
   }

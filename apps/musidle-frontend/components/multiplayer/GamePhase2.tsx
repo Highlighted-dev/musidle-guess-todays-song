@@ -4,6 +4,7 @@ import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
+import Leaderboard from './Leaderboard';
 
 const GamePhase2 = () => {
   const { user_id } = useAuthStore();
@@ -37,14 +38,17 @@ const GamePhase2 = () => {
       {selectMode ? (
         <GameMultiplayerLayout />
       ) : (
-        <Card className="h-full w-full">
-          <CardHeader className=" text-center">
-            <CardTitle className=" font-bold">Choose an artist</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">{renderButtons()}</div>
-          </CardContent>
-        </Card>
+        <>
+          <Card className="h-full w-full">
+            <CardHeader className=" text-center">
+              <CardTitle className=" font-bold">Choose an artist</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">{renderButtons()}</div>
+            </CardContent>
+          </Card>
+          <Leaderboard />
+        </>
       )}
     </>
   );

@@ -51,7 +51,7 @@ export default function Multiplayer() {
   }, []);
 
   return (
-    <Card className="h-4/6 w-4/6">
+    <Card className="h-5/6 w-4/6">
       <CardHeader className=" text-center">
         <CardTitle>Choose Lobby</CardTitle>
       </CardHeader>

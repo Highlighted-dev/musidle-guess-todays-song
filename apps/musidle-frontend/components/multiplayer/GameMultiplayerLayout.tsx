@@ -35,8 +35,8 @@ const GameMultiplayerLayout = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
-      <Card className="h-full w-full">
+    <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center ">
+      <Card className=" float-left xl:w-4/6 flex flex-col justify-center align-center">
         <CardHeader className=" text-center">
           <div className="flex justify-between items-center">
             <label className=" w-24 font-semibold text-xs flex justify-center items-center">
@@ -71,7 +71,7 @@ const GameMultiplayerLayout = () => {
         </CardHeader>
         <CardContent>
           <Alert className="flex justify-center items-center">
-            <AlertTitle className="h-[400px] flex flex-col">
+            <AlertTitle className="h-full flex flex-col">
               <div className="text-center h-[80px] py-4">
                 <Slider
                   value={[audioTime]}
@@ -198,7 +198,7 @@ const GameMultiplayerLayout = () => {
         </CardFooter>
       </Card>
       <Leaderboard />
-    </>
+    </div>
   );
 };
 

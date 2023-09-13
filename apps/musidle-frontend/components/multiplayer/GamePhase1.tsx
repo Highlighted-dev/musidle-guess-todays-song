@@ -28,8 +28,8 @@ export default function GamePhase1() {
       {selectMode ? (
         <GameMultiplayerLayout />
       ) : (
-        <>
-          <Card className="h-full w-full">
+        <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center">
+          <Card className="float-left xl:w-4/6 flex flex-col">
             <CardHeader className=" text-center">
               <CardTitle>Choose category</CardTitle>
             </CardHeader>
@@ -54,7 +54,7 @@ export default function GamePhase1() {
             </CardContent>
           </Card>
           <Leaderboard />
-        </>
+        </div>
       )}
     </>
   );

@@ -38,8 +38,8 @@ const GamePhase2 = () => {
       {selectMode ? (
         <GameMultiplayerLayout />
       ) : (
-        <>
-          <Card className="h-full w-full">
+        <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center">
+          <Card className="h-full w-full float-left xl:w-4/6 flex flex-col">
             <CardHeader className=" text-center">
               <CardTitle className=" font-bold">Choose an artist</CardTitle>
             </CardHeader>
@@ -48,7 +48,7 @@ const GamePhase2 = () => {
             </CardContent>
           </Card>
           <Leaderboard />
-        </>
+        </div>
       )}
     </>
   );

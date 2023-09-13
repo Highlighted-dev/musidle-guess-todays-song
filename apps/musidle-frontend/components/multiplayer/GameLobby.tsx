@@ -13,7 +13,7 @@ export default function GameLobby(params: { room_code: string }) {
   const { role } = useAuthStore();
 
   return (
-    <Card className="h-full w-full">
+    <Card className="h-4/5 w-4/6">
       <CardHeader className=" text-center">
         <CardTitle>Game lobby</CardTitle>
         <p>Room: {params.room_code}</p>

@@ -71,7 +71,7 @@ export default function Multiplayer() {
   }, [turnChangeDialogOpen]);
 
   return (
-    <div className="rounded-md overflow-hidden w-4/6 h-4/6 min-h-[600px]">
+    <div className="rounded-md overflow-hidden w-full h-full flex flex-col justify-center items-center">
       <Dialog
         open={turnChangeDialogOpen}
         onOpenChange={() => {

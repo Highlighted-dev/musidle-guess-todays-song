@@ -7,8 +7,8 @@ const Leaderboard = () => {
   const { players, currentPlayer } = useRoomStore();
 
   return (
-    <div className="fixed h-full w-1/6 top-0 right-0 flex justify-center items-center min-w-[170px]">
-      <div className=" h-4/6 right-0 w-full z-2 min-h-[600px]  px-4">
+    <div className=" xl:w-[16%] w-full h-full flex flex-col justify-center items-center min-w-[180px] xl:absolute top-0 right-0 xl:p-0 py-6">
+      <div className=" h-full w-full ">
         <Card className="h-full w-full">
           <CardHeader className=" text-center">
             <CardTitle>Leaderboard</CardTitle>

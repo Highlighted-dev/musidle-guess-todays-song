@@ -40,6 +40,18 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const { currentPlayer, room_code, handleTurnChange } = useRoomStore.getState();
     const user_id = useAuthStore.getState().user_id;
     const socket = useSocketStore.getState().socket;
+    let category = '';
+    //set completedCategories.category.completed to true
+    useRoomStore.getState().players.map(player => {
+      if (player._id == user_id) {
+        player.completedCategories.map((item: any) => {
+          if (useAudioStore.getState().songId.includes(item.category)) {
+            category = item.category;
+            item.completed = true;
+          }
+        });
+      }
+    });
 
     if (currentPlayer?._id == user_id) {
       await axios
@@ -49,6 +61,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
           player_answer: useAnswerStore.getState().value,
           song_id: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,
+          category: category,
         })
         .then(res => res.data)
         .then(res => {

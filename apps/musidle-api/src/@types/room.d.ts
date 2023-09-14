@@ -2,6 +2,12 @@ export interface IPlayer {
   _id: string;
   name: string;
   score: number;
+  completedCategories: [
+    {
+      category: string;
+      completed: boolean;
+    },
+  ];
 }
 
 export interface IRoomModel {

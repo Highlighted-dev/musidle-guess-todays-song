@@ -23,6 +23,12 @@ export default function GamePhase1() {
     });
   }, [user_id]);
 
+  const isCategoryCompleted = (category: string) => {
+    return players
+      .find(player => player._id == user_id)
+      ?.completedCategories.find((item: any) => item.category == category).completed;
+  };
+
   return (
     <>
       {selectMode ? (
@@ -41,12 +47,18 @@ export default function GamePhase1() {
                       variant={'secondary'}
                       onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
                       id={category}
-                      disabled={currentPlayer?._id == user_id ? false : true}
+                      disabled={
+                        currentPlayer?._id == user_id && !isCategoryCompleted(category)
+                          ? false
+                          : true
+                      }
                       key={index}
                     >
                       <div className=" flex flex-row justify-center items-center relative w-full">
                         <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
-                        <span className="absolute left-[98%] text-gray-400">1/1</span>
+                        <span className="absolute left-[98%] text-gray-400">
+                          {isCategoryCompleted(category) ? <span>0/1</span> : <span>1/1</span>}
+                        </span>
                       </div>
                     </Button>
                   ))}

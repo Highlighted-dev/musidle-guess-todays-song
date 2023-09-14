@@ -33,9 +33,20 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
           maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo,
         })
         .then(response => response.data);
+
+      const categories = await axios
+        .get('http://localhost:5000/api/categories')
+        .then(response => response.data);
+      const player = req.body.player;
+      player.completedCategories = categories.map((category: any) => {
+        return {
+          category: category.category,
+          completed: false,
+        };
+      });
       await roomModel.create({
         room_code: room_id,
-        players: [req.body.player],
+        players: [player],
         maxRoundsPhaseOne: req.body.maxRoundsPhaseOne
           ? req.body.maxRoundsPhaseOne
           : roomModel.schema.paths.maxRoundsPhaseOne.options.default,
@@ -82,9 +93,19 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
         maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo,
       })
       .then(response => response.data);
+    const categories = await axios
+      .get('http://localhost:5000/api/categories')
+      .then(response => response.data);
+    const player = req.body.player;
+    player.completedCategories = categories.map((category: any) => {
+      return {
+        category: category.category,
+        completed: false,
+      };
+    });
     await roomModel.create({
       room_code: room_id,
-      players: [req.body.player],
+      players: [player],
       maxRoundsPhaseOne: req.body.maxRoundsPhaseOne
         ? req.body.maxRoundsPhaseOne
         : roomModel.schema.paths.maxRoundsPhaseOne.options.default,
@@ -156,18 +177,25 @@ router.get('/:room_code', async (req: Request, res: Response, next: NextFunction
 
 router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.room_code || !req.body.player_id || !req.body.song_id || !req.body.time)
+    if (
+      !req.body.room_code ||
+      !req.body.player_id ||
+      !req.body.song_id ||
+      !req.body.time ||
+      !req.body.category
+    )
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     const room_code = req.body.room_code;
     const player_id = req.body.player_id;
     const player_answer = req.body.player_answer;
     const song_id = req.body.song_id;
     const time = req.body.time;
+    const category = req.body.category;
     Timer(room_code, 0, (req as ICustomRequest).io).stop();
     axios
       .get(`http://localhost:5000/api/songs/${song_id}`)
       .then(response => response.data)
-      .then(response => {
+      .then(async response => {
         const correctAnswer = response.data;
         if (!correctAnswer) {
           return res.status(404).json({ status: 'error', message: 'Answer not found' });
@@ -186,6 +214,24 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
                 return 0;
             }
           };
+
+          //update players.completedCategories for a player with player_id = player_id in room with room_code = room_code
+
+          await roomModel.findOneAndUpdate(
+            {
+              room_code: room_code,
+              'players._id': player_id,
+            },
+            {
+              $set: {
+                'players.$.completedCategories.$[category].completed': true,
+              },
+            },
+            {
+              arrayFilters: [{ 'category.category': category }],
+              new: true,
+            },
+          );
 
           axios.post('http://localhost:5000/api/rooms/updateScore', {
             room_code: room_code,

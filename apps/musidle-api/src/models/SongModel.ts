@@ -1,13 +1,7 @@
 import { Schema, model } from 'mongoose';
+import { ISong } from '../@types/song';
 
-interface ISongModel {
-  song_id: string;
-  category: string;
-  value: string;
-  key: string;
-}
-
-const songsSchema = new Schema<ISongModel>(
+const songsSchema = new Schema<ISong>(
   {
     song_id: { type: String, required: true, unique: true },
     category: { type: String, required: true },
@@ -16,5 +10,5 @@ const songsSchema = new Schema<ISongModel>(
   },
   { versionKey: false },
 );
-const songModel = model<ISongModel>('Songs', songsSchema, 'songs');
+const songModel = model<ISong>('Songs', songsSchema, 'songs');
 export default songModel;

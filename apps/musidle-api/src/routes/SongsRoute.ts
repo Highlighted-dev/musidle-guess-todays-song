@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import categoryModel from '../models/CategoryModel';
+import { ISong } from '../@types/song';
 dotenv.config();
 
 const jsonParser = bodyParser.json();
@@ -86,15 +87,15 @@ router.post(
 
       const categories = await categoryModel
         .find()
-        .then(res => res.map((category: any) => category.category));
+        .then(res => res.map((category: { category: string }) => category.category));
 
       //filter songs by category
-      const songsPhaseOne = songs.data.filter((song: any) => categories.includes(song.category));
+      const songsPhaseOne = songs.data.filter((song: ISong) => categories.includes(song.category));
 
-      const songsPhaseTwo = songs.data.filter((song: any) => song.category === 'artists');
-      const songsPhaseThree = songs.data.filter((song: any) => song.category === 'final');
+      const songsPhaseTwo = songs.data.filter((song: ISong) => song.category === 'artists');
+      const songsPhaseThree = songs.data.filter((song: ISong) => song.category === 'final');
 
-      const shuffle = (array: any) => {
+      const shuffle = (array: ISong[]) => {
         for (let i = array.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [array[i], array[j]] = [array[j], array[i]];
@@ -132,11 +133,11 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
 
     //get all songs with category == song_id in songs array
     if (song_id.includes('final')) {
-      const finalSongs = songs.filter((song: any) => song.song_id === song_id);
+      const finalSongs = songs.filter((song: ISong) => song.song_id === song_id);
       return res.json({ message: 'Song found', data: finalSongs[0] });
     }
 
-    const songsWithCategory = songs.filter((song: any) => song.category === song_id);
+    const songsWithCategory = songs.filter((song: ISong) => song.category === song_id);
 
     //Now loop through the songs and choose random song that does not have song.completed === true
     const song = () => {

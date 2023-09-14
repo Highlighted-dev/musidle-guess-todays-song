@@ -1,30 +1,5 @@
 import { model, Schema } from 'mongoose';
-
-interface IPlayer {
-  _id: string;
-  name: string;
-  score: number;
-}
-
-interface IRoomModel {
-  room_code: string;
-  players: IPlayer[];
-  current_player: IPlayer | null;
-  song_id: string;
-  maxRoundsPhaseOne: number;
-  maxRoundsPhaseTwo: number;
-  round: number;
-  isInGameLobby: boolean;
-  isInSelectMode: boolean;
-  timer: number;
-  songs: [
-    {
-      song_id: string;
-      category: string;
-      completed: boolean;
-    },
-  ];
-}
+import { IRoomModel } from '../@types/room';
 
 const roomSchema = new Schema<IRoomModel>(
   {

@@ -177,13 +177,7 @@ router.get('/:room_code', async (req: Request, res: Response, next: NextFunction
 
 router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (
-      !req.body.room_code ||
-      !req.body.player_id ||
-      !req.body.song_id ||
-      !req.body.time ||
-      !req.body.category
-    )
+    if (!req.body.room_code || !req.body.player_id || !req.body.song_id || !req.body.time)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     const room_code = req.body.room_code;
     const player_id = req.body.player_id;
@@ -216,22 +210,23 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
           };
 
           //update players.completedCategories for a player with player_id = player_id in room with room_code = room_code
-
-          await roomModel.findOneAndUpdate(
-            {
-              room_code: room_code,
-              'players._id': player_id,
-            },
-            {
-              $set: {
-                'players.$.completedCategories.$[category].completed': true,
+          if (category) {
+            await roomModel.findOneAndUpdate(
+              {
+                room_code: room_code,
+                'players._id': player_id,
               },
-            },
-            {
-              arrayFilters: [{ 'category.category': category }],
-              new: true,
-            },
-          );
+              {
+                $set: {
+                  'players.$.completedCategories.$[category].completed': true,
+                },
+              },
+              {
+                arrayFilters: [{ 'category.category': category }],
+                new: true,
+              },
+            );
+          }
 
           axios.post('http://localhost:5000/api/rooms/updateScore', {
             room_code: room_code,

@@ -14,13 +14,13 @@ export default function GameLobby(params: { room_code: string }) {
 
   return (
     <div className="xl:p-0 p-4 w-full h-4/5 flex xl:flex-row xl:relative flex-col justify-center align-center">
-      <Card className=" xl:w-4/6 w-full h-full">
-        <CardHeader className=" text-center">
+      <Card className=" xl:w-4/6 w-full h-full min-h-[600px]">
+        <CardHeader className=" text-center h-1/5">
           <CardTitle>Game lobby</CardTitle>
           <p>Room: {params.room_code}</p>
         </CardHeader>
-        <CardContent className="flex flex-col h-full w-full">
-          <Card>
+        <CardContent className="flex flex-col h-4/5 w-full">
+          <Card className="mb-4">
             <CardHeader className=" text-center">
               <CardTitle>Settings</CardTitle>
             </CardHeader>
@@ -75,14 +75,11 @@ export default function GameLobby(params: { room_code: string }) {
               </div>
             </CardContent>
           </Card>
-          <div className="flex justify-center items-center p-4">
-            <Button variant={'default'} disabled={role != 'Admin'} onClick={startGame}>
-              Start game
-            </Button>
-          </div>
-          <div className="flex justify-center items-center p-4">
-            <div>
-              <h1 className="font-bold text-xl text-center py-2">Players</h1>
+          <Card className="flex flex-col justify-center items-center md:p-4 p-2">
+            <CardHeader className=" text-center">
+              <CardTitle>Players</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
               <ul className="grid grid-cols-2 gap-2">
                 {players.map((player, index) => (
                   <li key={index} className="text-center">
@@ -90,7 +87,12 @@ export default function GameLobby(params: { room_code: string }) {
                   </li>
                 ))}
               </ul>
-            </div>
+            </CardContent>
+          </Card>
+          <div className="flex justify-center items-center p-4">
+            <Button variant={'default'} disabled={role != 'Admin'} onClick={startGame}>
+              Start game
+            </Button>
           </div>
         </CardContent>
       </Card>

@@ -6,6 +6,7 @@ const songsSchema = new Schema<ISong>(
     song_id: { type: String, required: true, unique: true },
     category: { type: String, required: true },
     value: { type: String, required: true },
+    artist: { type: String },
     key: { type: String, required: true },
   },
   { versionKey: false },

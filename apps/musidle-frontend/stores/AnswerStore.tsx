@@ -18,6 +18,11 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     set(() => ({
       value: value,
     })),
+  artist: '',
+  setArtist: (artist: string) =>
+    set(() => ({
+      artist: artist,
+    })),
   songs: [
     {
       value: 'Songs will appear here',
@@ -107,5 +112,13 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         useRoomStore.getState().room_code,
       );
     }
+  },
+  revealArtist: async (song_id: string) => {
+    console.log(song_id);
+    const artist = await axios.get(`/api/songs/${song_id}`).then(res => {
+      if (res.data.data.artist == null) return undefined;
+      return res.data.data.artist;
+    });
+    useAnswerStore.getState().setArtist(artist || '');
   },
 }));

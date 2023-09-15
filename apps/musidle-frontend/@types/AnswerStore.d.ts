@@ -8,9 +8,12 @@ export interface IAnswerStore {
   setAnswer: (answer: string) => void;
   value: string;
   setValue: (value: string) => void;
+  artist: string | undefined;
+  setArtist: (artist: string) => void;
   songs: ISongs[];
   setSongs: (songs: ISongs[]) => void;
   handleValueChange: (value: string) => void;
   handleAnswerSubmit: () => void;
   getPossibleSongAnswers: (query: string) => void;
+  revealArtist: (song_id: string) => void;
 }

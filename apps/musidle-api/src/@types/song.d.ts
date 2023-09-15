@@ -3,4 +3,5 @@ export interface ISong {
   category: string;
   value: string;
   key: string;
+  artist?: string;
 }

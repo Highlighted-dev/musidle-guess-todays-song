@@ -28,7 +28,7 @@ import Leaderboard from './Leaderboard';
 const GameMultiplayerLayout = () => {
   const { user_id } = useAuthStore();
   const { timer } = useTimerStore();
-  const { value, handleValueChange, songs, handleAnswerSubmit, getPossibleSongAnswers } =
+  const { value, handleValueChange, possibleAnswers, handleAnswerSubmit, getPossibleSongAnswers } =
     useAnswerStore();
   const { players, currentPlayer } = useRoomStore();
   const { audio, time, audioTime, handleSkip, handlePlay } = useAudioStore();
@@ -40,7 +40,7 @@ const GameMultiplayerLayout = () => {
         <CardHeader className=" text-center">
           <div className="flex justify-between items-center">
             <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-              v0.1.3
+              v0.4.0
             </label>
             <CardTitle className="flex justify-center items-center">
               Musidle - Multiplayer
@@ -113,8 +113,9 @@ const GameMultiplayerLayout = () => {
                       disabled={currentPlayer?._id != user_id}
                     >
                       {value
-                        ? songs.find(song => song.value.toLowerCase() === value.toLowerCase())
-                            ?.value
+                        ? possibleAnswers.find(
+                            song => song.value.toLowerCase() === value.toLowerCase(),
+                          )?.value
                         : 'Select song...'}
                       <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -131,7 +132,7 @@ const GameMultiplayerLayout = () => {
                       />
 
                       <CommandGroup>
-                        {songs.map(song => (
+                        {possibleAnswers.map(song => (
                           <CommandItem
                             key={song.key}
                             onSelect={currentValue => {

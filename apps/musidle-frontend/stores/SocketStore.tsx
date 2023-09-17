@@ -4,7 +4,7 @@ import { useRoomStore } from './RoomStore';
 import { useAuthStore } from './AuthStore';
 import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
-import { ISongs } from '@/@types/AnswerStore';
+import { IAnswer } from '@/@types/AnswerStore';
 import { IPlayer } from '@/@types/Rooms';
 import useTimerStore from './TimerStore';
 interface ISocketStore {
@@ -67,8 +67,8 @@ useSocketStore.subscribe(({ socket }) => {
     socket.on('turnChange', () => {
       useRoomStore.getState().handleTurnChange();
     });
-    socket.on('searchSong', (songs: ISongs[]) => {
-      useAnswerStore.setState({ songs: songs });
+    socket.on('searchSong', (songs: IAnswer[]) => {
+      useAnswerStore.setState({ possibleAnswers: songs });
     });
     socket.on('roomSettingsUpdate', (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => {
       useRoomStore.setState({

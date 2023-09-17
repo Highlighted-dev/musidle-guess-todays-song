@@ -64,6 +64,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
   joinRoom: async (room_code: string) => {
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setTimer } = useTimerStore.getState();
+    const { setPossibleSongs } = useAnswerStore.getState();
     if (useAuthStore.getState().user_id) {
       const { data } = await axios.post(`/api/rooms/join`, {
         room_id: room_code,
@@ -84,6 +85,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         selectMode: !data.isInSelectMode,
       }));
       setTimer(data.timer);
+      setPossibleSongs(data.songs);
       setSongId(data.song_id);
       setAudio(new Audio(`/music/${data.song_id}.mp3`));
       const audio = useAudioStore.getState().audio;
@@ -108,6 +110,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     }
   },
   createRoom: async () => {
+    const { setPossibleSongs } = useAnswerStore.getState();
     if (useAuthStore.getState().user_id) {
       const { data } = await axios.post(`/api/rooms/create`, {
         player: {
@@ -126,6 +129,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         isInLobby: data.isInGameLobby,
         selectMode: !data.isInSelectMode,
       }));
+      setPossibleSongs(data.songs);
       if (!useSocketStore.getState().socket) {
         useSocketStore
           .getState()
@@ -201,7 +205,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       setTurnChangeDialogOpen,
     } = useRoomStore.getState();
     const { socket } = useSocketStore.getState();
-    const { setValue, setAnswer, setSongs, answer } = useAnswerStore.getState();
+    const { setValue, setAnswer, setPossibleAnswers, answer } = useAnswerStore.getState();
     const { setAudioTime, setAudio, setTime, intervalId } = useAudioStore.getState();
     const { user_id } = useAuthStore.getState();
     const { handleFinal } = useGameFinalStore.getState();
@@ -240,7 +244,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       useRoomStore.setState({ turnChangeDialogOpen: false });
       setValue('');
       setAnswer('');
-      setSongs([
+      setPossibleAnswers([
         {
           value: 'Songs will appear here',
           key: 'no-song',

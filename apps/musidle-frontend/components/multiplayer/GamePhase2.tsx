@@ -1,45 +1,29 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import Leaderboard from './Leaderboard';
 import { useAnswerStore } from '@/stores/AnswerStore';
-import { set } from 'mongoose';
-import axios from 'axios';
 
 const GamePhase2 = () => {
   const { user_id } = useAuthStore();
-  const { currentPlayer, selectMode, handleChooseCategory, players, room_code } = useRoomStore();
-  const { artist, revealArtist } = useAnswerStore();
+  const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
+  const { artist, revealArtist, possibleSongs } = useAnswerStore();
 
-  const [songs, setSongs] = useState<any[]>([]);
+  const changeSongToCompleted = (song_id: string) => {
+    //Change "completed" boolean in possibleSongs for song with song_id to true
+    const possibleSongs = useAnswerStore.getState().possibleSongs;
 
-  useEffect(() => {
-    if (!user_id || songs.length > 0) return;
-    axios.get(`/api/rooms/${room_code}`).then(res => {
-      res.data.songs.map(
-        (item: {
-          _id: string;
-          song_id: string;
-          category: string;
-          completed: string;
-          artist?: string;
-        }) => {
-          if (item.category == 'artists') {
-            setSongs(prev => [...prev, item]);
-          }
-        },
-      );
+    possibleSongs.map((song: { song_id: string; completed: boolean }) => {
+      if (song.song_id == song_id) {
+        song.completed = true;
+      }
     });
-  }, [user_id]);
 
-  // const isCategoryCompleted = (category: string) => {
-  //   return players
-  //     .find(player => player._id == user_id)
-  //     ?.completedCategories.find((item: any) => item.category == category).completed;
-  // };
+    useAnswerStore.getState().setPossibleSongs(possibleSongs);
+  };
 
   return (
     <>
@@ -53,33 +37,47 @@ const GamePhase2 = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
-                {
-                  // renderButtons()
-                  songs.map((song, index) => (
+                {possibleSongs
+                  .filter(song => song.category == 'artists')
+                  ?.map((song, index) => (
                     <Button
                       key={index}
                       variant={'secondary'}
                       onClick={e => {
                         revealArtist(e.currentTarget.id);
                         setTimeout(() => {
+                          changeSongToCompleted(song.song_id);
                           handleChooseCategory(song.category, 2);
                         }, 3000);
                       }}
                       id={song.song_id}
-                      disabled={currentPlayer?._id == user_id ? false : true}
+                      disabled={
+                        currentPlayer?._id == user_id &&
+                        !possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
+                          ?.completed
+                          ? false
+                          : true
+                      }
                       className="p-[25px]"
                     >
                       <label
                         className={
-                          artist == song.artist ? 'cursor-pointer' : 'blur-sm cursor-pointer'
+                          artist == song.artist ||
+                          possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
+                            ?.completed
+                            ? 'pointer-events-none'
+                            : 'blur-sm cursor-pointer'
                         }
                         id={`label_artist${index}`}
                       >
-                        {artist == song.artist ? song.artist : '******* *** **********'}
+                        {artist == song.artist ||
+                        possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
+                          ?.completed
+                          ? song.artist
+                          : '******* *** **********'}
                       </label>
                     </Button>
-                  ))
-                }
+                  ))}
               </div>
             </CardContent>
           </Card>

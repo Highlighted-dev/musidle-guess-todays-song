@@ -21,7 +21,7 @@ const GamePhase3 = () => {
   const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const { handlePlay, audio } = useAudioStore();
   const { timer } = useTimerStore();
-  const { value, handleValueChange, songs, getPossibleSongAnswers } = useAnswerStore();
+  const { value, handleValueChange, possibleAnswers, getPossibleSongAnswers } = useAnswerStore();
   const { completedSongs, handleFinalAnswerSubmit } = useGameFinalStore();
   const [open, setOpen] = useState(false);
 
@@ -100,7 +100,9 @@ const GamePhase3 = () => {
                     disabled={currentPlayer?._id != user_id}
                   >
                     {value
-                      ? songs.find(song => song.value.toLowerCase() === value.toLowerCase())?.value
+                      ? possibleAnswers.find(
+                          song => song.value.toLowerCase() === value.toLowerCase(),
+                        )?.value
                       : 'Select song...'}
                     <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -117,7 +119,7 @@ const GamePhase3 = () => {
                     />
 
                     <CommandGroup>
-                      {songs.map(song => (
+                      {possibleAnswers.map(song => (
                         <CommandItem
                           key={song.key}
                           onSelect={currentValue => {

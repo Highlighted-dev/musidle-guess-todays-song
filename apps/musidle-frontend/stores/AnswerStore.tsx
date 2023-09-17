@@ -5,7 +5,7 @@ import { useSocketStore } from './SocketStore';
 import useTimerStore from './TimerStore';
 import { useAudioStore } from './AudioStore';
 import axios from 'axios';
-import { IAnswerStore, ISongs } from '@/@types/AnswerStore';
+import { IAnswer, IAnswerStore, ISong } from '@/@types/AnswerStore';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   answer: '',
@@ -23,15 +23,20 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     set(() => ({
       artist: artist,
     })),
-  songs: [
+  possibleAnswers: [
     {
       value: 'Songs will appear here',
       key: 'no-song',
     },
   ],
-  setSongs: (songs: ISongs[]) =>
+  setPossibleAnswers: (possibleAnswers: IAnswer[]) =>
     set(() => ({
-      songs: songs,
+      possibleAnswers: possibleAnswers,
+    })),
+  possibleSongs: [],
+  setPossibleSongs: (possibleSongs: ISong[]) =>
+    set(() => ({
+      possibleSongs: possibleSongs,
     })),
   handleValueChange: (value: string) => {
     if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
@@ -87,7 +92,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     });
 
     const data = await response;
-    const temp_songs: ISongs[] = [];
+    const temp_songs: IAnswer[] = [];
     if (data.length > 0) {
       data.map((track: any) => {
         // Check if the song is already in the songs state
@@ -97,9 +102,9 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
           key: track.url,
         });
       });
-      useAnswerStore.setState({ songs: temp_songs.slice(0, 8) }); // Update the songs state with the new search results
+      useAnswerStore.setState({ possibleAnswers: temp_songs.slice(0, 8) }); // Update the songs state with the new search results
     } else {
-      useAnswerStore.setState({ songs: [] }); // Clear the songs state if there are no search results
+      useAnswerStore.setState({ possibleAnswers: [] }); // Clear the songs state if there are no search results
     }
 
     const { currentPlayer } = useRoomStore.getState();
@@ -108,13 +113,12 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     if (currentPlayer?._id == user_id) {
       socket?.emit(
         'searchSong',
-        useAnswerStore.getState().songs,
+        useAnswerStore.getState().possibleAnswers,
         useRoomStore.getState().room_code,
       );
     }
   },
   revealArtist: async (song_id: string) => {
-    console.log(song_id);
     const artist = await axios.get(`/api/songs/${song_id}`).then(res => {
       if (res.data.data.artist == null) return undefined;
       return res.data.data.artist;

@@ -31,7 +31,7 @@ export default function Multiplayer() {
     isInLobby,
   } = useRoomStore();
   const { user_id } = useAuthStore();
-  const { value, answer, songs } = useAnswerStore();
+  const { value, answer, possibleAnswers } = useAnswerStore();
   const [progress, setProgress] = React.useState(0);
   const params = useParams();
   const router = useRouter();
@@ -91,7 +91,8 @@ export default function Multiplayer() {
           </h1>
           <Label className="text-center">
             {`You guessed: ${
-              songs.find(song => song.value.toLowerCase() === value.toLowerCase())?.value ||
+              possibleAnswers.find(song => song.value.toLowerCase() === value.toLowerCase())
+                ?.value ||
               value ||
               'Nothing :('
             }`}

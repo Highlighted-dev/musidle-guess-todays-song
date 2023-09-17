@@ -26,6 +26,16 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
     // if (player_room.length > 0) return res.json(player_room[0]);
 
     let room = await roomModel.findOne({ room_code: room_id });
+    const categories = await axios
+      .get('http://localhost:5000/api/categories')
+      .then(response => response.data);
+    const player = req.body.player;
+    player.completedCategories = categories.map((category: any) => {
+      return {
+        category: category.category,
+        completed: false,
+      };
+    });
     if (!room) {
       const songs = await axios
         .post('http://localhost:5000/api/songs/possibleSongs', {
@@ -34,16 +44,6 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         })
         .then(response => response.data);
 
-      const categories = await axios
-        .get('http://localhost:5000/api/categories')
-        .then(response => response.data);
-      const player = req.body.player;
-      player.completedCategories = categories.map((category: any) => {
-        return {
-          category: category.category,
-          completed: false,
-        };
-      });
       await roomModel.create({
         room_code: room_id,
         players: [player],

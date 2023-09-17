@@ -4,9 +4,10 @@ import { useRoomStore } from './RoomStore';
 import { useAuthStore } from './AuthStore';
 import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
-import { IAnswer } from '@/@types/AnswerStore';
+import { IAnswer, ISong } from '@/@types/AnswerStore';
 import { IPlayer } from '@/@types/Rooms';
 import useTimerStore from './TimerStore';
+import { set } from 'mongoose';
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
@@ -78,6 +79,12 @@ useSocketStore.subscribe(({ socket }) => {
     });
     socket.on('timerUpdate', (timer: number) => {
       useTimerStore.getState().setTimer(timer);
+    });
+    socket.on('changeSongToCompleted', (possibleSongs: ISong[], song_id) => {
+      useAnswerStore.getState().revealArtist(song_id);
+      setTimeout(() => {
+        useAnswerStore.getState().setPossibleSongs(possibleSongs);
+      }, 3000);
     });
 
     return () => {

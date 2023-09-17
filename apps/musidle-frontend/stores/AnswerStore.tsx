@@ -52,17 +52,18 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const socket = useSocketStore.getState().socket;
     let category = '';
     //set completedCategories.category.completed to true
-    useRoomStore.getState().players.map(player => {
-      if (player._id == user_id) {
-        player.completedCategories.map((item: any) => {
-          if (useAudioStore.getState().songId.includes(item.category)) {
-            category = item.category;
-            item.completed = true;
-          }
-        });
-      }
-    });
-
+    if (useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne) {
+      useRoomStore.getState().players.map(player => {
+        if (player._id == user_id) {
+          player.completedCategories.map((item: any) => {
+            if (useAudioStore.getState().songId.includes(item.category)) {
+              category = item.category;
+              item.completed = true;
+            }
+          });
+        }
+      });
+    }
     if (currentPlayer?._id == user_id) {
       await axios
         .post(`/api/rooms/checkAnswer`, {
@@ -102,7 +103,13 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
           key: track.url,
         });
       });
-      useAnswerStore.setState({ possibleAnswers: temp_songs.slice(0, 8) }); // Update the songs state with the new search results
+      const { round, maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
+      useAnswerStore.setState({
+        possibleAnswers: temp_songs.slice(
+          0,
+          round > maxRoundsPhaseOne && round <= maxRoundsPhaseOne + maxRoundsPhaseTwo ? 2 : 8,
+        ),
+      }); // Update the songs state with the new search results
     } else {
       useAnswerStore.setState({ possibleAnswers: [] }); // Clear the songs state if there are no search results
     }

@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import Leaderboard from './Leaderboard';
 import { useAnswerStore } from '@/stores/AnswerStore';
+import { useSocketStore } from '@/stores/SocketStore';
 
 const GamePhase2 = () => {
   const { user_id } = useAuthStore();
@@ -21,8 +22,7 @@ const GamePhase2 = () => {
         song.completed = true;
       }
     });
-
-    useAnswerStore.getState().setPossibleSongs(possibleSongs);
+    return possibleSongs;
   };
 
   return (
@@ -45,8 +45,19 @@ const GamePhase2 = () => {
                       variant={'secondary'}
                       onClick={e => {
                         revealArtist(e.currentTarget.id);
+                        const possibleSongs = changeSongToCompleted(e.currentTarget.id);
+                        if (currentPlayer?._id == user_id) {
+                          useSocketStore
+                            .getState()
+                            .socket?.emit(
+                              'changeSongToCompleted',
+                              possibleSongs,
+                              useRoomStore.getState().room_code,
+                              song.song_id,
+                            );
+                        }
                         setTimeout(() => {
-                          changeSongToCompleted(song.song_id);
+                          useAnswerStore.getState().setPossibleSongs(possibleSongs);
                           handleChooseCategory(song.category, 2);
                         }, 3000);
                       }}

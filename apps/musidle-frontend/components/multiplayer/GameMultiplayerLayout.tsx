@@ -28,14 +28,20 @@ import Leaderboard from './Leaderboard';
 const GameMultiplayerLayout = () => {
   const { user_id } = useAuthStore();
   const { timer } = useTimerStore();
-  const { value, handleValueChange, possibleAnswers, handleAnswerSubmit, getPossibleSongAnswers } =
-    useAnswerStore();
+  const {
+    value,
+    handleValueChange,
+    possibleAnswers,
+    handleAnswerSubmit,
+    getPossibleSongAnswers,
+    artist,
+  } = useAnswerStore();
   const { players, currentPlayer } = useRoomStore();
   const { audio, time, audioTime, handleSkip, handlePlay } = useAudioStore();
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center ">
+    <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center relative min-h-[450px]">
       <Card className=" float-left xl:w-4/6 flex flex-col justify-center align-center">
         <CardHeader className=" text-center">
           <div className="flex justify-between items-center">
@@ -69,95 +75,100 @@ const GameMultiplayerLayout = () => {
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent>
-          <Alert className="flex justify-center items-center">
+        <CardContent className="h-full">
+          <Alert className="flex justify-center items-center h-full">
             <AlertTitle className="h-full flex flex-col">
-              <div className="text-center h-[80px] py-4">
-                <Slider
-                  value={[audioTime]}
-                  min={0}
-                  max={time / 1000}
-                  disabled
-                  className={cn('py-4', 'h-4')}
-                />
-                <Label>
-                  {
+              <div className="h-1/2">
+                <div className="text-center py-4">
+                  <Slider
+                    value={[audioTime]}
+                    min={0}
+                    max={time / 1000}
+                    disabled
+                    className={cn('py-4', 'h-4')}
+                  />
+                  <Label>
                     {
-                      1: 'Stage 1',
-                      3: 'Stage 2',
-                      6: 'Stage 3',
-                      12: 'Stage 4',
-                    }[time / 1000]
-                  }
-                </Label>
+                      {
+                        1: 'Stage 1',
+                        3: 'Stage 2',
+                        6: 'Stage 3',
+                        12: 'Stage 4',
+                      }[time / 1000]
+                    }
+                  </Label>
+                </div>
+                <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
+                  <Button
+                    onClick={e => {
+                      handlePlay();
+                    }}
+                    className="min-w-[80px]"
+                    disabled={currentPlayer?._id != user_id}
+                  >
+                    Play / Pause
+                  </Button>
+                </div>
               </div>
-              <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
-                <Button
-                  onClick={e => {
-                    handlePlay();
-                  }}
-                  className="min-w-[80px]"
-                  disabled={currentPlayer?._id != user_id}
-                >
-                  Play / Pause
-                </Button>
-              </div>
-              <div className="h-[250px] pt-48">
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={open}
-                      className="w-[250px] justify-between"
-                      disabled={currentPlayer?._id != user_id}
-                    >
-                      {value
-                        ? possibleAnswers.find(
-                            song => song.value.toLowerCase() === value.toLowerCase(),
-                          )?.value
-                        : 'Select song...'}
-                      <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0">
-                    <Command shouldFilter={false}>
-                      <CommandInput
-                        placeholder="Search song..."
-                        onValueChange={value => {
-                          getPossibleSongAnswers(value);
-                          handleValueChange(value);
-                        }}
-                        value={value}
-                      />
+              <div className="h-1/2 flex flex-col justify-center items-center">
+                <div className="p-3">{artist ? artist : null}</div>
+                <div>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-[250px] justify-between"
+                        disabled={currentPlayer?._id != user_id}
+                      >
+                        {value
+                          ? possibleAnswers.find(
+                              song => song.value.toLowerCase() === value.toLowerCase(),
+                            )?.value
+                          : 'Select song...'}
+                        <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[300px] p-0">
+                      <Command shouldFilter={false}>
+                        <CommandInput
+                          placeholder="Search song..."
+                          onValueChange={value => {
+                            getPossibleSongAnswers(value);
+                            handleValueChange(value);
+                          }}
+                          value={value}
+                        />
 
-                      <CommandGroup>
-                        {possibleAnswers.map(song => (
-                          <CommandItem
-                            key={song.key}
-                            onSelect={currentValue => {
-                              handleValueChange(currentValue === value ? '' : currentValue);
-                              setOpen(false);
-                            }}
-                          >
-                            <AiOutlineCheck
-                              className={cn(
-                                'mr-2 h-4 w-4',
-                                value.toLowerCase() == song.value.toLowerCase()
-                                  ? 'opacity-100'
-                                  : 'opacity-0',
-                              )}
-                            />
-                            {song.value}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                        <CommandGroup>
+                          {possibleAnswers.map(song => (
+                            <CommandItem
+                              key={song.key}
+                              onSelect={currentValue => {
+                                handleValueChange(currentValue === value ? '' : currentValue);
+                                setOpen(false);
+                              }}
+                            >
+                              <AiOutlineCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  value.toLowerCase() == song.value.toLowerCase()
+                                    ? 'opacity-100'
+                                    : 'opacity-0',
+                                )}
+                              />
+                              {song.value}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
 
-                <div className="p-2 flex justify-center items-center">
-                  <Label className="text-center">{timer}s</Label>
+                  <div className="p-2 flex justify-center items-center">
+                    <Label className="text-center">{timer}s</Label>
+                  </div>
                 </div>
               </div>
             </AlertTitle>

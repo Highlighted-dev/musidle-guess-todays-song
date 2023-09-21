@@ -80,10 +80,10 @@ useSocketStore.subscribe(({ socket }) => {
     socket.on('timerUpdate', (timer: number) => {
       useTimerStore.getState().setTimer(timer);
     });
-    socket.on('changeSongToCompleted', (possibleSongs: ISong[], song_id) => {
+    socket.on('changeSongToCompleted', (song_id: string) => {
       useAnswerStore.getState().revealArtist(song_id);
       setTimeout(() => {
-        useAnswerStore.getState().setPossibleSongs(possibleSongs);
+        useAnswerStore.getState().changeSongToCompleted(song_id);
       }, 3000);
     });
 

@@ -128,8 +128,8 @@ io.on('connection', socket => {
     );
     socket.to(room_code).emit('turnChange');
   });
-  socket.on('changeSongToCompleted', async (possibleSongs, room_code, song_id) => {
-    socket.to(room_code).emit('changeSongToCompleted', possibleSongs, song_id);
+  socket.on('changeSongToCompleted', async (room_code, song_id) => {
+    socket.to(room_code).emit('changeSongToCompleted', song_id);
   });
 });
 

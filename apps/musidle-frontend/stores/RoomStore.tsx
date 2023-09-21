@@ -277,7 +277,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
     if (audio) {
       audio.volume = useAudioStore.getState().volume;
     }
-    if (phase != 3) setSelectMode(true);
+    if (phase != 3) {
+      setSelectMode(true);
+      return;
+    }
+    useRoomStore.getState().setIsInLobby(false);
   },
   async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {
     if (

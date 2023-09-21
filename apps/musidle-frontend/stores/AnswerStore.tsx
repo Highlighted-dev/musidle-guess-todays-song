@@ -132,4 +132,16 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     });
     useAnswerStore.getState().setArtist(artist || '');
   },
+  changeSongToCompleted: (song_id: string) => {
+    //Change "completed" boolean in possibleSongs for song with song_id to true
+    const possibleSongs = useAnswerStore.getState().possibleSongs;
+
+    possibleSongs.map((song: { song_id: string; completed: boolean }) => {
+      if (song.song_id == song_id) {
+        song.completed = true;
+      }
+    });
+
+    useAnswerStore.getState().setPossibleSongs(possibleSongs);
+  },
 }));

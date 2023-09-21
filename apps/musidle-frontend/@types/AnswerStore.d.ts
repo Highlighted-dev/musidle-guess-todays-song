@@ -25,4 +25,5 @@ export interface IAnswerStore {
   handleAnswerSubmit: () => void;
   getPossibleSongAnswers: (query: string) => void;
   revealArtist: (song_id: string) => void;
+  changeSongToCompleted: (song_id: string) => void;
 }

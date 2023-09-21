@@ -11,19 +11,7 @@ import { useSocketStore } from '@/stores/SocketStore';
 const GamePhase2 = () => {
   const { user_id } = useAuthStore();
   const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
-  const { artist, revealArtist, possibleSongs } = useAnswerStore();
-
-  const changeSongToCompleted = (song_id: string) => {
-    //Change "completed" boolean in possibleSongs for song with song_id to true
-    const possibleSongs = useAnswerStore.getState().possibleSongs;
-
-    possibleSongs.map((song: { song_id: string; completed: boolean }) => {
-      if (song.song_id == song_id) {
-        song.completed = true;
-      }
-    });
-    return possibleSongs;
-  };
+  const { artist, revealArtist, possibleSongs, changeSongToCompleted } = useAnswerStore();
 
   return (
     <>
@@ -45,19 +33,17 @@ const GamePhase2 = () => {
                       variant={'secondary'}
                       onClick={e => {
                         revealArtist(e.currentTarget.id);
-                        const possibleSongs = changeSongToCompleted(e.currentTarget.id);
                         if (currentPlayer?._id == user_id) {
                           useSocketStore
                             .getState()
                             .socket?.emit(
                               'changeSongToCompleted',
-                              possibleSongs,
                               useRoomStore.getState().room_code,
                               song.song_id,
                             );
                         }
                         setTimeout(() => {
-                          useAnswerStore.getState().setPossibleSongs(possibleSongs);
+                          changeSongToCompleted(song.song_id);
                           handleChooseCategory(song.category, 2);
                         }, 3000);
                       }}

@@ -12,6 +12,7 @@ const GamePhase2 = () => {
   const { user_id } = useAuthStore();
   const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const { artist, revealArtist, possibleSongs, changeSongToCompleted } = useAnswerStore();
+  const [choosingArtist, setChoosingArtist] = React.useState(false);
 
   return (
     <>
@@ -32,6 +33,7 @@ const GamePhase2 = () => {
                       key={index}
                       variant={'secondary'}
                       onClick={e => {
+                        setChoosingArtist(true);
                         revealArtist(e.currentTarget.id);
                         if (currentPlayer?._id == user_id) {
                           useSocketStore
@@ -45,15 +47,17 @@ const GamePhase2 = () => {
                         setTimeout(() => {
                           changeSongToCompleted(song.song_id);
                           handleChooseCategory(song.category, 2);
+                          setChoosingArtist(false);
                         }, 3000);
                       }}
                       id={song.song_id}
                       disabled={
-                        currentPlayer?._id == user_id &&
-                        !possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
-                          ?.completed
-                          ? false
-                          : true
+                        (currentPlayer?._id != user_id && artist == song.artist) ||
+                        possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
+                          ?.completed ||
+                        choosingArtist
+                          ? true
+                          : false
                       }
                       className="p-[25px]"
                     >

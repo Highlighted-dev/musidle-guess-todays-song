@@ -161,7 +161,7 @@ const GamePhase3 = () => {
                 min={0}
                 max={100}
                 step={1}
-                defaultValue={[100]}
+                defaultValue={[useAudioStore.getState().volume * 100]}
                 className={cn('py-4', 'h-4')}
               />
               <Label>Volume</Label>

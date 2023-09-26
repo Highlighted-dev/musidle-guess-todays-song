@@ -34,10 +34,11 @@ const GameMultiplayerLayout = () => {
     possibleAnswers,
     handleAnswerSubmit,
     getPossibleSongAnswers,
+    possibleSongs,
     artist,
   } = useAnswerStore();
   const { players, currentPlayer } = useRoomStore();
-  const { audio, time, audioTime, handleSkip, handlePlay } = useAudioStore();
+  const { audio, time, audioTime, handleSkip, handlePlay, songId } = useAudioStore();
   const [open, setOpen] = useState(false);
 
   return (
@@ -111,7 +112,11 @@ const GameMultiplayerLayout = () => {
                 </div>
               </div>
               <div className="h-1/2 flex flex-col justify-center items-center">
-                <div className="p-3">{artist ? artist : null}</div>
+                <div className="p-3">
+                  {possibleSongs.find(song => song.song_id == songId)?.artist
+                    ? possibleSongs.find(song => song.song_id == songId)?.artist
+                    : null}
+                </div>
                 <div>
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>

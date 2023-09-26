@@ -126,6 +126,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     }
   },
   revealArtist: async (song_id: string) => {
+    console.log(song_id);
     const artist = await axios.get(`/api/songs/${song_id}`).then(res => {
       if (res.data.data.artist == null) return undefined;
       return res.data.data.artist;

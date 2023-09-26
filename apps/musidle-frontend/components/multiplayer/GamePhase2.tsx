@@ -34,7 +34,7 @@ const GamePhase2 = () => {
                       variant={'secondary'}
                       onClick={e => {
                         setChoosingArtist(true);
-                        revealArtist(e.currentTarget.id);
+                        revealArtist(song.song_id);
                         if (currentPlayer?._id == user_id) {
                           useSocketStore
                             .getState()
@@ -46,7 +46,7 @@ const GamePhase2 = () => {
                         }
                         setTimeout(() => {
                           changeSongToCompleted(song.song_id);
-                          handleChooseCategory(song.category, 2);
+                          handleChooseCategory(song.song_id, 2);
                           setChoosingArtist(false);
                         }, 3000);
                       }}

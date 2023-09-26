@@ -152,6 +152,9 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
     if (song_id.includes('final')) {
       const finalSongs = songs.filter((song: ISong) => song.song_id === song_id);
       return res.json({ message: 'Song found', data: finalSongs[0] });
+    } else if (song_id.includes('artist')) {
+      const artistSong = songs.filter((song: ISong) => song.song_id === song_id);
+      return res.json({ message: 'Song found', data: artistSong[0] });
     }
 
     const songsWithCategory = songs.filter((song: ISong) => song.category === song_id);

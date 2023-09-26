@@ -6,7 +6,7 @@ interface ICustomError extends Error {
 }
 
 const errorHandler = (error: ICustomError, req: Request, res: Response, next: NextFunction) => {
-  console.error(error);
+  console.error(error.message);
 
   const status = error.status || 500;
   const message = error.message || 'Internal Server Error';

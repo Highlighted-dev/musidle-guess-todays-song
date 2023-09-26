@@ -32,9 +32,26 @@ router.get('/:song_id', async (req: Request, res: Response, next: NextFunction) 
 
 router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.song_id || !req.body.category || !req.body.value || !req.body.key) {
+    if (!req.body.song_id || !req.body.category || !req.body.value) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
+    if (!req.body.key) {
+      const possibleLastFmUrls = await axios
+        .get('http://localhost:5000/api/track/search/' + encodeURIComponent(req.body.value))
+        .then(res => res.data);
+
+      possibleLastFmUrls.map((song: any) => {
+        if ((song.artist + ' - ' + song.name).toLowerCase() == req.body.value.toLowerCase()) {
+          req.body.key = song.url;
+          return;
+        }
+      });
+      if (!req.body.key)
+        return res
+          .status(404)
+          .json({ message: 'URL to LastFM not found, you have to provide it manually' });
+    }
+
     const song = await songModel.create(req.body);
     return res.json({ message: 'Song created', data: song });
   } catch (error) {

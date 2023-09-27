@@ -129,6 +129,16 @@ io.on('connection', socket => {
     socket.to(room_code).emit('turnChange');
   });
   socket.on('changeSongToCompleted', async (room_code, song_id) => {
+    await roomModel.updateOne(
+      {
+        room_code: room_code,
+        'songs.song_id': song_id,
+      },
+      {
+        $set: { 'songs.$.completed': true },
+      },
+    );
+
     socket.to(room_code).emit('changeSongToCompleted', song_id);
   });
 });

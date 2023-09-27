@@ -52,7 +52,7 @@ const GamePhase2 = () => {
                       }}
                       id={song.song_id}
                       disabled={
-                        (currentPlayer?._id != user_id && artist == song.artist) ||
+                        currentPlayer?._id != user_id ||
                         possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
                           ?.completed ||
                         choosingArtist

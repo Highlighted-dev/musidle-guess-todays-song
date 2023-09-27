@@ -8,6 +8,7 @@ import { IAnswer, ISong } from '@/@types/AnswerStore';
 import { IPlayer } from '@/@types/Rooms';
 import useTimerStore from './TimerStore';
 import { set } from 'mongoose';
+import axios from 'axios';
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
@@ -83,6 +84,7 @@ useSocketStore.subscribe(({ socket }) => {
     socket.on('changeSongToCompleted', (song_id: string) => {
       useAnswerStore.getState().revealArtist(song_id);
       setTimeout(() => {
+        useAudioStore.getState().setSongId(song_id);
         useAnswerStore.getState().changeSongToCompleted(song_id);
       }, 3000);
     });

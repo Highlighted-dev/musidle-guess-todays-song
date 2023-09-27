@@ -107,7 +107,11 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       useAnswerStore.setState({
         possibleAnswers: temp_songs.slice(
           0,
-          round > maxRoundsPhaseOne && round <= maxRoundsPhaseOne + maxRoundsPhaseTwo ? 2 : 8,
+          round > maxRoundsPhaseOne && round <= maxRoundsPhaseOne + maxRoundsPhaseTwo
+            ? 2
+            : round > maxRoundsPhaseOne + maxRoundsPhaseTwo
+            ? 1
+            : 8,
         ),
       }); // Update the songs state with the new search results
     } else {

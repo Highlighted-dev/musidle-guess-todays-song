@@ -7,18 +7,11 @@ import axios from 'axios';
 import { useAnswerStore } from './AnswerStore';
 
 interface IGameFinalStore {
-  completedSongs: string[];
-  setCompletedSongs: (completedSongs: string[]) => void;
   handleFinal: () => void;
   handleFinalAnswerSubmit: () => void;
 }
 //TODO remove phaseStore, move togglePhaseOne to RoomStore as startGame
 export const useGameFinalStore = create<IGameFinalStore>(set => ({
-  completedSongs: [],
-  setCompletedSongs: (completedSongs: string[]) =>
-    set(() => ({
-      completedSongs: completedSongs,
-    })),
   handleFinal: () => {
     const { socket } = useSocketStore.getState();
     const { players, setCurrentPlayer, room_code, handleChooseCategory } = useRoomStore.getState();
@@ -38,6 +31,7 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
     const { currentPlayer } = useRoomStore.getState();
     const user_id = useAuthStore.getState().user_id;
     const socket = useSocketStore.getState().socket;
+    const { setAnswer, changeSongToCompleted } = useAnswerStore.getState();
 
     if (currentPlayer?._id == user_id) {
       await axios
@@ -50,17 +44,13 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
         })
         .then(res => res.data)
         .then(res => {
-          useAnswerStore.getState().setAnswer(res.data.answer || null);
-          if (res.data.score > 0) {
-            useGameFinalStore.setState({
-              completedSongs: [
-                ...useGameFinalStore.getState().completedSongs,
-                useAudioStore.getState().songId,
-              ],
-            });
-          }
-          // useRoomStore.getState().updatePlayerScore(res.data.score, currentPlayer);
-          // socket?.emit('answerSubmit', res.data.score, currentPlayer, res.data.answer, room_code);
+          setAnswer(res.data.answer || null);
+          socket?.emit(
+            'changeSongToCompleted',
+            useRoomStore.getState().room_code,
+            useAudioStore.getState().songId,
+          );
+          changeSongToCompleted(useAudioStore.getState().songId);
         });
     }
     if (useAudioStore.getState().audio) useAudioStore.getState().audio?.pause();

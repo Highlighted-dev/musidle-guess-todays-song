@@ -224,7 +224,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     }
 
     //As the state does not update immediately, we are checking if the current player WAS the user
-    if (currentPlayer?._id == user_id) {
+    if (currentPlayer?._id == user_id && round <= maxRoundsPhaseOne + maxRoundsPhaseTwo) {
       socket?.emit(
         'turnChange',
         useRoomStore.getState().currentPlayer,

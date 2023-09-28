@@ -139,6 +139,20 @@ io.on('connection', socket => {
       },
     );
 
+    if (song_id.includes('final')) {
+      //Check if all song with category 'final' are completed
+      await roomModel.findOne({ room_code: room_code }).then(async room => {
+        const songs = room?.songs.filter(
+          song => song.category === 'final' && song.completed === true,
+        );
+        if (songs?.length === 6) {
+          //If all songs with category 'final' are completed, then add +1 to round
+          roomModel.updateOne({ room_code: room_code }, { $inc: { round: 1 } });
+          io.sockets.to(room_code).emit('turnChange');
+          return;
+        }
+      });
+    }
     socket.to(room_code).emit('changeSongToCompleted', song_id);
   });
 });

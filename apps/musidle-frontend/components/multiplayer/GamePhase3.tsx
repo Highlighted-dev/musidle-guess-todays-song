@@ -22,12 +22,13 @@ const GamePhase3 = () => {
   const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const { handlePlay, audio } = useAudioStore();
   const { timer } = useTimerStore();
-  const { value, handleValueChange, possibleAnswers, getPossibleSongAnswers } = useAnswerStore();
-  const { completedSongs, handleFinalAnswerSubmit } = useGameFinalStore();
+  const { value, handleValueChange, possibleAnswers, getPossibleSongAnswers, possibleSongs } =
+    useAnswerStore();
+  const { handleFinalAnswerSubmit } = useGameFinalStore();
   const [open, setOpen] = useState(false);
 
   const handleTogglePress = (final_song_id: string) => {
-    if (completedSongs.includes(final_song_id)) return;
+    if (possibleSongs.find(song => song.song_id == final_song_id)?.completed) return;
     handleChooseCategory(final_song_id, 3);
     for (let i = 1; i <= 6; i++) {
       const element = document.getElementById(`final${i}`);
@@ -49,7 +50,10 @@ const GamePhase3 = () => {
         <div className="w-full h-full">
           <Toggle
             className="col-span-1 p-2 w-full h-full"
-            disabled={currentPlayer?._id != user_id || completedSongs.includes(`final${i}`)}
+            disabled={
+              currentPlayer?._id != user_id ||
+              possibleSongs.find(song => song.song_id == `final${i}`)?.completed
+            }
             id={`final${i}`}
             key={i}
             defaultPressed={i == 1 ? true : false}

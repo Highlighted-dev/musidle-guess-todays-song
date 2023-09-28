@@ -83,7 +83,7 @@ export default function Multiplayer() {
             <DialogTitle className="text-center">Round {round}</DialogTitle>
           </DialogHeader>
           <h1 className="text-base text-center">
-            {answer && value.toLowerCase() == answer.toLowerCase() ? (
+            {answer && value.toLowerCase().includes(answer.toLowerCase()) ? (
               <Label className="text-green-500 font-bold"> CORRECT</Label>
             ) : (
               <Label className="text-red-700 font-bold"> INCORRECT</Label>

@@ -193,7 +193,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
         const correctAnswer = response.data;
         if (!correctAnswer) {
           return res.status(404).json({ status: 'error', message: 'Answer not found' });
-        } else if (correctAnswer.value.toLowerCase() === player_answer.toLowerCase()) {
+        } else if (player_answer.toLowerCase().includes(correctAnswer.value.toLowerCase())) {
           const score = () => {
             switch (time) {
               case 1000:

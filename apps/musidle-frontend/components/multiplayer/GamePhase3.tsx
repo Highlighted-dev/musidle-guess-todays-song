@@ -62,7 +62,11 @@ const GamePhase3 = () => {
             }}
             variant={'outline'}
           >
-            <Label className="cursor-pointer">{i}</Label>
+            <Label className="cursor-pointer">
+              {possibleSongs.find(song => song.song_id == `final${i}`)?.completed
+                ? possibleSongs.find(song => song.song_id == `final${i}`)?.artist
+                : i}
+            </Label>
           </Toggle>
         </div>,
       );

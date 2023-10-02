@@ -2,12 +2,10 @@ import React, { useState, useEffect, createContext, useMemo } from 'react';
 import axios from 'axios';
 import { AuthContextType, IAxiosErrorRestApi } from '../../@types/AuthContext';
 import { toast } from '../ui/use-toast';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/AuthStore';
 export const authContext = createContext<AuthContextType | null>(null);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const { user_id, setUserId, username, setUsername, email, setEmail, role, setRole } =
     useAuthStore();
@@ -67,7 +65,6 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       .then(response_data => {
         if (response_data.isUserLoggedIn === true) {
           loadData();
-          router.push('/');
         }
       })
       .catch((err: IAxiosErrorRestApi) => axiosErrorHandler(err));

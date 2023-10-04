@@ -47,7 +47,7 @@ const GameMultiplayerLayout = () => {
         <CardHeader className=" text-center">
           <div className="flex justify-between items-center">
             <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-              v0.5.0
+              v0.6.0
             </label>
             <CardTitle className="flex justify-center items-center">
               Musidle - Multiplayer

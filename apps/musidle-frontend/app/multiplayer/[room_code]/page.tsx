@@ -24,6 +24,7 @@ export default function Multiplayer() {
     joinRoom,
     turnChangeDialogOpen,
     players,
+    spectators,
     round,
     currentPlayer,
     maxRoundsPhaseOne,
@@ -71,7 +72,7 @@ export default function Multiplayer() {
   }, [turnChangeDialogOpen]);
 
   return (
-    <div className="rounded-md overflow-hidden w-full h-full flex flex-col justify-center items-center">
+    <div className="rounded-md overflow-hidden w-full h-full flex flex-col justify-center items-center min-h-[750px]">
       <Dialog
         open={turnChangeDialogOpen}
         onOpenChange={() => {
@@ -109,17 +110,22 @@ export default function Multiplayer() {
         //If game has started and user is in players array, render GamePhase, else render GameLobby
         !isInLobby &&
         round <= maxRoundsPhaseOne &&
-        players.find(player => player['_id'] == user_id) ? (
+        (players.find(player => player['_id'] == user_id) ||
+          spectators.find(spectator => spectator['_id'] == user_id)) ? (
           <GamePhase1 />
         ) : !isInLobby &&
           round <= maxRoundsPhaseOne + maxRoundsPhaseTwo &&
-          players.find(player => player['_id'] == user_id) ? (
+          (players.find(player => player['_id'] == user_id) ||
+            spectators.find(spectator => spectator['_id'] == user_id)) ? (
           <GamePhase2 />
         ) : !isInLobby &&
           round <= maxRoundsPhaseOne + maxRoundsPhaseTwo + 1 &&
-          players.find(player => player['_id'] == user_id) ? (
+          (players.find(player => player['_id'] == user_id) ||
+            spectators.find(spectator => spectator['_id'] == user_id)) ? (
           <GamePhase3 />
-        ) : !isInLobby && players.find(player => player['_id'] == user_id) ? (
+        ) : !isInLobby &&
+          (players.find(player => player['_id'] == user_id) ||
+            spectators.find(spectator => spectator['_id'] == user_id)) ? (
           <GameEndScreen />
         ) : (
           <GameLobby room_code={params.room_code} />

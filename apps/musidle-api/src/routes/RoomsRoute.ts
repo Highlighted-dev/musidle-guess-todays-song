@@ -58,13 +58,29 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         isInSelectMode: true,
         songs: songs.data.songs,
       });
-    } else if (!room.players.some(player => player._id === req.body.player._id)) {
-      const room = await roomModel.findOneAndUpdate(
+    } else if (
+      !room.players.some(player => player._id === req.body.player._id) &&
+      !room.spectators.some(spectator => spectator._id === req.body.player._id)
+    ) {
+      //add player to spectators if game has already started
+      if (room?.round > 1) {
+        room = await roomModel.findOneAndUpdate(
+          { room_code: room_id },
+          { $push: { spectators: req.body.player } },
+          { new: true },
+        );
+        (req as ICustomRequest).io
+          .in(room_id)
+          .emit('updatePlayerList', room?.players, room?.spectators);
+        return res.json(room);
+      }
+      room = await roomModel.findOneAndUpdate(
         { room_code: room_id },
         { $push: { players: req.body.player } },
         { new: true },
       );
       (req as ICustomRequest).io.in(room_id).emit('updatePlayerList', room?.players);
+      return res.json(room);
     }
     room = await roomModel.findOne({ room_code: room_id });
     return res.json(room);

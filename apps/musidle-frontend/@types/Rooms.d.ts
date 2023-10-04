@@ -8,6 +8,8 @@ export interface IRoomStore {
   setRoomCode: (room_code: string) => void;
   players: player[];
   setPlayers: (players: player[]) => void;
+  spectators: player[];
+  setSpectators: (spectators: player[]) => void;
   round: number;
   setRound: (round: number) => void;
   maxRoundsPhaseOne: number;

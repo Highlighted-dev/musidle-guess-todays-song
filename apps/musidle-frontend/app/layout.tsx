@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <LoginAndRegister />
               </div>
             </div>
-            <div className="flex justify-center items-center w-full h-full text-white m-0 p-0">
+            <div className="flex justify-center items-center w-full h-full text-white m-0 p-0 min-h-[750px]">
               {children}
             </div>
             <div className="h-[50px] flex justify-center w-full py-4">

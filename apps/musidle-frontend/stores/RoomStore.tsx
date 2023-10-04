@@ -24,6 +24,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
     set(() => ({
       players: players,
     })),
+  spectators: [],
+  setSpectators: (spectators: IPlayer[]) =>
+    set(() => ({
+      spectators: spectators,
+    })),
   round: 1,
   setRound: (round: number) =>
     set(() => ({
@@ -77,6 +82,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       set(() => ({
         room_code: room_code,
         players: data.players,
+        spectators: data.spectators,
         currentPlayer: data.current_player,
         maxRoundsPhaseOne: data.maxRoundsPhaseOne,
         maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
@@ -122,6 +128,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       set(() => ({
         room_code: data.room_code,
         players: data.players,
+        spectators: data.spectators,
         currentPlayer: data.current_player,
         maxRoundsPhaseOne: data.maxRoundsPhaseOne,
         maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,

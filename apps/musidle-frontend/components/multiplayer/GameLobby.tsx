@@ -8,13 +8,13 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
 export default function GameLobby(params: { room_code: string }) {
-  const { players, maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame } =
+  const { players, spectators, maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame } =
     useRoomStore();
   const { role } = useAuthStore();
 
   return (
-    <div className="xl:p-0 p-4 w-full h-4/5 flex xl:flex-row xl:relative flex-col justify-center align-center">
-      <Card className=" xl:w-4/6 w-full h-full min-h-[600px]">
+    <div className="xl:p-0 p-4 w-full md:h-4/5 h-full flex xl:flex-row xl:relative flex-col justify-center align-center min-h-[750px] md:min-h-0">
+      <Card className=" xl:w-4/6 w-full h-full">
         <CardHeader className=" text-center h-1/5">
           <CardTitle>Game lobby</CardTitle>
           <p>Room: {params.room_code}</p>
@@ -75,20 +75,37 @@ export default function GameLobby(params: { room_code: string }) {
               </div>
             </CardContent>
           </Card>
-          <Card className="flex flex-col justify-center items-center md:p-4 p-2">
-            <CardHeader className=" text-center">
-              <CardTitle>Players</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <ul className="grid grid-cols-2 gap-2">
-                {players.map((player, index) => (
-                  <li key={index} className="text-center">
-                    {player.name}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+          <div className="flex md:flex-row flex-col justify-between items-center">
+            <Card className="flex flex-col justify-center items-center m-2 md:w-1/2 w-full h-full">
+              <CardHeader className=" text-center">
+                <CardTitle>Players</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                <ul className="grid grid-cols-2 gap-2">
+                  {players.map((player, index) => (
+                    <li key={index} className="text-center">
+                      {player.name}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="flex flex-col justify-center items-center m-2 md:w-1/2 w-full h-full">
+              <CardHeader className=" text-center">
+                <CardTitle>Spectators</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-2">
+                <ul>
+                  {spectators.map((spectator, index) => (
+                    <li key={index} className="text-center">
+                      {spectator.name}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
           <div className="flex justify-center items-center p-4">
             <Button variant={'default'} disabled={role != 'Admin'} onClick={startGame}>
               Start game

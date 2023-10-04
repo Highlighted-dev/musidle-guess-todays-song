@@ -30,10 +30,14 @@ export const useSocketStore = create<ISocketStore>(set => ({
 // Connect the socket and add event listeners
 useSocketStore.subscribe(({ socket }) => {
   if (socket) {
-    if (!useRoomStore.getState().players.find(p => p._id === useAuthStore.getState().user_id))
+    if (
+      !useRoomStore.getState().players.find(p => p._id === useAuthStore.getState().user_id) &&
+      !useRoomStore.getState().spectators.find(p => p._id === useAuthStore.getState().user_id)
+    )
       return;
-    socket.on('updatePlayerList', (players: IPlayer[]) => {
+    socket.on('updatePlayerList', (players: IPlayer[], spectators: IPlayer[]) => {
       useRoomStore.setState({ players: players });
+      if (spectators) useRoomStore.setState({ spectators: spectators });
     });
     socket.on('togglePhaseOne', current_player => {
       if (useRoomStore.getState().isInLobby) {
@@ -45,10 +49,11 @@ useSocketStore.subscribe(({ socket }) => {
       useAudioStore.getState().setTime(time);
     });
     socket.on('chooseSong', (song_id: string) => {
-      const setAudio = useAudioStore.getState().setAudio;
+      const { setAudio, setSongId } = useAudioStore.getState();
       const setSelectMode = useRoomStore.getState().setSelectMode;
 
       const audio = new Audio(`/music/${song_id}.mp3`);
+      setSongId(song_id);
       setAudio(audio);
       if (audio) {
         audio.volume = useAudioStore.getState().volume;

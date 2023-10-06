@@ -95,8 +95,8 @@ export default function GameLobby(params: { room_code: string }) {
               <CardHeader className=" text-center">
                 <CardTitle>Spectators</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-2">
-                <ul>
+              <CardContent className="grid gap-4">
+                <ul className="grid grid-cols-2 gap-2">
                   {spectators.map((spectator, index) => (
                     <li key={index} className="text-center">
                       {spectator.name}

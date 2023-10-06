@@ -133,7 +133,6 @@ io.on('connection', socket => {
           );
 
           io.in(room_code).emit('updatePlayerList', newPlayers, spectators);
-          return;
         }
       }
     });

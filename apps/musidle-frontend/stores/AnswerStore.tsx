@@ -52,7 +52,10 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const socket = useSocketStore.getState().socket;
     let category = '';
     //set completedCategories.category.completed to true
-    if (useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne) {
+    if (
+      useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne &&
+      currentPlayer?._id == user_id
+    ) {
       useRoomStore.getState().players.map(player => {
         if (player._id == user_id) {
           player.completedCategories.map((item: any) => {

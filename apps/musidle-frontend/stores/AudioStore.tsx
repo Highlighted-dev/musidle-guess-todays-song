@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { useSocketStore } from './SocketStore';
 import { useAuthStore } from './AuthStore';
 import { useRoomStore } from './RoomStore';
-import useTimerStore from './TimerStore';
+import { useTimerStore } from '@/stores/TimerStore';
 
 interface IAudioStore {
   audio: HTMLAudioElement | null;

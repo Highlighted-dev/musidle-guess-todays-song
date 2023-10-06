@@ -6,9 +6,8 @@ import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
 import { IAnswer, ISong } from '@/@types/AnswerStore';
 import { IPlayer } from '@/@types/Rooms';
-import useTimerStore from './TimerStore';
-import { set } from 'mongoose';
-import axios from 'axios';
+import { useTimerStore } from '@/stores/TimerStore';
+
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
@@ -78,6 +77,7 @@ useSocketStore.subscribe(({ socket }) => {
       useAnswerStore.setState({ possibleAnswers: songs });
     });
     socket.on('roomSettingsUpdate', (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => {
+      if (useAuthStore.getState().role == 'admin') return;
       useRoomStore.setState({
         maxRoundsPhaseOne: maxRoundsPhaseOne,
         maxRoundsPhaseTwo: maxRoundsPhaseTwo,

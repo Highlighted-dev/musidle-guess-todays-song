@@ -11,7 +11,7 @@ import { useAudioStore } from '@/stores/AudioStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { Toggle } from '../ui/toggle';
 import { Label } from '../ui/label';
-import useTimerStore from '@/stores/TimerStore';
+import { useTimerStore } from '@/stores/TimerStore';
 import { Slider } from '../ui/slider';
 import { cn } from '@/lib/utils';
 import { useAnswerStore } from '@/stores/AnswerStore';

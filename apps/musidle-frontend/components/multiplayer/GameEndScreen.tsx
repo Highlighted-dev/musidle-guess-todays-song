@@ -4,6 +4,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/AuthStore';
 const GameEndScreen = () => {
   const { currentPlayer, players, leaveRoom } = useRoomStore.getState();
   const router = useRouter();
@@ -34,7 +35,7 @@ const GameEndScreen = () => {
               variant="secondary"
               className="w-full"
               onClick={() => {
-                leaveRoom(router);
+                leaveRoom(router, useAuthStore.getState().user_id);
               }}
             >
               Leave Game

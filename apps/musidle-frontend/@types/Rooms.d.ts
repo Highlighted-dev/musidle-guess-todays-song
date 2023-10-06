@@ -1,3 +1,5 @@
+import { Socket } from 'socket.io-client';
+
 export type IPlayer = {
   _id: string;
   name: string;
@@ -25,14 +27,22 @@ export interface IRoomStore {
   turnChangeDialogOpen: boolean;
   random: number;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
-  joinRoom: (room_code: string) => Promise<void>;
-  createRoom: () => Promise<void>;
-  leaveRoom: (router: Router) => void;
-  startGame: () => void;
+  joinRoom: (
+    room_code: string,
+    user_id: string | null = null,
+    username: string | null = null,
+  ) => Promise<void>;
+  createRoom: (user_id: string | null = null, username: string | null = null) => Promise<void>;
+  leaveRoom: (router: Router, user_id: string | null = null) => void;
+  startGame: (socket: Socket | null = null) => void;
   updatePlayerScore: (points: number, player: player) => void;
   handleTurnChange: () => void;
-  handleChooseCategory: (category: string, phase: number) => void;
-  updateSettings: (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => void;
+  handleChooseCategory: (
+    category: string,
+    phase: number,
+    socket: Socket | null = null,
+  ) => Promise<string>;
+  updateSettings: (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => Promise<void>;
 }
 export interface IRoom {
   _id: string;

@@ -39,9 +39,11 @@ export default function Multiplayer() {
 
   const handleRoomJoin = async (room_id: string) => {
     if (!user_id) return;
-    joinRoom(room_id).then(() => {
-      router.push(`/multiplayer/${room_id}`);
-    });
+    joinRoom(room_id, useAuthStore.getState().user_id, useAuthStore.getState().username).then(
+      () => {
+        router.push(`/multiplayer/${room_id}`);
+      },
+    );
   };
 
   useEffect(() => {

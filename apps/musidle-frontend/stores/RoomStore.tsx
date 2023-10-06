@@ -8,7 +8,7 @@ import { useAnswerStore } from './AnswerStore';
 import { useAudioStore } from './AudioStore';
 import { toast } from '@/components/ui/use-toast';
 import { useGameFinalStore } from './GameFinalStore';
-import useTimerStore from './TimerStore';
+import { useTimerStore } from '@/stores/TimerStore';
 import { Router } from 'next/router';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -66,16 +66,16 @@ export const useRoomStore = create<IRoomStore>(set => ({
       turnChangeDialogOpen: turnChangeDialogOpen,
     })),
   random: 0,
-  joinRoom: async (room_code: string) => {
+  joinRoom: async (room_code, user_id = null, username = null) => {
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setTimer } = useTimerStore.getState();
     const { setPossibleSongs } = useAnswerStore.getState();
-    if (useAuthStore.getState().user_id) {
+    if (user_id && username) {
       const { data } = await axios.post(`/api/rooms/join`, {
         room_id: room_code,
         player: {
-          _id: useAuthStore.getState().user_id,
-          name: useAuthStore.getState().username,
+          _id: user_id,
+          name: username,
           score: 0,
         },
       });
@@ -115,13 +115,13 @@ export const useRoomStore = create<IRoomStore>(set => ({
       // router.push(`/multiplayer/${room_id}`);
     }
   },
-  createRoom: async () => {
+  createRoom: async (user_id = null, username = null) => {
     const { setPossibleSongs } = useAnswerStore.getState();
-    if (useAuthStore.getState().user_id) {
+    if (user_id && username) {
       const { data } = await axios.post(`/api/rooms/create`, {
         player: {
-          _id: useAuthStore.getState().user_id,
-          name: useAuthStore.getState().username,
+          _id: user_id,
+          name: username,
           score: 0,
         },
       });
@@ -153,9 +153,8 @@ export const useRoomStore = create<IRoomStore>(set => ({
       // router.push(`/multiplayer/${room_id}`);
     }
   },
-  leaveRoom: async (router: Router) => {
+  leaveRoom: async (router: Router, user_id = null) => {
     const { room_code } = useRoomStore.getState();
-    const { user_id } = useAuthStore.getState();
     if (user_id) {
       await axios.post(`/api/rooms/leave`, {
         room_code: room_code,
@@ -176,8 +175,8 @@ export const useRoomStore = create<IRoomStore>(set => ({
       return;
     }
   },
-  startGame: () => {
-    const { socket } = useSocketStore.getState();
+  startGame: (socket = null) => {
+    if (!socket) socket = useSocketStore.getState().socket;
 
     useRoomStore.getState().random = Math.floor(
       Math.random() * useRoomStore.getState().players.length,
@@ -264,11 +263,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
     }
   },
 
-  handleChooseCategory: async (song_id: string, phase = 1) => {
-    const { socket } = useSocketStore.getState();
+  handleChooseCategory: async (song_id: string, phase = 1, socket = null) => {
+    if (!socket) socket = useSocketStore.getState().socket;
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setSelectMode, room_code } = useRoomStore.getState();
-    const song = await axios
+    const song: string = await axios
       .post(`/api/songs/chooseSong`, {
         room_code: room_code,
         song_id: song_id,
@@ -277,18 +276,21 @@ export const useRoomStore = create<IRoomStore>(set => ({
         return res.data.data.song_id;
       });
     socket?.emit('chooseSong', song, room_code);
-    if (phase == 3) useAudioStore.getState().audio?.pause();
-    setSongId(song);
+    if (phase == 3 && song_id != 'song_id') useAudioStore.getState().audio?.pause();
+
+    useAudioStore.setState({ songId: song });
     setAudio(new Audio(`/music/${song}.mp3`));
     const audio = useAudioStore.getState().audio;
     if (audio) {
       audio.volume = useAudioStore.getState().volume;
     }
+    console.log('song', song, phase);
     if (phase != 3) {
       setSelectMode(true);
-      return;
+      return song;
     }
     useRoomStore.getState().setIsInLobby(false);
+    return song;
   },
   async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {
     if (
@@ -328,6 +330,10 @@ export const useRoomStore = create<IRoomStore>(set => ({
             description: res.data.message,
           });
         }
+        useRoomStore.setState({
+          maxRoundsPhaseOne: mxRoundsPhaseOne,
+          maxRoundsPhaseTwo: mxRoundsPhaseTwo,
+        });
       });
   },
 }));

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { useRoomStore } from './RoomStore';
 import { useAuthStore } from './AuthStore';
 import { useSocketStore } from './SocketStore';
-import useTimerStore from './TimerStore';
+import { useTimerStore } from '@/stores/TimerStore';
 import { useAudioStore } from './AudioStore';
 import axios from 'axios';
 import { IAnswer, IAnswerStore, ISong } from '@/@types/AnswerStore';

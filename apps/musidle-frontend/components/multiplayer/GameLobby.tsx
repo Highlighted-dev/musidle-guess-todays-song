@@ -107,7 +107,7 @@ export default function GameLobby(params: { room_code: string }) {
             </Card>
           </div>
           <div className="flex justify-center items-center p-4">
-            <Button variant={'default'} disabled={role != 'Admin'} onClick={startGame}>
+            <Button variant={'default'} disabled={role != 'Admin'} onClick={() => startGame}>
               Start game
             </Button>
           </div>

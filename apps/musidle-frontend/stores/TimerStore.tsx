@@ -8,7 +8,7 @@ interface ITimerStore {
   setTimer: (timer: number) => void;
 }
 
-const useTimerStore = create<ITimerStore>(set => ({
+export const useTimerStore = create<ITimerStore>(set => ({
   timer: 35.0,
   setTimer: (timer: number) =>
     set(() => ({
@@ -24,5 +24,3 @@ useTimerStore.subscribe(({ timer }) => {
     handleAnswerSubmit();
   }
 });
-
-export default useTimerStore;

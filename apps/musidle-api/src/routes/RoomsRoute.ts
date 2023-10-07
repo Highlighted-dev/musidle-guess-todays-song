@@ -93,6 +93,8 @@ router.post('/create', jsonParser, async (req: Request, res: Response, next: Nex
   try {
     if (!req.body.player)
       return res.status(400).json({ message: 'At least one player is required' });
+    const player_room = await roomModel.find({ 'players._id': req.body.player._id });
+    if (player_room.length > 0) return res.json(player_room[0]);
     let room_id;
     //random room_id
     while (true) {

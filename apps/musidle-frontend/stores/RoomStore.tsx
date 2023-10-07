@@ -284,7 +284,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
     if (audio) {
       audio.volume = useAudioStore.getState().volume;
     }
-    console.log('song', song, phase);
     if (phase != 3) {
       setSelectMode(true);
       return song;

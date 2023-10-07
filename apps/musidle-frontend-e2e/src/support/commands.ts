@@ -18,7 +18,18 @@ declare namespace Cypress {
 //
 // -- This is a parent command --
 Cypress.Commands.add('login', (email, password) => {
-  console.log('Custom command example: Login', email, password);
+  cy.visit('http://localhost:4200/');
+  cy.get('button').contains('Login').click();
+  cy.get('input[id=email]').type(email);
+  cy.get('input[id=password]').type(password);
+  cy.get('button').contains('Sign in').click();
+
+  // Add a wait for cookies to be set (adjust as needed)
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(100);
+
+  // Validate the existence of the 'token' cookie
+  cy.getCookie('token').should('exist');
 });
 //
 // -- This is a child command --

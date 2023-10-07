@@ -6,11 +6,21 @@ import { useRoomStore } from '@/stores/RoomStore';
 import React from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
+import { useRouter } from 'next/navigation';
 
 export default function GameLobby(params: { room_code: string }) {
-  const { players, spectators, maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame } =
-    useRoomStore();
+  const {
+    players,
+    spectators,
+    maxRoundsPhaseOne,
+    maxRoundsPhaseTwo,
+    updateSettings,
+    startGame,
+    leaveRoom,
+  } = useRoomStore();
   const { role } = useAuthStore();
+
+  const router = useRouter();
 
   return (
     <div className="xl:p-0 p-4 w-full md:h-4/5 h-full flex xl:flex-row xl:relative flex-col justify-center align-center min-h-[750px] md:min-h-0">
@@ -106,7 +116,13 @@ export default function GameLobby(params: { room_code: string }) {
               </CardContent>
             </Card>
           </div>
-          <div className="flex justify-center items-center p-4">
+          <div className="flex justify-between items-center p-4">
+            <Button
+              variant={'outline'}
+              onClick={() => leaveRoom(router, useAuthStore.getState().user_id)}
+            >
+              Leave game
+            </Button>
             <Button variant={'default'} disabled={role != 'Admin'} onClick={() => startGame}>
               Start game
             </Button>

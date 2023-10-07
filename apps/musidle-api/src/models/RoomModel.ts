@@ -6,7 +6,7 @@ const roomSchema = new Schema<IRoomModel>(
     room_code: { type: String, required: true },
     players: { type: [], required: true, unique: true },
     current_player: { type: Object, default: null },
-    spectators: { type: [], required: true, unique: true },
+    spectators: { type: [], required: true },
     song_id: { type: String, default: null },
     maxRoundsPhaseOne: { type: Number, default: 4 },
     maxRoundsPhaseTwo: { type: Number, default: 2 },

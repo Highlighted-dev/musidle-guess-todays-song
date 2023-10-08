@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-import useTimerStore from '@/stores/TimerStore';
+import { useTimerStore } from '@/stores/TimerStore';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useAudioStore } from '@/stores/AudioStore';

@@ -123,7 +123,7 @@ export default function GameLobby(params: { room_code: string }) {
             >
               Leave game
             </Button>
-            <Button variant={'default'} disabled={role != 'Admin'} onClick={() => startGame}>
+            <Button variant={'default'} disabled={role != 'Admin'} onClick={() => startGame()}>
               Start game
             </Button>
           </div>

@@ -19,6 +19,13 @@ declare namespace Cypress {
 // -- This is a parent command --
 Cypress.Commands.add('login', (email, password) => {
   cy.visit('http://localhost:4200/');
+
+  cy.get('nav').then(nav => {
+    if (nav.find('button:contains("Logout")').length > 0) {
+      nav.find('button:contains("Logout")').trigger('click');
+    }
+  });
+
   cy.get('button').contains('Login').click();
   cy.get('input[id=email]').type(email);
   cy.get('input[id=password]').type(password);
@@ -26,7 +33,7 @@ Cypress.Commands.add('login', (email, password) => {
 
   // Add a wait for cookies to be set (adjust as needed)
   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.wait(100);
+  cy.wait(200);
 
   // Validate the existence of the 'token' cookie
   cy.getCookie('token').should('exist');

@@ -27,8 +27,8 @@ const Timer = (room_code: string, timer = 0, io: Server) => {
         await roomModel.updateOne({ room_code: room_code }, { timer: timer });
         io.in(room_code).emit('timerUpdate', timer);
       } else {
-        clearInterval(interval);
-        delete activeTimers[room_code];
+        stop();
+        await roomModel.findOneAndUpdate({ room_code: room_code }, { timer: 35 });
       }
     }, 1000);
 

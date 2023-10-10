@@ -175,19 +175,10 @@ export const useRoomStore = create<IRoomStore>(set => ({
       return;
     }
   },
-  startGame: (socket = null) => {
-    if (!socket) socket = useSocketStore.getState().socket;
-
-    useRoomStore.getState().random = Math.floor(
-      Math.random() * useRoomStore.getState().players.length,
-    );
-    const current_player = useRoomStore.getState().players[useRoomStore.getState().random];
-
-    socket?.emit('togglePhaseOne', current_player, useRoomStore.getState().room_code);
-    if (useRoomStore.getState().isInLobby) {
-      useRoomStore.setState({ currentPlayer: current_player });
-    }
-    useRoomStore.getState().setIsInLobby(false);
+  startGame: async () => {
+    await axios.post(`/api/rooms/start`, {
+      room_code: useRoomStore.getState().room_code,
+    });
   },
   updatePlayerScore: (points: number, player: IPlayer) => {
     const temp_players = useRoomStore.getState().players.map(p => {

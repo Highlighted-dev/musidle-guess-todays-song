@@ -34,7 +34,7 @@ export interface IRoomStore {
   ) => Promise<void>;
   createRoom: (user_id: string | null = null, username: string | null = null) => Promise<void>;
   leaveRoom: (router: Router, user_id: string | null = null) => void;
-  startGame: (socket: Socket | null = null) => void;
+  startGame: () => Promise<void>;
   updatePlayerScore: (points: number, player: player) => void;
   handleTurnChange: () => void;
   handleChooseCategory: (

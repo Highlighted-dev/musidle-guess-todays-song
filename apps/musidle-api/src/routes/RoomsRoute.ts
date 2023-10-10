@@ -193,6 +193,25 @@ router.get('/:room_code', async (req: Request, res: Response, next: NextFunction
   }
 });
 
+router.post('/start', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  const room_code = req.body.room_code;
+  if (!room_code) return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+  const room = await roomModel.findOne({ room_code: room_code });
+  if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
+
+  const random = Math.floor(Math.random() * room.players.length);
+  const current_player = room.players[random];
+
+  (req as ICustomRequest).io.in(room_code).emit('togglePhaseOne', current_player);
+
+  await roomModel.findOneAndUpdate(
+    { room_code: room_code },
+    { current_player: current_player, isInGameLobby: false },
+  );
+
+  return res.status(200).json({ status: 'success', message: 'Game started' });
+});
+
 router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.body.room_code || !req.body.player_id || !req.body.song_id || !req.body.time)

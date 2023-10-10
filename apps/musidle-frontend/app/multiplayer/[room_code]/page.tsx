@@ -56,7 +56,7 @@ export default function Multiplayer() {
       user_id &&
       !players.find(player => player['_id'] == user_id && !useSocketStore.getState().socket)
     ) {
-      handleRoomJoin(params.room_code);
+      handleRoomJoin(params.room_code as string);
     }
   }, [user_id, params.room_code]);
 
@@ -130,7 +130,7 @@ export default function Multiplayer() {
             spectators.find(spectator => spectator['_id'] == user_id)) ? (
           <GameEndScreen />
         ) : (
-          <GameLobby room_code={params.room_code} />
+          <GameLobby room_code={params.room_code as string} />
         )
       }
     </div>

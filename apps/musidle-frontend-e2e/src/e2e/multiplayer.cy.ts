@@ -1,6 +1,6 @@
 describe('Testing Musidle multiplayer', () => {
   beforeEach(() => {
-    cy.session('login', () => cy.login('Test123@gmail.com', 'Test123@gmail.com'));
+    cy.session('login', () => cy.login('Cypresstest001@musidle.com', 'Cypresstest001@musidle.com'));
   });
 
   it('should display lobby, create a room with a "Create room" button, change settings and leave the room', () => {
@@ -37,6 +37,7 @@ describe('Testing Musidle multiplayer', () => {
       .find('button')
       .should('have.length', 8);
     cy.get('div.rounded-lg.border.bg-card.text-card-foreground').find('button').first().click();
+    cy.wait(100);
   });
   it('should click "play/pause" button, change the stage to 2, find the song named "Maroon 5 - Payphone" and submit it', () => {
     cy.visit('http://localhost:4200/multiplayer/test12');
@@ -44,6 +45,7 @@ describe('Testing Musidle multiplayer', () => {
 
     cy.get('button').contains('Change stage').click();
     cy.get('label').contains('Stage 2').should('exist');
+
     cy.get('button').contains('Select song...').click();
     cy.get('input[placeholder="Search song..."]').type('Maroon 5 - Payphone');
     cy.get('button').contains('Submit').click();

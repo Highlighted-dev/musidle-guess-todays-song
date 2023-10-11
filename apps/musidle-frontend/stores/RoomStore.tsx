@@ -189,69 +189,13 @@ export const useRoomStore = create<IRoomStore>(set => ({
     });
     useRoomStore.setState({ players: temp_players });
   },
-  handleTurnChange: () => {
-    const {
-      players,
-      currentPlayer,
-      round,
-      maxRoundsPhaseOne,
-      maxRoundsPhaseTwo,
-      setRound,
-      setCurrentPlayer,
-      setSelectMode,
-      setTurnChangeDialogOpen,
-    } = useRoomStore.getState();
-    const { socket } = useSocketStore.getState();
-    const { setValue, setAnswer, setPossibleAnswers, answer } = useAnswerStore.getState();
-    const { setAudioTime, setAudio, setTime, intervalId } = useAudioStore.getState();
-    const { user_id } = useAuthStore.getState();
-    const { handleFinal } = useGameFinalStore.getState();
+  handleTurnChange: async () => {
+    if (!useRoomStore.getState().currentPlayer) return;
 
-    if (!currentPlayer) return;
-
-    if (round > maxRoundsPhaseOne + maxRoundsPhaseTwo) {
-      //EndGame()
-    }
-
-    const index = players.findIndex(p => p._id === currentPlayer._id);
-    if (index === players.length - 1) {
-      setCurrentPlayer(players[0]);
-    } else {
-      setCurrentPlayer(players[index + 1]);
-    }
-
-    //As the state does not update immediately, we are checking if the current player WAS the user
-    if (currentPlayer?._id == user_id && round <= maxRoundsPhaseOne + maxRoundsPhaseTwo + 1) {
-      socket?.emit(
-        'turnChange',
-        useRoomStore.getState().currentPlayer,
-        useRoomStore.getState().room_code,
-        useAudioStore.getState().songId,
-        35,
-      );
-    }
-
-    if (intervalId !== null) clearInterval(intervalId);
-    setAudioTime(0);
-    setAudio(null);
-    setTime(1000);
-    setSelectMode(false);
-    setTurnChangeDialogOpen(true);
-    setTimeout(() => {
-      useRoomStore.setState({ turnChangeDialogOpen: false });
-      setValue('');
-      setAnswer('');
-      setPossibleAnswers([
-        {
-          value: 'Songs will appear here',
-          key: 'no-song',
-        },
-      ]);
-    }, 4000);
-    setRound(round + 1);
-    if (!(useRoomStore.getState().round <= maxRoundsPhaseOne + maxRoundsPhaseTwo)) {
-      handleFinal();
-    }
+    await axios.post(`/api/rooms/turnChange`, {
+      room_code: useRoomStore.getState().room_code,
+      song_id: useAudioStore.getState().songId,
+    });
   },
 
   handleChooseCategory: async (song_id: string, phase = 1, socket = null) => {

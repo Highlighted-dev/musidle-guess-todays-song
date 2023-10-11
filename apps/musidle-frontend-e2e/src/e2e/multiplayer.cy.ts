@@ -84,5 +84,10 @@ describe('Testing Musidle multiplayer', () => {
 
     cy.get('div.grid.grid-cols-3.gap-2').find('button').eq(2).click();
     cy.get('button').contains('Play / Pause').click();
+
+    cy.wait(35000); // wait for timer to run out and check if the game is over
+    cy.wait(4000); // turn change animation
+    cy.get('h3').contains('The Game Has Ended').should('exist');
+    cy.get('button').contains('Leave Game').click();
   });
 });

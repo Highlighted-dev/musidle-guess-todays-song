@@ -7,6 +7,7 @@ import { useAnswerStore } from './AnswerStore';
 import { IAnswer, ISong } from '@/@types/AnswerStore';
 import { IPlayer } from '@/@types/Rooms';
 import { useTimerStore } from '@/stores/TimerStore';
+import { useGameFinalStore } from './GameFinalStore';
 
 interface ISocketStore {
   socket: Socket | null;
@@ -70,8 +71,42 @@ useSocketStore.subscribe(({ socket }) => {
     socket.on('valueChange', (value: string) => {
       useAnswerStore.getState().handleValueChange(value);
     });
-    socket.on('turnChange', () => {
-      useRoomStore.getState().handleTurnChange();
+    socket.on('turnChange', current_player => {
+      const {
+        round,
+        maxRoundsPhaseOne,
+        maxRoundsPhaseTwo,
+        setRound,
+        setCurrentPlayer,
+        setSelectMode,
+        setTurnChangeDialogOpen,
+      } = useRoomStore.getState();
+      const { setValue, setAnswer, setPossibleAnswers } = useAnswerStore.getState();
+      const { setAudioTime, setAudio, setTime, intervalId } = useAudioStore.getState();
+      const { handleFinal } = useGameFinalStore.getState();
+
+      if (intervalId !== null) clearInterval(intervalId);
+      setCurrentPlayer(current_player);
+      setAudioTime(0);
+      setAudio(null);
+      setTime(1000);
+      setSelectMode(false);
+      setTurnChangeDialogOpen(true);
+      setTimeout(() => {
+        useRoomStore.setState({ turnChangeDialogOpen: false });
+        setValue('');
+        setAnswer('');
+        setPossibleAnswers([
+          {
+            value: 'Songs will appear here',
+            key: 'no-song',
+          },
+        ]);
+      }, 4000);
+      setRound(round + 1);
+      if (!(useRoomStore.getState().round <= maxRoundsPhaseOne + maxRoundsPhaseTwo)) {
+        handleFinal();
+      }
     });
     socket.on('searchSong', (songs: IAnswer[]) => {
       useAnswerStore.setState({ possibleAnswers: songs });

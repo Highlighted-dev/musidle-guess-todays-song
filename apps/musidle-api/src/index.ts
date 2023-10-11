@@ -115,39 +115,6 @@ io.on('connection', socket => {
   socket.on('answerSubmit', (score, player, answer, room_code) => {
     socket.to(room_code).emit('answerSubmit', score, player, answer);
   });
-  socket.on('turnChange', async (current_player, room_code, song_id, timer) => {
-    //After the phase one ends, remove half of players that have the lowest score if more than 1 player is in room
-    await roomModel.find({ room_code: room_code }).then(async room => {
-      const maxRoundsPhaseOne = room[0].maxRoundsPhaseOne;
-      const round = room[0].round;
-      const players = room[0].players;
-      if (round === maxRoundsPhaseOne) {
-        if (players.length > 1) {
-          const sortedPlayers = players.sort((a, b) => b.score - a.score);
-          const newPlayers = sortedPlayers.splice(0, Math.ceil(players.length / 2));
-          const spectators = sortedPlayers.filter(player => !newPlayers.includes(player));
-          current_player = newPlayers[0];
-          await roomModel.updateOne(
-            { room_code: room_code },
-            { players: newPlayers, currentPlayer: current_player, spectators: spectators },
-          );
-
-          io.in(room_code).emit('updatePlayerList', newPlayers, spectators);
-        }
-      }
-    });
-    await roomModel.updateOne(
-      { room_code: room_code, 'songs.song_id': song_id },
-      {
-        current_player: current_player,
-        isInSelectMode: true,
-        $inc: { round: 1 },
-        timer: timer,
-        $set: { 'songs.$.completed': true },
-      },
-    );
-    socket.to(room_code).emit('turnChange');
-  });
   socket.on('changeSongToCompleted', async (room_code, song_id) => {
     await roomModel.updateOne(
       {

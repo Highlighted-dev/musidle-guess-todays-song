@@ -212,6 +212,60 @@ router.post('/start', jsonParser, async (req: Request, res: Response, next: Next
   return res.status(200).json({ status: 'success', message: 'Game started' });
 });
 
+router.post('/turnChange', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.body.room_code || !req.body.song_id)
+      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    const room_code = req.body.room_code;
+    const song_id = req.body.song_id;
+
+    await roomModel.find({ room_code: room_code }).then(async room => {
+      const maxRoundsPhaseOne = room[0].maxRoundsPhaseOne;
+      const round = room[0].round;
+      const players = room[0].players;
+
+      let current_player = room[0].current_player;
+
+      const index = players.findIndex(p => p._id === current_player?._id);
+      if (index === players.length - 1) {
+        current_player = players[0];
+      } else {
+        current_player = players[index + 1];
+      }
+
+      if (round === maxRoundsPhaseOne) {
+        if (players.length > 1) {
+          const sortedPlayers = players.sort((a, b) => b.score - a.score);
+          const newPlayers = sortedPlayers.splice(0, Math.ceil(players.length / 2));
+          const spectators = sortedPlayers.filter(player => !newPlayers.includes(player));
+          current_player = newPlayers[0];
+          await roomModel.updateOne(
+            { room_code: room_code },
+            { players: newPlayers, currentPlayer: current_player, spectators: spectators },
+          );
+
+          (req as ICustomRequest).io.in(room_code).emit('updatePlayerList', newPlayers, spectators);
+        }
+      }
+
+      await roomModel.updateOne(
+        { room_code: room_code, 'songs.song_id': song_id },
+        {
+          current_player: current_player,
+          isInSelectMode: true,
+          $inc: { round: 1 },
+          timer: 35,
+          $set: { 'songs.$.completed': true },
+        },
+      );
+      (req as ICustomRequest).io.in(room_code).emit('turnChange', current_player);
+    });
+    return res.status(200).json({ status: 'success', message: 'Turn changed' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.body.room_code || !req.body.player_id || !req.body.song_id || !req.body.time)

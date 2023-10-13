@@ -160,7 +160,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         room_code: room_code,
         player_id: user_id,
       });
-      useSocketStore.getState().setSocket(null);
+      useSocketStore.getState().socket?.disconnect();
       router.push('/multiplayer');
       useRoomStore.setState({
         room_code: '',

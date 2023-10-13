@@ -85,13 +85,6 @@ io.on('connection', socket => {
     }
     socket.join(room_code);
   });
-  // socket.on('togglePhaseOne', async (current_player, room_code) => {
-  //   await roomModel.updateOne(
-  //     { room_code: room_code },
-  //     { current_player: current_player, isInGameLobby: false },
-  //   );
-  //   socket.to(room_code).emit('togglePhaseOne', current_player);
-  // });
   socket.on('chooseSong', async (song_id: string, room_code) => {
     await roomModel.updateOne(
       { room_code: room_code },

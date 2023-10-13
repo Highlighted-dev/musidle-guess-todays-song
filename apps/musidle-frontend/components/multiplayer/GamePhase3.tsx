@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useState } from 'react';
-import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import { Button } from '../ui/button';
@@ -12,15 +11,14 @@ import { useRoomStore } from '@/stores/RoomStore';
 import { Toggle } from '../ui/toggle';
 import { Label } from '../ui/label';
 import { useTimerStore } from '@/stores/TimerStore';
-import { Slider } from '../ui/slider';
 import { cn } from '@/lib/utils';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { useGameFinalStore } from '@/stores/GameFinalStore';
 import Leaderboard from './Leaderboard';
 const GamePhase3 = () => {
   const { user_id } = useAuthStore();
-  const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
-  const { handlePlay, audio } = useAudioStore();
+  const { currentPlayer, handleChooseCategory } = useRoomStore();
+  const { handlePlay } = useAudioStore();
   const { timer } = useTimerStore();
   const { value, handleValueChange, possibleAnswers, getPossibleSongAnswers, possibleSongs } =
     useAnswerStore();

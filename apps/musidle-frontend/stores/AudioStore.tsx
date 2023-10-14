@@ -38,7 +38,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
     set(() => ({
       audioTime: audioTime,
     })),
-  volume: 0.3,
+  volume: 0.25,
   setVolume: (volume: number) =>
     set(() => ({
       volume: volume,

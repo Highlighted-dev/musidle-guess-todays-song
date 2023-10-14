@@ -84,9 +84,12 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
           socket?.emit('answerSubmit', res.data.score, currentPlayer, res.data.answer, room_code);
         });
     }
+    if (useAudioStore.getState().audio?.paused) useAudioStore.getState().audio?.play();
+    useAudioStore.getState().setTime(12000);
+    const audio = useAudioStore.getState().audio;
     useTimerStore.getState().setTimer(35.0);
-    if (useAudioStore.getState().audio) useAudioStore.getState().audio?.pause();
-    if (currentPlayer?._id == user_id) handleTurnChange();
+    if (audio) audio.volume = 0.05;
+    if (currentPlayer && currentPlayer._id === user_id) handleTurnChange();
   },
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;

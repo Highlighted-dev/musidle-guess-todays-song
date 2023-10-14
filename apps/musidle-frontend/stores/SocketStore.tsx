@@ -85,15 +85,16 @@ useSocketStore.subscribe(({ socket }) => {
       const { setAudioTime, setAudio, setTime, intervalId } = useAudioStore.getState();
       const { handleFinal } = useGameFinalStore.getState();
 
-      if (intervalId !== null) clearInterval(intervalId);
       setCurrentPlayer(current_player);
-      setAudioTime(0);
-      setAudio(null);
-      setTime(1000);
       setSelectMode(false);
       setTurnChangeDialogOpen(true);
       setTimeout(() => {
         useRoomStore.setState({ turnChangeDialogOpen: false });
+        useAudioStore.getState().audio?.pause();
+        if (intervalId !== null) clearInterval(intervalId);
+        setTime(1000);
+        setAudioTime(0);
+        setAudio(null);
         setValue('');
         setAnswer('');
         setPossibleAnswers([

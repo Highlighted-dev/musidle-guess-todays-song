@@ -53,52 +53,50 @@ export default function Multiplayer() {
   }, []);
 
   return (
-    <div className="h-full w-full">
-      <Card className="h-5/6 xl:w-4/6 xl:p-0 w-[90%]">
-        <CardHeader className=" text-center">
-          <CardTitle>Choose Lobby</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col h-full w-full">
-          <div className="h-[80%]">
-            {rooms.length > 0 ? (
-              rooms.map((room, index) => (
-                <div key={index}>
-                  <div className=" w-full h-[15%] flex justify-between p-4">
-                    <Label className="text-center flex justify-center items-center">
-                      {room.room_code}
-                    </Label>
-                    <div>
-                      <Label className="text-center pr-4">Players: {room.players.length}/8</Label>
-                      <Button
-                        id={room.room_code}
-                        variant={'default'}
-                        onClick={e => handleRoomJoin(e.currentTarget.id)}
-                      >
-                        Join room
-                      </Button>
-                    </div>
+    <Card className="h-5/6 xl:w-4/6 xl:p-0 w-[90%]">
+      <CardHeader className=" text-center">
+        <CardTitle>Choose Lobby</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col h-full w-full">
+        <div className="h-[80%]">
+          {rooms.length > 0 ? (
+            rooms.map((room, index) => (
+              <div key={index}>
+                <div className=" w-full h-[15%] flex justify-between p-4">
+                  <Label className="text-center flex justify-center items-center">
+                    {room.room_code}
+                  </Label>
+                  <div>
+                    <Label className="text-center pr-4">Players: {room.players.length}/8</Label>
+                    <Button
+                      id={room.room_code}
+                      variant={'default'}
+                      onClick={e => handleRoomJoin(e.currentTarget.id)}
+                    >
+                      Join room
+                    </Button>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="flex justify-center items-center h-full w-full">
-                <p>No rooms available</p>
               </div>
-            )}
-          </div>
-          {
-            <div className="flex justify-end items-center p-3 h-[8%]">
-              <Button
-                variant={'default'}
-                onClick={() => handleRoomCreate()}
-                disabled={role != 'Admin'}
-              >
-                Create room
-              </Button>
+            ))
+          ) : (
+            <div className="flex justify-center items-center h-full w-full">
+              <p>No rooms available</p>
             </div>
-          }
-        </CardContent>
-      </Card>
-    </div>
+          )}
+        </div>
+        {
+          <div className="flex justify-end items-center p-3 h-[8%]">
+            <Button
+              variant={'default'}
+              onClick={() => handleRoomCreate()}
+              disabled={role != 'Admin'}
+            >
+              Create room
+            </Button>
+          </div>
+        }
+      </CardContent>
+    </Card>
   );
 }

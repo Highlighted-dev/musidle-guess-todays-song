@@ -25,11 +25,11 @@ export default function GameLobby(params: { room_code: string }) {
   return (
     <div className="xl:p-0 p-4 w-full md:h-4/5 h-full flex xl:flex-row xl:relative flex-col justify-center align-center min-h-[750px] md:min-h-0">
       <Card className=" xl:w-4/6 w-full h-full">
-        <CardHeader className=" text-center h-1/5">
+        <CardHeader className=" text-center h-1/6">
           <CardTitle>Game lobby</CardTitle>
           <p>Room: {params.room_code}</p>
         </CardHeader>
-        <CardContent className="flex flex-col h-4/5 w-full">
+        <CardContent className="flex flex-col h-5/6 w-full">
           <Card className="mb-4">
             <CardHeader className=" text-center">
               <CardTitle>Settings</CardTitle>
@@ -98,6 +98,9 @@ export default function GameLobby(params: { room_code: string }) {
                     </li>
                   ))}
                 </ul>
+                {!players.find(player => player._id == useAuthStore.getState().user_id) ? (
+                  <Button variant={'outline'}>Join</Button>
+                ) : null}
               </CardContent>
             </Card>
 
@@ -113,6 +116,9 @@ export default function GameLobby(params: { room_code: string }) {
                     </li>
                   ))}
                 </ul>
+                {!spectators.find(spectator => spectator._id == useAuthStore.getState().user_id) ? (
+                  <Button variant={'outline'}>Join</Button>
+                ) : null}
               </CardContent>
             </Card>
           </div>

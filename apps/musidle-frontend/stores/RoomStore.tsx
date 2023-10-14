@@ -66,7 +66,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       turnChangeDialogOpen: turnChangeDialogOpen,
     })),
   random: 0,
-  joinRoom: async (room_code, user_id = null, username = null) => {
+  joinRoom: async (room_code = null, user_id = null, username = null) => {
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setTimer } = useTimerStore.getState();
     const { setPossibleSongs } = useAnswerStore.getState();
@@ -80,7 +80,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
         },
       });
       set(() => ({
-        room_code: room_code,
+        room_code: data.room_code,
         players: data.players,
         spectators: data.spectators,
         currentPlayer: data.current_player,
@@ -112,45 +112,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
       }
       useSocketStore.getState().socket?.emit('id', useAuthStore.getState().user_id, room_code);
       return;
-      // router.push(`/multiplayer/${room_id}`);
-    }
-  },
-  createRoom: async (user_id = null, username = null) => {
-    const { setPossibleSongs } = useAnswerStore.getState();
-    if (user_id && username) {
-      const { data } = await axios.post(`/api/rooms/create`, {
-        player: {
-          _id: user_id,
-          name: username,
-          score: 0,
-        },
-      });
-      set(() => ({
-        room_code: data.room_code,
-        players: data.players,
-        spectators: data.spectators,
-        currentPlayer: data.current_player,
-        maxRoundsPhaseOne: data.maxRoundsPhaseOne,
-        maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
-        round: data.round,
-        isInLobby: data.isInGameLobby,
-        selectMode: !data.isInSelectMode,
-      }));
-      setPossibleSongs(data.songs);
-      if (!useSocketStore.getState().socket) {
-        useSocketStore
-          .getState()
-          .setSocket(
-            io(
-              process.env.NODE_ENV == 'production'
-                ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
-                : 'http://localhost:5000',
-            ),
-          );
-      }
-      useSocketStore.getState().socket?.emit('id', useAuthStore.getState().user_id, data.room_code);
-      return data.room_code;
-      // router.push(`/multiplayer/${room_id}`);
     }
   },
   leaveRoom: async (router: Router, user_id = null) => {

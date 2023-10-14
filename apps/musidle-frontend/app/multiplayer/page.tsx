@@ -12,7 +12,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 
 export default function Multiplayer() {
   const { user_id, username, email, role } = useAuthStore();
-  const { createRoom, joinRoom } = useRoomStore();
+  const { joinRoom } = useRoomStore();
   const router = useRouter();
 
   const handleRoomJoin = async (room_id: string) => {
@@ -26,8 +26,8 @@ export default function Multiplayer() {
 
   const handleRoomCreate = async () => {
     if (!user_id) return;
-    createRoom(useAuthStore.getState().user_id, useAuthStore.getState().username).then(room_id => {
-      router.push(`/multiplayer/${room_id}`);
+    joinRoom(null, useAuthStore.getState().user_id, useAuthStore.getState().username).then(() => {
+      router.push(`/multiplayer/${useRoomStore.getState().room_code}`);
     });
   };
   const [rooms, setRooms] = useState<IRoom[]>([]);

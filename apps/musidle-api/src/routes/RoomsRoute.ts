@@ -17,18 +17,22 @@ interface ICustomRequest extends Request {
 
 router.post('/join', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const room_id = req.body.room_id;
+    let room_code = req.body.room_id;
+    if (!room_code) {
+      while (true) {
+        room_code = Math.random().toString(36).substr(2, 5);
+        if ((await roomModel.findOne({ room_code: room_code })) === null) {
+          req.body.room_id = room_code;
+          break;
+        }
+      }
+    }
 
-    //check if player is in any other room
-
-    // const player_room = await roomModel.find({ 'players._id': req.body.player._id });
-    // console.log(player_room[0]);
-    // if (player_room.length > 0) return res.json(player_room[0]);
-
-    let room = await roomModel.findOne({ room_code: room_id });
+    let room = await roomModel.findOne({ room_code: room_code });
     const categories = await axios
       .get('http://localhost:5000/api/categories')
       .then(response => response.data);
+
     const player = req.body.player;
     player.completedCategories = categories.map((category: any) => {
       return {
@@ -36,6 +40,7 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         completed: false,
       };
     });
+
     if (!room) {
       const songs = await axios
         .post('http://localhost:5000/api/songs/possibleSongs', {
@@ -45,7 +50,7 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         .then(response => response.data);
 
       await roomModel.create({
-        room_code: room_id,
+        room_code: room_code,
         players: [player],
         maxRoundsPhaseOne: req.body.maxRoundsPhaseOne
           ? req.body.maxRoundsPhaseOne
@@ -65,77 +70,24 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
       //add player to spectators if game has already started
       if (room?.round > 1) {
         room = await roomModel.findOneAndUpdate(
-          { room_code: room_id },
+          { room_code: room_code },
           { $push: { spectators: req.body.player } },
           { new: true },
         );
         (req as ICustomRequest).io
-          .in(room_id)
+          .in(room_code)
           .emit('updatePlayerList', room?.players, room?.spectators);
         return res.json(room);
       }
       room = await roomModel.findOneAndUpdate(
-        { room_code: room_id },
+        { room_code: room_code },
         { $push: { players: req.body.player } },
         { new: true },
       );
-      (req as ICustomRequest).io.in(room_id).emit('updatePlayerList', room?.players);
+      (req as ICustomRequest).io.in(room_code).emit('updatePlayerList', room?.players);
       return res.json(room);
     }
-    room = await roomModel.findOne({ room_code: room_id });
-    return res.json(room);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post('/create', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (!req.body.player)
-      return res.status(400).json({ message: 'At least one player is required' });
-    const player_room = await roomModel.find({ 'players._id': req.body.player._id });
-    if (player_room.length > 0) return res.json(player_room[0]);
-    let room_id;
-    //random room_id
-    while (true) {
-      room_id = Math.random().toString(36).substr(2, 5);
-      if ((await roomModel.findOne({ room_code: room_id })) === null) {
-        req.body.room_id = room_id;
-        break;
-      }
-    }
-    //roomModel.schema.paths.maxRoundsPhaseOne.options.default just means get the default value assigned to maxRoundsPhaseOne in the schema
-    const songs = await axios
-      .post('http://localhost:5000/api/songs/possibleSongs', {
-        maxRoundsPhaseOne: req.body.maxRoundsPhaseOne,
-        maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo,
-      })
-      .then(response => response.data);
-    const categories = await axios
-      .get('http://localhost:5000/api/categories')
-      .then(response => response.data);
-    const player = req.body.player;
-    player.completedCategories = categories.map((category: any) => {
-      return {
-        category: category.category,
-        completed: false,
-      };
-    });
-    await roomModel.create({
-      room_code: room_id,
-      players: [player],
-      maxRoundsPhaseOne: req.body.maxRoundsPhaseOne
-        ? req.body.maxRoundsPhaseOne
-        : roomModel.schema.paths.maxRoundsPhaseOne.options.default,
-      maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo
-        ? req.body.maxRoundsPhaseTwo
-        : roomModel.schema.paths.maxRoundsPhaseTwo.options.default,
-      round: 1,
-      isInGameLobby: true,
-      isInSelectMode: true,
-      songs: songs.data.songs,
-    });
-    const room = await roomModel.findOne({ room_code: room_id });
+    room = await roomModel.findOne({ room_code: room_code });
     return res.json(room);
   } catch (error) {
     next(error);

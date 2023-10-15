@@ -12,6 +12,8 @@ const jsonParser = bodyParser.json();
 
 const router: Router = express.Router();
 
+const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
+
 interface ICustomRequest extends Request {
   io: Server;
 }
@@ -37,7 +39,7 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
     }
     if (!req.body.key) {
       const possibleLastFmUrls = await axios
-        .get('http://localhost:5000/api/track/search/' + encodeURIComponent(req.body.value))
+        .get(`${apiUrl}/api/track/search/` + encodeURIComponent(req.body.value))
         .then(res => res.data);
 
       possibleLastFmUrls.map((song: any) => {
@@ -100,7 +102,7 @@ router.post(
     try {
       const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
       const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
-      const songs = await axios.get('http://localhost:5000/api/songs').then(res => res.data);
+      const songs = await axios.get(`${apiUrl}/api/songs`).then(res => res.data);
 
       const categories = await categoryModel
         .find()
@@ -140,7 +142,7 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
     const song_id = req.body.song_id;
     const room_code = req.body.room_code;
 
-    const room = await axios.get(`http://localhost:5000/api/rooms/${room_code}`);
+    const room = await axios.get(`${apiUrl}/api/rooms/${room_code}`);
 
     if (!room) {
       return res.status(404).json({ message: 'Room not found' });

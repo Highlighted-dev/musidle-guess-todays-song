@@ -5,9 +5,11 @@ import helmet from 'helmet';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import UserAuthenticationRoute from './routes/UserAuthenticationRoute';
 import http from 'http';
+import https from 'https';
+import UserAuthenticationRoute from './routes/UserAuthenticationRoute';
 import { Server } from 'socket.io';
+import fs from 'fs';
 import RoomsRoute from './routes/RoomsRoute';
 import { ISocketMiddleware, IUsers } from './@types';
 import errorHandler from './utils/ErrorHandler';
@@ -22,7 +24,18 @@ const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const mongodb_url = process.env.MONGODB_URL || 'musidle';
 
 const app = express();
-const server = http.createServer(app);
+const server =
+  process.env.NODE_ENV == 'production'
+    ? https.createServer(
+        {
+          key: process.env.SERVER_KEY,
+          cert: process.env.SERVER_CERT,
+          ca: process.env.SERVER_CA,
+          keepAlive: true,
+        },
+        app,
+      )
+    : http.createServer(app);
 
 const io = new Server(server, {
   cors: {
@@ -141,7 +154,13 @@ mongoose
   .connect(mongodb_url)
   .then(() => {
     server.listen(port, () => {
-      console.log(`Musidle API is listening on http://localhost:${port}`);
+      console.log(
+        `Musidle API is listening on ${
+          process.env.NODE_ENV == 'production'
+            ? `https://localhost:${port}`
+            : `http://localhost:${port}`
+        }`,
+      );
     });
   })
   .catch(error => {

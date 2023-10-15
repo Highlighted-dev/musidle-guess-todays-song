@@ -11,6 +11,8 @@ const jsonParser = bodyParser.json();
 
 const router: Router = express.Router();
 
+const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
+
 interface ICustomRequest extends Request {
   io: Server;
 }
@@ -27,11 +29,8 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         }
       }
     }
-
     let room = await roomModel.findOne({ room_code: room_code });
-    const categories = await axios
-      .get('http://localhost:5000/api/categories')
-      .then(response => response.data);
+    const categories = await axios.get(`${apiUrl}/api/categories`).then(response => response.data);
 
     const player = req.body.player;
     player.completedCategories = categories.map((category: any) => {
@@ -43,7 +42,7 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
 
     if (!room) {
       const songs = await axios
-        .post('http://localhost:5000/api/songs/possibleSongs', {
+        .post(`${apiUrl}/api/songs/possibleSongs`, {
           maxRoundsPhaseOne: req.body.maxRoundsPhaseOne,
           maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo,
         })
@@ -230,7 +229,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
     const category = req.body.category;
     Timer(room_code, 0, (req as ICustomRequest).io).stop();
     axios
-      .get(`http://localhost:5000/api/songs/${song_id}`)
+      .get(`${apiUrl}/api/songs/${song_id}`)
       .then(response => response.data)
       .then(async response => {
         const correctAnswer = response.data;
@@ -271,7 +270,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
             );
           }
 
-          axios.post('http://localhost:5000/api/rooms/updateScore', {
+          axios.post(`${apiUrl}/rooms/updateScore`, {
             room_code: room_code,
             player_id: player_id,
             score: score(),
@@ -286,7 +285,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
             },
           });
         } else {
-          axios.post('http://localhost:5000/api/rooms/updateScore', {
+          axios.post(`${apiUrl}/api/rooms/updateScore`, {
             room_code: room_code,
             player_id: player_id,
             score: 0,

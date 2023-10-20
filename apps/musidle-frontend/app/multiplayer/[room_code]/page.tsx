@@ -19,7 +19,7 @@ import { Label } from '@/components/ui/label';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import GameEndScreen from '@/components/multiplayer/GameEndScreen';
 import { useSocketStore } from '@/stores/SocketStore';
-export default function Multiplayer() {
+export default function Page() {
   const {
     joinRoom,
     turnChangeDialogOpen,

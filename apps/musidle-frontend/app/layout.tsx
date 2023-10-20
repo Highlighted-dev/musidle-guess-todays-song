@@ -11,6 +11,9 @@ import Navbar from '@/components/Navbar';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="w-full h-full">
+      <head>
+        <title>Musidle</title>
+      </head>
       <body className="dark h-full w-full flex">
         <AuthProvider>
           <Toaster />

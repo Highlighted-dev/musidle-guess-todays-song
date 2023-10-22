@@ -4,29 +4,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@radix-ui/react-label';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import { IRoom } from '@/@types/Rooms';
-import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
-import useSWR, { SWRConfig } from 'swr';
+import { useSession } from 'next-auth/react';
 
 export default function MultiplayerPage({ data }: { data: IRoom[] }) {
-  const { user_id, username, email, role } = useAuthStore();
+  const user = useSession().data?.user;
   const { joinRoom } = useRoomStore();
   const router = useRouter();
 
   const handleRoomJoin = async (room_id: string) => {
-    if (!user_id) return;
-    joinRoom(room_id, useAuthStore.getState().user_id, useAuthStore.getState().username).then(
-      () => {
-        router.push(`/multiplayer/${room_id}`);
-      },
-    );
+    if (!user?._id) return;
+    joinRoom(room_id, user?._id, user?.username).then(() => {
+      router.push(`/multiplayer/${room_id}`);
+    });
   };
 
   const handleRoomCreate = async () => {
-    if (!user_id) return;
-    joinRoom(null, useAuthStore.getState().user_id, useAuthStore.getState().username).then(() => {
+    if (!user?._id) return;
+    joinRoom(null, user?._id, user?.username).then(() => {
       router.push(`/multiplayer/${useRoomStore.getState().room_code}`);
     });
   };
@@ -64,8 +60,8 @@ export default function MultiplayerPage({ data }: { data: IRoom[] }) {
           )}
         </div>
 
-        <div className=" items-center p-3 h-[8%]">
-          <Button variant={'default'} onClick={() => handleRoomCreate()} disabled={role != 'Admin'}>
+        <div className="flex justify-end items-center p-3 h-[8%]">
+          <Button variant={'default'} onClick={() => handleRoomCreate()}>
             Create room
           </Button>
         </div>

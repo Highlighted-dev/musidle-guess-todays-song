@@ -2,8 +2,9 @@ import express, { Request, Response, Router } from 'express';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import userModel from '../models/UserModel';
+
 import dotenv from 'dotenv';
+import userModel from '../models/UserModel';
 dotenv.config();
 
 const router: Router = express.Router();

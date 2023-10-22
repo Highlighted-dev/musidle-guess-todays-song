@@ -1,8 +1,14 @@
 import { IRoom } from '@/@types/Rooms';
 import MultiplayerPage from '@/components/multiplayer/MutiplayerPage';
 
-export async function getRooms() {
-  const rooms: IRoom[] = await fetch('http://localhost:4200/api/rooms', {
+async function getRooms() {
+  let url;
+  if (process.env.NODE_ENV === 'development') {
+    url = new URL('http://localhost:4200/externalApi/rooms');
+  } else {
+    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/rooms`);
+  }
+  const rooms: IRoom[] = await fetch(url, {
     cache: 'no-store',
   })
     .then(res => res.json())
@@ -11,7 +17,7 @@ export async function getRooms() {
 }
 
 export default async function Page() {
-  const rooms = await getRooms();
+  const rooms: IRoom[] = await getRooms();
 
   return <MultiplayerPage data={rooms} />;
 }

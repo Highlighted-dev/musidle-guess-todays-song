@@ -1,21 +1,27 @@
-'use client';
-
 import '../styles/global.css';
 import React from 'react';
-import AuthProvider from '@/components/contexts/AuthContext';
 import LoginAndRegister from '@/components/LoginAndRegister';
 import { Toaster } from '@/components/ui/toaster';
 import { Label } from '@/components/ui/label';
 import Navbar from '@/components/Navbar';
+import NextAuthProvider from '@/components/NextAuthProvider';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]/route';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export async function getNextSession() {
+  const session = await getServerSession(authOptions);
+  return session;
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getNextSession();
   return (
     <html lang="en" className="w-full h-full">
       <head>
         <title>Musidle</title>
       </head>
       <body className="dark h-full w-full flex">
-        <AuthProvider>
+        <NextAuthProvider session={session}>
           <Toaster />
           <div className="flex flex-col w-full h-full">
             <div className="flex w-full h-[50px] p-5 z-10 relative justify-center items-center">
@@ -31,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Label>Made with ❤️ by Highlighted-dev</Label>
             </div>
           </div>
-        </AuthProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

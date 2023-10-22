@@ -1,12 +1,12 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import React from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function GameLobby(params: { room_code: string }) {
   const {
@@ -18,7 +18,7 @@ export default function GameLobby(params: { room_code: string }) {
     startGame,
     leaveRoom,
   } = useRoomStore();
-  const { role } = useAuthStore();
+  const user = useSession().data?.user;
 
   const router = useRouter();
 
@@ -47,7 +47,7 @@ export default function GameLobby(params: { room_code: string }) {
                   id="mxRoundsPhaseOne"
                   className="col-span-3"
                   placeholder={maxRoundsPhaseOne.toString()}
-                  disabled={role != 'Admin'}
+                  disabled={user?.role != 'Admin'}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -62,7 +62,7 @@ export default function GameLobby(params: { room_code: string }) {
                   maxLength={3}
                   id="mxRoundsPhaseTwo"
                   className="col-span-3"
-                  disabled={role != 'Admin'}
+                  disabled={user?.role != 'Admin'}
                   placeholder={maxRoundsPhaseTwo.toString()}
                 />
               </div>
@@ -98,7 +98,7 @@ export default function GameLobby(params: { room_code: string }) {
                     </li>
                   ))}
                 </ul>
-                {!players.find(player => player._id == useAuthStore.getState().user_id) ? (
+                {!players.find(player => player._id == user?._id) ? (
                   <Button variant={'outline'}>Join</Button>
                 ) : null}
               </CardContent>
@@ -116,20 +116,21 @@ export default function GameLobby(params: { room_code: string }) {
                     </li>
                   ))}
                 </ul>
-                {!spectators.find(spectator => spectator._id == useAuthStore.getState().user_id) ? (
+                {!spectators.find(spectator => spectator._id == user?._id) ? (
                   <Button variant={'outline'}>Join</Button>
                 ) : null}
               </CardContent>
             </Card>
           </div>
           <div className="flex justify-between items-center p-4">
-            <Button
-              variant={'outline'}
-              onClick={() => leaveRoom(router, useAuthStore.getState().user_id)}
-            >
+            <Button variant={'outline'} onClick={() => leaveRoom(router, user?._id)}>
               Leave game
             </Button>
-            <Button variant={'default'} disabled={role != 'Admin'} onClick={() => startGame()}>
+            <Button
+              variant={'default'}
+              disabled={user?.role != 'Admin'}
+              onClick={() => startGame()}
+            >
               Start game
             </Button>
           </div>

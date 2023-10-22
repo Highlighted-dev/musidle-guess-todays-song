@@ -4,28 +4,28 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useEffect, useState } from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { Label } from '../ui/label';
-import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import axios from 'axios';
 import Leaderboard from './Leaderboard';
+import { useSession } from 'next-auth/react';
 
 export default function GamePhase1() {
-  const { user_id } = useAuthStore();
+  const user = useSession().data?.user;
   const { players, currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!user_id || categories.length > 0) return;
-    axios.get('/api/categories').then(res => {
+    if (!user?._id || categories.length > 0) return;
+    axios.get('/externalApi/categories').then(res => {
       res.data.map((item: { _id: string; category: string }) =>
         setCategories(prev => [...prev, item.category]),
       );
     });
-  }, [user_id]);
+  }, [user?._id]);
 
   const isCategoryCompleted = (category: string) => {
     return players
-      .find(player => player._id == user_id)
+      .find(player => player._id == user?._id)
       ?.completedCategories.find((item: any) => item.category == category).completed;
   };
 
@@ -48,7 +48,7 @@ export default function GamePhase1() {
                       onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
                       id={category}
                       disabled={
-                        currentPlayer?._id == user_id && !isCategoryCompleted(category)
+                        currentPlayer?._id == user?._id && !isCategoryCompleted(category)
                           ? false
                           : true
                       }

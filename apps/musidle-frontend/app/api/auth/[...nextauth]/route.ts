@@ -1,0 +1,74 @@
+import userModel from '@/lib/models/UserModel';
+import { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth/next';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
+
+export const authOptions: NextAuthOptions = {
+  providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: {},
+        password: {},
+      },
+      //@ts-ignore
+      async authorize(credentials) {
+        try {
+          if (!credentials?.email || !credentials?.password)
+            throw new Error('Please fill all fields');
+          const uri =
+            process.env.NODE_ENV == 'production'
+              ? process.env.MONGODB_URL_PROD
+              : process.env.MONGODB_URL;
+          if (!uri) {
+            throw new Error('MONGODB_URI is not defined');
+          }
+          await mongoose.connect(uri);
+          console.log('Connected to MongoDB');
+          const user = await userModel.findOne({ email: credentials?.email });
+          if (!user) throw new Error('User not found');
+          const isPasswordValid = await bcrypt.compare(credentials?.password, user.password);
+          if (!isPasswordValid) throw new Error('Password is not valid');
+          return {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+          };
+        } catch (e) {
+          throw new Error('Could not log in');
+        }
+      },
+    }),
+  ],
+  session: {
+    strategy: 'jwt',
+  },
+
+  secret: process.env.JWT_SECRET!,
+  pages: {
+    signIn: '/login',
+  },
+  callbacks: {
+    async jwt({ token, user }: { token: any; user: any }) {
+      if (user) {
+        token._id = user._id;
+        token.username = user.username;
+        token.email = user.email;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user._id = token._id as string;
+      session.user.username = token.username as string;
+      session.user.email = token.email as string;
+      session.user.role = token.role as string;
+      return session;
+    },
+  },
+};
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

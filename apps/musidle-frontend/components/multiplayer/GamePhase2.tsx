@@ -2,14 +2,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
-import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import Leaderboard from './Leaderboard';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { useSocketStore } from '@/stores/SocketStore';
+import { useSession } from 'next-auth/react';
 
 const GamePhase2 = () => {
-  const { user_id } = useAuthStore();
+  const user = useSession().data?.user;
   const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const { artist, revealArtist, possibleSongs, changeSongToCompleted } = useAnswerStore();
   const [choosingArtist, setChoosingArtist] = React.useState(false);
@@ -35,7 +35,7 @@ const GamePhase2 = () => {
                       onClick={e => {
                         setChoosingArtist(true);
                         revealArtist(song.song_id);
-                        if (currentPlayer?._id == user_id) {
+                        if (currentPlayer?._id == user?._id) {
                           useSocketStore
                             .getState()
                             .socket?.emit(
@@ -52,7 +52,7 @@ const GamePhase2 = () => {
                       }}
                       id={song.song_id}
                       disabled={
-                        currentPlayer?._id != user_id ||
+                        currentPlayer?._id != user?._id ||
                         possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
                           ?.completed ||
                         choosingArtist

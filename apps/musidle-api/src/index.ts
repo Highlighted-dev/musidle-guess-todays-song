@@ -9,7 +9,6 @@ import http from 'http';
 import https from 'https';
 import UserAuthenticationRoute from './routes/UserAuthenticationRoute';
 import { Server } from 'socket.io';
-import fs from 'fs';
 import RoomsRoute from './routes/RoomsRoute';
 import { ISocketMiddleware, IUsers } from './@types';
 import errorHandler from './utils/ErrorHandler';
@@ -21,7 +20,10 @@ import CategoriesRoute from './routes/CategoriesRoute';
 dotenv.config();
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
-const mongodb_url = process.env.MONGODB_URL || 'musidle';
+const mongodb_url =
+  process.env.NODE_ENV == 'production'
+    ? process.env.MONGODB_URL_PROD || 'musidle'
+    : process.env.MONGODB_URL || 'musidle';
 
 const app = express();
 const server =
@@ -175,9 +177,9 @@ server.on('request', socketMiddleware);
 app.use(cookieParser());
 app.use(cors());
 app.use(helmet());
-app.use('/api/track/search/', SearchTrackRoute);
-app.use('/api/auth/', UserAuthenticationRoute);
-app.use('/api/rooms/', RoomsRoute);
-app.use('/api/songs/', AnswersRoute);
-app.use('/api/categories/', CategoriesRoute);
+app.use('/externalApi/track/search/', SearchTrackRoute);
+app.use('/externalApi/auth/', UserAuthenticationRoute);
+app.use('/externalApi/rooms/', RoomsRoute);
+app.use('/externalApi/songs/', AnswersRoute);
+app.use('/externalApi/categories/', CategoriesRoute);
 app.use(errorHandler);

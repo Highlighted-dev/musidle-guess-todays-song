@@ -5,7 +5,6 @@ import { LuChevronsUpDown } from 'react-icons/lu';
 import { Button } from '../ui/button';
 import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useAuthStore } from '@/stores/AuthStore';
 import { useAudioStore } from '@/stores/AudioStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { Toggle } from '../ui/toggle';
@@ -15,8 +14,9 @@ import { cn } from '@/lib/utils';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { useGameFinalStore } from '@/stores/GameFinalStore';
 import Leaderboard from './Leaderboard';
+import { useSession } from 'next-auth/react';
 const GamePhase3 = () => {
-  const { user_id } = useAuthStore();
+  const user = useSession().data?.user;
   const { currentPlayer, handleChooseCategory } = useRoomStore();
   const { handlePlay } = useAudioStore();
   const { timer } = useTimerStore();
@@ -49,7 +49,7 @@ const GamePhase3 = () => {
           <Toggle
             className="col-span-1 p-2 w-full h-full"
             disabled={
-              currentPlayer?._id != user_id ||
+              currentPlayer?._id != user?._id ||
               possibleSongs.find(song => song.song_id == `final${i}`)?.completed
             }
             id={`final${i}`}
@@ -95,7 +95,7 @@ const GamePhase3 = () => {
                     role="combobox"
                     aria-expanded={open}
                     className="w-[250px] justify-between"
-                    disabled={currentPlayer?._id != user_id}
+                    disabled={currentPlayer?._id != user?._id}
                   >
                     {value
                       ? possibleAnswers.find(
@@ -147,7 +147,7 @@ const GamePhase3 = () => {
                     handleFinalAnswerSubmit();
                   }}
                   className={
-                    currentPlayer?._id != user_id || value === ''
+                    currentPlayer?._id != user?._id || value === ''
                       ? 'pointer-events-none w-[100%] opacity-50 min-w-[100px]'
                       : 'w-[100%] min-w-[100px]'
                   }
@@ -160,7 +160,7 @@ const GamePhase3 = () => {
               <Button
                 onClick={() => handlePlay()}
                 className="w-[100%] min-w-[100px]"
-                disabled={currentPlayer?._id != user_id}
+                disabled={currentPlayer?._id != user?._id}
               >
                 Play / Pause
               </Button>

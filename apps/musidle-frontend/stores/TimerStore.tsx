@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { useAnswerStore } from './AnswerStore';
 import { useRoomStore } from './RoomStore';
-import { useAuthStore } from './AuthStore';
+import { getSession, useSession } from 'next-auth/react';
+import { useNextAuthStore } from './NextAuthStore';
 
 interface ITimerStore {
   timer: number;
@@ -16,10 +17,11 @@ export const useTimerStore = create<ITimerStore>(set => ({
     })),
 }));
 
-useTimerStore.subscribe(({ timer }) => {
+useTimerStore.subscribe(async ({ timer }) => {
   const { handleAnswerSubmit } = useAnswerStore.getState();
   const { setTimer } = useTimerStore.getState();
-  if (timer <= 0 && useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
+  const session = useNextAuthStore.getState().session;
+  if (timer <= 0 && useRoomStore.getState().currentPlayer?._id == session?.user?._id) {
     setTimer(35);
     handleAnswerSubmit();
   }

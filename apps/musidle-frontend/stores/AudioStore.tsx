@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { useSocketStore } from './SocketStore';
-import { useAuthStore } from './AuthStore';
 import { useRoomStore } from './RoomStore';
 import { useTimerStore } from '@/stores/TimerStore';
+import { useNextAuthStore } from '@/stores/NextAuthStore';
 
 interface IAudioStore {
   audio: HTMLAudioElement | null;
@@ -78,11 +78,12 @@ export const useAudioStore = create<IAudioStore>(set => ({
       .getState()
       .socket?.emit('skip', useAudioStore.getState().time, useRoomStore.getState().room_code);
   },
-  handlePlay: () => {
+  handlePlay: async () => {
     const { audio } = useAudioStore.getState();
     const { maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
+    const session = useNextAuthStore.getState().session;
     if (!audio) return;
-    if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
+    if (useRoomStore.getState().currentPlayer?._id == session?.user._id) {
       useSocketStore
         .getState()
         .socket?.emit(

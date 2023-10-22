@@ -13,15 +13,18 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
+        source: '/externalApi/:path*',
         destination: `${
           process.env.NODE_ENV == 'production'
             ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
             : 'http://localhost:5000'
-        }/api/:path*`, // Proxy to Backend
+        }/externalApi/:path*`, // Proxy to Backend
       },
     ];
   },

@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { useRoomStore } from './RoomStore';
-import { useAuthStore } from './AuthStore';
 import { useSocketStore } from './SocketStore';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useAudioStore } from './AudioStore';
 import axios from 'axios';
 import { IAnswer, IAnswerStore, ISong } from '@/@types/AnswerStore';
+import { useNextAuthStore } from '@/stores/NextAuthStore';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   answer: '',
@@ -38,8 +38,9 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     set(() => ({
       possibleSongs: possibleSongs,
     })),
-  handleValueChange: (value: string) => {
-    if (useRoomStore.getState().currentPlayer?._id == useAuthStore.getState().user_id) {
+  handleValueChange: async (value: string) => {
+    const session = useNextAuthStore.getState().session;
+    if (useRoomStore.getState().currentPlayer?._id == session?.user?._id) {
       useSocketStore
         .getState()
         .socket?.emit('valueChange', value, useRoomStore.getState().room_code);
@@ -48,16 +49,16 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
   },
   handleAnswerSubmit: async () => {
     const { currentPlayer, room_code, handleTurnChange } = useRoomStore.getState();
-    const user_id = useAuthStore.getState().user_id;
+    const session = useNextAuthStore.getState().session;
     const socket = useSocketStore.getState().socket;
     let category = '';
     //set completedCategories.category.completed to true
     if (
       useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne &&
-      currentPlayer?._id == user_id
+      currentPlayer?._id == session?.user?._id
     ) {
       useRoomStore.getState().players.map(player => {
-        if (player._id == user_id) {
+        if (player._id == session?.user?._id) {
           player.completedCategories.map((item: any) => {
             if (useAudioStore.getState().songId.includes(item.category)) {
               category = item.category;
@@ -67,9 +68,9 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         }
       });
     }
-    if (currentPlayer?._id == user_id) {
+    if (currentPlayer?._id == session?.user?._id) {
       await axios
-        .post(`/api/rooms/checkAnswer`, {
+        .post(`/externalApi/rooms/checkAnswer`, {
           room_code: useRoomStore.getState().room_code,
           player_id: currentPlayer._id,
           player_answer: useAnswerStore.getState().value,
@@ -89,12 +90,12 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const audio = useAudioStore.getState().audio;
     useTimerStore.getState().setTimer(35.0);
     if (audio) audio.volume = 0.05;
-    if (currentPlayer && currentPlayer._id === user_id) handleTurnChange();
+    if (currentPlayer && currentPlayer._id === session?.user?._id) handleTurnChange();
   },
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;
 
-    const response = axios.get(`/api/track/search/${query}`).then(res => {
+    const response = axios.get(`/externalApi/track/search/${query}`).then(res => {
       return res.data;
     });
 
@@ -126,8 +127,8 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
 
     const { currentPlayer } = useRoomStore.getState();
     const { socket } = useSocketStore.getState();
-    const { user_id } = useAuthStore.getState();
-    if (currentPlayer?._id == user_id) {
+    const session = useNextAuthStore.getState().session;
+    if (currentPlayer?._id == session?.user?._id) {
       socket?.emit(
         'searchSong',
         useAnswerStore.getState().possibleAnswers,
@@ -136,7 +137,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     }
   },
   revealArtist: async (song_id: string) => {
-    const artist = await axios.get(`/api/songs/${song_id}`).then(res => {
+    const artist = await axios.get(`/externalApi/songs/${song_id}`).then(res => {
       if (res.data.data.artist == null) return undefined;
       return res.data.data.artist;
     });

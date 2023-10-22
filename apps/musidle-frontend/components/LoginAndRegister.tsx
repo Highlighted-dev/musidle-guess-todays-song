@@ -1,5 +1,5 @@
+'use client';
 import React, { MutableRefObject, useContext, useRef, useState } from 'react';
-import { authContext } from '@/components/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,18 +13,17 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { AuthContextType } from '@/@types/AuthContext';
 import {
   doesPasswordHaveCapitalLetter,
   doesPasswordHaveNumber,
   isEmailValid,
 } from '@/utils/Validations';
 import { toast } from './ui/use-toast';
-import { useAuthStore } from '@/stores/AuthStore';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { useNextAuthStore } from '@/stores/NextAuthStore';
 
 const LoginAndRegister = () => {
-  const { user_id } = useAuthStore();
-  const { logout, login, register } = useContext(authContext) as AuthContextType;
+  const { data } = useSession();
   const usernameRef = useRef() as MutableRefObject<HTMLInputElement>;
   const emailRef = useRef() as MutableRefObject<HTMLInputElement>;
   const passwordRef = useRef() as MutableRefObject<HTMLInputElement>;
@@ -59,7 +58,7 @@ const LoginAndRegister = () => {
 
       try {
         setLoading(true);
-        register(username, email, password);
+        // register(username, email, password);
       } catch {
         toast({
           variant: 'destructive',
@@ -106,14 +105,18 @@ const LoginAndRegister = () => {
         setLoading(true);
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
-        login(email, password);
+        await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        });
         setLoading(false);
       }
     }
   };
   return (
     <>
-      {!user_id ? (
+      {!data?.user.email ? (
         <Dialog>
           <DialogTrigger asChild>
             <Button variant={'ghost'}>Login</Button>
@@ -197,7 +200,14 @@ const LoginAndRegister = () => {
           </DialogContent>
         </Dialog>
       ) : (
-        <Button onClick={logout} variant={'ghost'} disabled={loading}>
+        <Button
+          onClick={async () => {
+            await signOut({ redirect: false });
+            useNextAuthStore.setState({ session: null });
+          }}
+          variant={'ghost'}
+          disabled={loading}
+        >
           Logout
         </Button>
       )}

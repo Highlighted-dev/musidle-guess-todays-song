@@ -17,16 +17,16 @@ import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
 import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-
+import { revalidateTag } from 'next/cache';
 import { useTimerStore } from '@/stores/TimerStore';
-import { useAuthStore } from '@/stores/AuthStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useAudioStore } from '@/stores/AudioStore';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 import Leaderboard from './Leaderboard';
+import { useSession } from 'next-auth/react';
 const GameMultiplayerLayout = () => {
-  const { user_id } = useAuthStore();
+  const user = useSession().data?.user;
   const { timer } = useTimerStore();
   const {
     value,
@@ -47,7 +47,7 @@ const GameMultiplayerLayout = () => {
         <CardHeader className=" text-center">
           <div className="flex justify-between items-center">
             <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-              v0.6.0
+              v0.7.0
             </label>
             <CardTitle className="flex justify-center items-center">
               Musidle - Multiplayer
@@ -105,7 +105,7 @@ const GameMultiplayerLayout = () => {
                       handlePlay();
                     }}
                     className="min-w-[80px]"
-                    disabled={currentPlayer?._id != user_id}
+                    disabled={currentPlayer?._id != user?._id}
                   >
                     Play / Pause
                   </Button>
@@ -125,7 +125,7 @@ const GameMultiplayerLayout = () => {
                         role="combobox"
                         aria-expanded={open}
                         className="w-[250px] justify-between"
-                        disabled={currentPlayer?._id != user_id}
+                        disabled={currentPlayer?._id != user?._id}
                       >
                         {value
                           ? possibleAnswers.find(
@@ -184,7 +184,7 @@ const GameMultiplayerLayout = () => {
             variant="ghost"
             onClick={() => handleSkip()}
             className="w-[10%] min-w-[50px]"
-            disabled={currentPlayer?._id != user_id}
+            disabled={currentPlayer?._id != user?._id}
           >
             Change stage
           </Button>
@@ -205,7 +205,7 @@ const GameMultiplayerLayout = () => {
               handleAnswerSubmit();
             }}
             className={
-              currentPlayer?._id != user_id || value === ''
+              currentPlayer?._id != user?._id || value === ''
                 ? 'pointer-events-none w-[9%] min-w-[50px] opacity-50'
                 : 'w-[9%] min-w-[50px'
             }

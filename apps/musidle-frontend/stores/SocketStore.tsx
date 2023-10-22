@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { Socket } from 'socket.io-client';
 import { useRoomStore } from './RoomStore';
-import { useAuthStore } from './AuthStore';
 import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
 import { IAnswer, ISong } from '@/@types/AnswerStore';
 import { IPlayer } from '@/@types/Rooms';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useGameFinalStore } from './GameFinalStore';
+import { getSession, useSession } from 'next-auth/react';
+import { useNextAuthStore } from './NextAuthStore';
 
 interface ISocketStore {
   socket: Socket | null;
@@ -28,11 +29,12 @@ export const useSocketStore = create<ISocketStore>(set => ({
 }));
 
 // Connect the socket and add event listeners
-useSocketStore.subscribe(({ socket }) => {
+useSocketStore.subscribe(async ({ socket }) => {
   if (socket) {
+    const { _id: user_id, role } = useNextAuthStore.getState().session?.user || {};
     if (
-      !useRoomStore.getState().players.find(p => p._id === useAuthStore.getState().user_id) &&
-      !useRoomStore.getState().spectators.find(p => p._id === useAuthStore.getState().user_id)
+      !useRoomStore.getState().players.find(p => p._id === user_id) &&
+      !useRoomStore.getState().spectators.find(p => p._id === user_id)
     )
       return;
     socket.on('updatePlayerList', (players: IPlayer[], spectators: IPlayer[]) => {
@@ -113,7 +115,7 @@ useSocketStore.subscribe(({ socket }) => {
       useAnswerStore.setState({ possibleAnswers: songs });
     });
     socket.on('roomSettingsUpdate', (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => {
-      if (useAuthStore.getState().role == 'admin') return;
+      if (role == 'admin') return;
       useRoomStore.setState({
         maxRoundsPhaseOne: maxRoundsPhaseOne,
         maxRoundsPhaseTwo: maxRoundsPhaseTwo,

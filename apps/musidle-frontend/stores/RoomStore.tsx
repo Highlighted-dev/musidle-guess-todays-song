@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { create } from 'zustand';
-import { useAuthStore } from './AuthStore';
 import { IRoomStore, IPlayer } from '@/@types/Rooms';
 import { useSocketStore } from './SocketStore';
 import { io } from 'socket.io-client';
@@ -71,7 +70,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     const { setTimer } = useTimerStore.getState();
     const { setPossibleSongs } = useAnswerStore.getState();
     if (user_id && username) {
-      const { data } = await axios.post(`/api/rooms/join`, {
+      const { data } = await axios.post(`/externalApi/rooms/join`, {
         room_id: room_code,
         player: {
           _id: user_id,
@@ -110,14 +109,14 @@ export const useRoomStore = create<IRoomStore>(set => ({
             ),
           );
       }
-      useSocketStore.getState().socket?.emit('id', useAuthStore.getState().user_id, room_code);
+      useSocketStore.getState().socket?.emit('id', user_id, room_code);
       return;
     }
   },
   leaveRoom: async (router: Router, user_id = null) => {
     const { room_code } = useRoomStore.getState();
     if (user_id) {
-      await axios.post(`/api/rooms/leave`, {
+      await axios.post(`/externalApi/rooms/leave`, {
         room_code: room_code,
         player_id: user_id,
       });
@@ -137,7 +136,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     }
   },
   startGame: async () => {
-    await axios.post(`/api/rooms/start`, {
+    await axios.post(`/externalApi/rooms/start`, {
       room_code: useRoomStore.getState().room_code,
     });
   },
@@ -153,7 +152,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
   handleTurnChange: async () => {
     if (!useRoomStore.getState().currentPlayer) return;
 
-    await axios.post(`/api/rooms/turnChange`, {
+    await axios.post(`/externalApi/rooms/turnChange`, {
       room_code: useRoomStore.getState().room_code,
       song_id: useAudioStore.getState().songId,
     });
@@ -164,7 +163,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setSelectMode, room_code } = useRoomStore.getState();
     const song: string = await axios
-      .post(`/api/songs/chooseSong`, {
+      .post(`/externalApi/songs/chooseSong`, {
         room_code: room_code,
         song_id: song_id,
       })
@@ -212,7 +211,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       : maxRoundsPhaseTwo;
 
     await axios
-      .put(`/api/rooms/settings`, {
+      .put(`/externalApi/rooms/settings`, {
         room_code: useRoomStore.getState().room_code,
         maxRoundsPhaseOne: mxRoundsPhaseOne,
         maxRoundsPhaseTwo: mxRoundsPhaseTwo,

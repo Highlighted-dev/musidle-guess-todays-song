@@ -2,9 +2,9 @@ import { create } from 'zustand';
 import { useRoomStore } from './RoomStore';
 import { useSocketStore } from './SocketStore';
 import { useAudioStore } from './AudioStore';
-import { useAuthStore } from './AuthStore';
 import axios from 'axios';
 import { useAnswerStore } from './AnswerStore';
+import { useNextAuthStore } from './NextAuthStore';
 
 interface IGameFinalStore {
   handleFinal: () => void;
@@ -29,13 +29,13 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
   },
   handleFinalAnswerSubmit: async () => {
     const { currentPlayer } = useRoomStore.getState();
-    const user_id = useAuthStore.getState().user_id;
+    const session = useNextAuthStore.getState().session;
     const socket = useSocketStore.getState().socket;
     const { setAnswer, changeSongToCompleted } = useAnswerStore.getState();
 
-    if (currentPlayer?._id == user_id) {
+    if (currentPlayer?._id == session?.user?._id) {
       await axios
-        .post(`/api/rooms/checkAnswer`, {
+        .post(`/externalApi/rooms/checkAnswer`, {
           room_code: useRoomStore.getState().room_code,
           player_id: currentPlayer._id,
           player_answer: useAnswerStore.getState().value,

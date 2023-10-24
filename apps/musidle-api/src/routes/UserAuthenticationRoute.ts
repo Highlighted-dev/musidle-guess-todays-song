@@ -63,7 +63,7 @@ router.post('/register', jsonParser, async (req: Request, res: Response) => {
         username: req.body.username,
         email: req.body.email,
         password: hashedPassword,
-        role: 'User',
+        role: 'user',
       });
       return res.json({ status: 'ok' });
     } catch (e) {

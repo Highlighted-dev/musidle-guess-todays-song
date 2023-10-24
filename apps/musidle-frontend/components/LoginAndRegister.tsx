@@ -21,6 +21,7 @@ import {
 import { toast } from './ui/use-toast';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNextAuthStore } from '@/stores/NextAuthStore';
+import axios from 'axios';
 
 const LoginAndRegister = () => {
   const { data } = useSession();
@@ -56,20 +57,37 @@ const LoginAndRegister = () => {
           description: 'Password does not have a number',
         });
 
-      try {
-        setLoading(true);
-        // register(username, email, password);
-      } catch {
-        toast({
-          variant: 'destructive',
-          title: 'Failed to Register',
-          description: 'Something went wrong. Please try again later.',
+      setLoading(true);
+      await axios
+        .post('/externalApi/auth/register/', {
+          username,
+          email,
+          password,
+        })
+        .then(response => response.data)
+        .then(async response_data => {
+          if (response_data.status === 'ok') {
+            await signIn('credentials', {
+              email,
+              password,
+              redirect: false,
+            });
+            return toast({
+              title: 'Registered successfully',
+            });
+          } else {
+            throw response_data.message.message;
+          }
+        })
+        .catch(error => {
+          toast({
+            variant: 'destructive',
+            title: 'Failed to Register',
+            description: error,
+          });
         });
-      }
       setLoading(false);
-      return toast({
-        title: 'Registered successfully',
-      });
+      return;
     }
     return toast({
       variant: 'destructive',
@@ -202,8 +220,10 @@ const LoginAndRegister = () => {
       ) : (
         <Button
           onClick={async () => {
+            setLoading(true);
             await signOut({ redirect: false });
             useNextAuthStore.setState({ session: null });
+            setLoading(false);
           }}
           variant={'ghost'}
           disabled={loading}

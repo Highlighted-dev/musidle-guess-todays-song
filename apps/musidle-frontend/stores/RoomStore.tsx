@@ -65,51 +65,42 @@ export const useRoomStore = create<IRoomStore>(set => ({
       turnChangeDialogOpen: turnChangeDialogOpen,
     })),
   random: 0,
-  joinRoom: async (room_code = null, user_id = null, username = null) => {
+  joinRoom: async (room, user_id) => {
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setTimer } = useTimerStore.getState();
     const { setPossibleSongs } = useAnswerStore.getState();
-    if (user_id && username) {
-      const { data } = await axios.post(`/externalApi/rooms/join`, {
-        room_id: room_code,
-        player: {
-          _id: user_id,
-          name: username,
-          score: 0,
-        },
-      });
-      set(() => ({
-        room_code: data.room_code,
-        players: data.players,
-        spectators: data.spectators,
-        currentPlayer: data.current_player,
-        maxRoundsPhaseOne: data.maxRoundsPhaseOne,
-        maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
-        round: data.round,
-        isInLobby: data.isInGameLobby,
-        selectMode: !data.isInSelectMode,
-      }));
-      setTimer(data.timer);
-      setPossibleSongs(data.songs);
-      setSongId(data.song_id);
-      setAudio(new Audio(`/music/${data.song_id}.mp3`));
-      const audio = useAudioStore.getState().audio;
-      if (audio) {
-        audio.volume = useAudioStore.getState().volume;
-      }
-      //set socket the to the room
-      if (!useSocketStore.getState().socket) {
-        useSocketStore
-          .getState()
-          .setSocket(
-            io(
-              process.env.NODE_ENV == 'production'
-                ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
-                : 'http://localhost:5000',
-            ),
-          );
-      }
-      useSocketStore.getState().socket?.emit('id', user_id, room_code);
+    set(() => ({
+      room_code: room.room_code,
+      players: room.players,
+      spectators: room.spectators,
+      currentPlayer: room.current_player,
+      maxRoundsPhaseOne: room.maxRoundsPhaseOne,
+      maxRoundsPhaseTwo: room.maxRoundsPhaseTwo,
+      round: room.round,
+      isInLobby: room.isInGameLobby,
+      selectMode: !room.isInSelectMode,
+    }));
+    setTimer(room.timer);
+    setPossibleSongs(room.songs);
+    setSongId(room.song_id);
+    setAudio(typeof Audio !== 'undefined' ? new Audio(`/music/${room.song_id}.mp3`) : null);
+    const audio = useAudioStore.getState().audio;
+    if (audio) {
+      audio.volume = useAudioStore.getState().volume;
+    }
+    //set socket the to the room
+    if (!useSocketStore.getState().socket) {
+      useSocketStore
+        .getState()
+        .setSocket(
+          io(
+            process.env.NODE_ENV == 'production'
+              ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
+              : 'http://localhost:5000',
+          ),
+        );
+
+      useSocketStore.getState().socket?.emit('id', user_id, room.room_code);
       return;
     }
   },

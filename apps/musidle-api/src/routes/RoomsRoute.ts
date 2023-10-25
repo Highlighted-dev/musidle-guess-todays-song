@@ -19,7 +19,7 @@ interface ICustomRequest extends Request {
 
 router.post('/join', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let room_code = req.body.room_id;
+    let room_code = req.body.room_code;
     if (!room_code) {
       while (true) {
         room_code = Math.random().toString(36).substr(2, 5);
@@ -29,9 +29,11 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         }
       }
     }
-    let room = await roomModel.findOne({ room_code: room_code });
-    const categories = await axios.get(`${apiUrl}/api/categories`).then(response => response.data);
 
+    let room = await roomModel.findOne({ room_code: room_code });
+    const categories = await axios
+      .get(`${apiUrl}/externalApi/categories`)
+      .then(response => response.data);
     const player = req.body.player;
     player.completedCategories = categories.map((category: any) => {
       return {
@@ -42,7 +44,7 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
 
     if (!room) {
       const songs = await axios
-        .post(`${apiUrl}/api/songs/possibleSongs`, {
+        .post(`${apiUrl}/externalApi/songs/possibleSongs`, {
           maxRoundsPhaseOne: req.body.maxRoundsPhaseOne,
           maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo,
         })
@@ -229,7 +231,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
     const category = req.body.category;
     Timer(room_code, 0, (req as ICustomRequest).io).stop();
     axios
-      .get(`${apiUrl}/api/songs/${song_id}`)
+      .get(`${apiUrl}/externalApi/songs/${song_id}`)
       .then(response => response.data)
       .then(async response => {
         const correctAnswer = response.data;
@@ -270,7 +272,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
             );
           }
 
-          axios.post(`${apiUrl}/rooms/updateScore`, {
+          axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
             room_code: room_code,
             player_id: player_id,
             score: score(),
@@ -285,7 +287,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
             },
           });
         } else {
-          axios.post(`${apiUrl}/api/rooms/updateScore`, {
+          axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
             room_code: room_code,
             player_id: player_id,
             score: 0,

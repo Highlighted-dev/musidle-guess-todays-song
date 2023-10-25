@@ -1,5 +1,5 @@
 import { IRoom } from '@/@types/Rooms';
-import MultiplayerPage from '@/components/multiplayer/MutiplayerPage';
+import Multiplayer from '@/components/pages/Mutiplayer';
 
 async function getRooms() {
   let url;
@@ -19,5 +19,5 @@ async function getRooms() {
 export default async function Page() {
   const rooms: IRoom[] = await getRooms();
 
-  return <MultiplayerPage data={rooms} />;
+  return <Multiplayer data={rooms} />;
 }

@@ -1,9 +1,8 @@
-import userModel from '@/lib/models/UserModel';
 import { NextAuthOptions } from 'next-auth';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import mongoose from 'mongoose';
+import clientPromise from '@/lib/mongodb';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -25,9 +24,12 @@ export const authOptions: NextAuthOptions = {
           if (!uri) {
             throw new Error('MONGODB_URI is not defined');
           }
-          await mongoose.connect(uri);
+          const client = await clientPromise;
+          const userCollection = client
+            .db(process.env.NODE_ENV == 'development' ? 'musidle' : 'musidle-prod')
+            .collection('userData');
           console.log('Connected to MongoDB');
-          const user = await userModel.findOne({ email: credentials?.email });
+          const user = await userCollection.findOne({ email: credentials?.email });
           if (!user) throw new Error('User not found');
           const isPasswordValid = await bcrypt.compare(credentials?.password, user.password);
           if (!isPasswordValid) throw new Error('Password is not valid');

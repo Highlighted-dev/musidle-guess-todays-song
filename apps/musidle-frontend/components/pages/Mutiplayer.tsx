@@ -2,29 +2,32 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@radix-ui/react-label';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { IRoom } from '@/@types/Rooms';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useSession } from 'next-auth/react';
+import { toast } from '../ui/use-toast';
 
-export default function MultiplayerPage({ data }: { data: IRoom[] }) {
+export default function Mutiplayer({ data }: { data: IRoom[] }) {
   const user = useSession().data?.user;
   const { joinRoom } = useRoomStore();
   const router = useRouter();
 
   const handleRoomJoin = async (room_id: string) => {
     if (!user?._id) return;
-    joinRoom(room_id, user?._id, user?.username).then(() => {
-      router.push(`/multiplayer/${room_id}`);
-    });
+    router.push(`/multiplayer/${room_id}`);
   };
 
   const handleRoomCreate = async () => {
-    if (!user?._id) return;
-    joinRoom(null, user?._id, user?.username).then(() => {
-      router.push(`/multiplayer/${useRoomStore.getState().room_code}`);
-    });
+    if (!user?._id) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to Create Room',
+        description: 'You must be logged in to create a room',
+      });
+    }
+    router.push(`/multiplayer/${useRoomStore.getState().room_code}`);
   };
   return (
     <Card className="h-5/6 xl:w-4/6 xl:p-0 w-[90%]">

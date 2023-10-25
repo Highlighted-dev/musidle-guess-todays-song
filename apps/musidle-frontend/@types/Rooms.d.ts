@@ -27,11 +27,7 @@ export interface IRoomStore {
   turnChangeDialogOpen: boolean;
   random: number;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
-  joinRoom: (
-    room_code: string | null = null,
-    user_id: string | null = null,
-    username: string | null = null,
-  ) => Promise<void>;
+  joinRoom: (room: any, user_id: string | null = null) => Promise<void>;
   leaveRoom: (router: Router, user_id: string | null = null) => void;
   startGame: () => Promise<void>;
   updatePlayerScore: (points: number, player: player) => void;

@@ -1,42 +1,136 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import RoomProvider from '@/components/multiplayer/RoomProvider';
-import Room_code from '@/components/pages/Room_code';
-import { getServerSession } from 'next-auth';
+'use client';
+import { useAnswerStore } from '@/stores/AnswerStore';
+import { useRoomStore } from '@/stores/RoomStore';
+import { useSession } from 'next-auth/react';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+import { Label } from '@/components/ui/label';
+import GamePhase1 from '@/components/multiplayer/GamePhase1';
+import GamePhase2 from '@/components/multiplayer/GamePhase2';
+import GamePhase3 from '@/components/multiplayer/GamePhase3';
+import GameEndScreen from '@/components/multiplayer/GameEndScreen';
+import GameLobby from '@/components/multiplayer/GameLobby';
+import { Progress } from '@/components/ui/progress';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { useSocketStore } from '@/stores/SocketStore';
 
-async function joinRoom(room_code: string | null) {
-  const player = await getServerSession(authOptions);
-  let url;
-  if (process.env.NODE_ENV === 'development') {
-    url = new URL('http://localhost:4200/externalApi/rooms/join');
-  } else {
-    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/rooms/join`);
-  }
-  const room = await fetch(url, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify({
-      room_code,
-      player: {
-        _id: player?.user?._id,
-        name: player?.user?.username,
-        score: 0,
-      },
-    }),
-    cache: 'no-store',
-  }).then(res => res.json());
-  return room;
-}
+export default function Page() {
+  const {
+    joinRoom,
+    players,
+    spectators,
+    round,
+    maxRoundsPhaseOne,
+    maxRoundsPhaseTwo,
+    isInLobby,
+    turnChangeDialogOpen,
+    currentPlayer,
+  } = useRoomStore();
+  const [progress, setProgress] = React.useState(0);
+  const { value, answer, possibleAnswers } = useAnswerStore();
+  const user = useSession().data?.user;
+  const router = useRouter();
+  const params = useParams();
 
-export default async function Page({ params }: { params: { room_code: string } }) {
-  const room = await joinRoom(params.room_code);
+  const handleRoomJoin = async (room_code: string) => {
+    if (!user?._id) return;
+    joinRoom(room_code, user?._id, user?.username).then(() => {
+      router.push(`/multiplayer/${room_code}`);
+    });
+  };
+
+  useEffect(() => {
+    if (params.room_code.length > 6) {
+      router.push('/multiplayer');
+      return;
+    }
+    if (
+      params.room_code &&
+      user?._id &&
+      !players.find(player => player['_id'] == user?._id && !useSocketStore.getState().socket)
+    ) {
+      handleRoomJoin(params.room_code as string);
+    }
+  }, [user?._id, params.room_code]);
+
+  useEffect(() => {
+    if (turnChangeDialogOpen) {
+      //update progress bar 4 times, once every 900ms
+      const timer = setInterval(() => {
+        setProgress(prevProgress => (prevProgress >= 100 ? 0 : prevProgress + 25));
+      }, 900);
+      return () => {
+        clearInterval(timer);
+        setProgress(0);
+      };
+    }
+  }, [turnChangeDialogOpen]);
   return (
-    <RoomProvider room={room}>
-      <div className="rounded-md overflow-hidden w-full h-full flex flex-col justify-center items-center min-h-[750px]">
-        <Room_code room={room} />
-      </div>
-    </RoomProvider>
+    <>
+      <Dialog
+        open={turnChangeDialogOpen}
+        onOpenChange={() => {
+          return;
+        }}
+      >
+        <DialogContent className="text-center">
+          <DialogHeader>
+            <DialogTitle className="text-center">Round {round}</DialogTitle>
+          </DialogHeader>
+          <h1 className="text-base text-center">
+            {answer && value.toLowerCase().includes(answer.toLowerCase()) ? (
+              <Label className="text-green-500 font-bold"> CORRECT</Label>
+            ) : (
+              <Label className="text-red-700 font-bold"> INCORRECT</Label>
+            )}
+          </h1>
+          <Label className="text-center">
+            {`You guessed: ${
+              possibleAnswers.find(song => song.value.toLowerCase() === value.toLowerCase())
+                ?.value ||
+              value ||
+              'Nothing :('
+            }`}
+          </Label>
+          <Label className="text-center">The correct answer was: {answer}</Label>
+          <br />
+          <h1 className="text-bold text-base">{currentPlayer?.name}&apos;s turn</h1>
+          <DialogFooter className="text-center">
+            <Progress value={progress} />
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {
+        //If game has started and user is in players array, render GamePhase, else render GameLobby
+        !isInLobby &&
+        round <= maxRoundsPhaseOne &&
+        (players.find(player => player['_id'] == user?._id) ||
+          spectators.find(spectator => spectator['_id'] == user?._id)) ? (
+          <GamePhase1 />
+        ) : !isInLobby &&
+          round <= maxRoundsPhaseOne + maxRoundsPhaseTwo &&
+          (players?.find(player => player['_id'] == user?._id) ||
+            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
+          <GamePhase2 />
+        ) : !isInLobby &&
+          round <= maxRoundsPhaseOne + maxRoundsPhaseTwo + 1 &&
+          (players?.find(player => player['_id'] == user?._id) ||
+            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
+          <GamePhase3 />
+        ) : !isInLobby &&
+          (players.find(player => player['_id'] == user?._id) ||
+            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
+          <GameEndScreen />
+        ) : (
+          <GameLobby room_code={params.room_code as string} />
+        )
+      }
+    </>
   );
 }

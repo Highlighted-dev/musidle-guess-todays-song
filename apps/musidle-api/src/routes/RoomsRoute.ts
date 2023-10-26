@@ -24,7 +24,7 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
       while (true) {
         room_code = Math.random().toString(36).substr(2, 5);
         if ((await roomModel.findOne({ room_code: room_code })) === null) {
-          req.body.room_id = room_code;
+          req.body.room_code = room_code;
           break;
         }
       }
@@ -41,7 +41,6 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         completed: false,
       };
     });
-
     if (!room) {
       const songs = await axios
         .post(`${apiUrl}/externalApi/songs/possibleSongs`, {

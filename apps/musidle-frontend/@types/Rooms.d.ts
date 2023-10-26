@@ -25,9 +25,12 @@ export interface IRoomStore {
   selectMode: boolean;
   setSelectMode: (renderGame: boolean) => void;
   turnChangeDialogOpen: boolean;
-  random: number;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
-  joinRoom: (room: any, user_id: string | null = null) => Promise<void>;
+  joinRoom: (
+    room: any,
+    user_id: string | null = null,
+    username: string | null = null,
+  ) => Promise<void>;
   leaveRoom: (router: Router, user_id: string | null = null) => void;
   startGame: () => Promise<void>;
   updatePlayerScore: (points: number, player: player) => void;
@@ -43,7 +46,14 @@ export interface IRoom {
   _id: string;
   room_code: string;
   players: player[];
+  spectators: player[];
+  currentPlayer: player | null;
+  song_id: string | null;
   maxRoundsPhaseOne: number;
   maxRoundsPhaseTwo: number;
   round: number;
+  isInGameLobby: boolean;
+  isInSelectmode: boolean;
+  timer: number;
+  songs: song[];
 }

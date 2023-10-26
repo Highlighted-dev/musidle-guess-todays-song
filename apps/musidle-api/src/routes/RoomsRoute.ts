@@ -233,6 +233,24 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
       .get(`${apiUrl}/externalApi/songs/${song_id}`)
       .then(response => response.data)
       .then(async response => {
+        //update players.completedCategories for a player with player_id = player_id in room with room_code = room_code
+        if (category) {
+          await roomModel.findOneAndUpdate(
+            {
+              room_code: room_code,
+              'players._id': player_id,
+            },
+            {
+              $set: {
+                'players.$.completedCategories.$[category].completed': true,
+              },
+            },
+            {
+              arrayFilters: [{ 'category.category': category }],
+              new: true,
+            },
+          );
+        }
         const correctAnswer = response.data;
         if (!correctAnswer) {
           return res.status(404).json({ status: 'error', message: 'Answer not found' });
@@ -251,25 +269,6 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
                 return 0;
             }
           };
-
-          //update players.completedCategories for a player with player_id = player_id in room with room_code = room_code
-          if (category) {
-            await roomModel.findOneAndUpdate(
-              {
-                room_code: room_code,
-                'players._id': player_id,
-              },
-              {
-                $set: {
-                  'players.$.completedCategories.$[category].completed': true,
-                },
-              },
-              {
-                arrayFilters: [{ 'category.category': category }],
-                new: true,
-              },
-            );
-          }
 
           axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
             room_code: room_code,

@@ -27,6 +27,10 @@ const GamePhase3 = () => {
   const [open, setOpen] = useState(false);
 
   const handleTogglePress = (final_song_id: string) => {
+    console.log(
+      possibleSongs.find(song => song.song_id == final_song_id)?.completed,
+      final_song_id,
+    );
     if (possibleSongs.find(song => song.song_id == final_song_id)?.completed) return;
     handleChooseCategory(final_song_id, 3);
     for (let i = 1; i <= 6; i++) {
@@ -40,40 +44,6 @@ const GamePhase3 = () => {
       }
     }
   };
-
-  const renderToggles = () => {
-    const buttons = [];
-
-    for (let i = 1; i <= 6; i++) {
-      buttons.push(
-        <div className="w-full h-full">
-          <Toggle
-            className="col-span-1 p-2 w-full h-full"
-            disabled={
-              currentPlayer?._id != user?._id ||
-              possibleSongs.find(song => song.song_id == `final${i}`)?.completed
-            }
-            id={`final${i}`}
-            key={i}
-            defaultPressed={i == 1 ? true : false}
-            onPressedChange={() => {
-              handleTogglePress(`final${i}`);
-            }}
-            variant={'outline'}
-          >
-            <Label className="cursor-pointer">
-              {possibleSongs.find(song => song.song_id == `final${i}`)?.completed
-                ? possibleSongs.find(song => song.song_id == `final${i}`)?.artist
-                : i}
-            </Label>
-          </Toggle>
-        </div>,
-      );
-    }
-
-    return buttons;
-  };
-
   return (
     <>
       <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center">
@@ -83,7 +53,29 @@ const GamePhase3 = () => {
               <CardTitle className="font-bold">FINAL ROUND</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col justify-center items-center h-4/5">
-              <div className="grid grid-cols-3 gap-2 w-full h-full">{renderToggles()}</div>
+              <div className="grid grid-cols-3 gap-2 w-full h-full">
+                {possibleSongs
+                  .filter(song => song.song_id.includes('final'))
+                  .map((song, index) => (
+                    <div className="w-full h-full" key={index}>
+                      <Toggle
+                        className="col-span-1 p-2 w-full h-full"
+                        disabled={currentPlayer?._id != user?._id || song.completed}
+                        id={song.song_id}
+                        key={`toggle${index}`}
+                        defaultPressed={index + 1 == 1 ? true : false}
+                        onPressedChange={() => {
+                          handleTogglePress(song.song_id);
+                        }}
+                        variant={'outline'}
+                      >
+                        <Label className="cursor-pointer">
+                          {song.completed ? song.artist : index + 1}
+                        </Label>
+                      </Toggle>
+                    </div>
+                  ))}
+              </div>
             </CardContent>
           </div>
           <div className="flex flex-col w-full justify-center items-center h-2/5">
@@ -165,18 +157,6 @@ const GamePhase3 = () => {
               >
                 Play / Pause
               </Button>
-              {/* </div>
-              <div className="w-1/4 text-center">
-                <Slider
-                  onValueChange={value => (audio ? (audio.volume = value[0] / 100) : null)}
-                  min={0}
-                  max={100}
-                  step={1}
-                  defaultValue={[useAudioStore.getState().volume * 100]}
-                  className={cn('py-4', 'h-4')}
-                />
-                <Label>Volume</Label>
-              </div> */}
             </div>
           </div>
         </Card>

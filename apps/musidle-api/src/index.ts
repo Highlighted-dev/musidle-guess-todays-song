@@ -24,6 +24,7 @@ const mongodb_url =
   process.env.NODE_ENV == 'production'
     ? process.env.MONGODB_URL_PROD || 'musidle'
     : process.env.MONGODB_URL || 'musidle';
+const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
 
 const app = express();
 const server =
@@ -71,7 +72,7 @@ setInterval(async () => {
       //Remove every user from room
       usersInRoom.forEach(async user => {
         await axios
-          .post('http://localhost:5000/api/rooms/leave', {
+          .post(`${apiUrl}/externalApi/rooms/leave`, {
             room_code: user.room_code,
             player_id: user.id,
           })
@@ -142,8 +143,10 @@ io.on('connection', socket => {
         );
         if (songs?.length === 6) {
           //If all songs with category 'final' are completed, then add +1 to round
-          roomModel.updateOne({ room_code: room_code }, { $inc: { round: 1 } });
-          io.sockets.to(room_code).emit('turnChange');
+          await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
+            room_code: room_code,
+            song_id: song_id,
+          });
           return;
         }
       });

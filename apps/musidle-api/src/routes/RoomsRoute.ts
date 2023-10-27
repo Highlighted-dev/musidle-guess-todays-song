@@ -255,16 +255,26 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
         if (!correctAnswer) {
           return res.status(404).json({ status: 'error', message: 'Answer not found' });
         } else if (player_answer.toLowerCase().includes(correctAnswer.value.toLowerCase())) {
+          const modifier = () => {
+            if (song_id.includes('final')) {
+              return 3;
+            } else if (song_id.includes('artist')) {
+              return 1.5;
+            } else {
+              return 1;
+            }
+          };
+
           const score = () => {
             switch (time) {
               case 1000:
-                return 500;
+                return 500 * modifier();
               case 3000:
-                return 400;
+                return 400 * modifier();
               case 6000:
-                return 300;
+                return 300 * modifier();
               case 12000:
-                return 100;
+                return 100 * modifier();
               default:
                 return 0;
             }

@@ -34,9 +34,8 @@ const GameMultiplayerLayout = () => {
     handleAnswerSubmit,
     getPossibleSongAnswers,
     possibleSongs,
-    artist,
   } = useAnswerStore();
-  const { players, currentPlayer } = useRoomStore();
+  const { currentPlayer } = useRoomStore();
   const { audio, time, audioTime, handleSkip, handlePlay, songId } = useAudioStore();
   const [open, setOpen] = useState(false);
 
@@ -46,7 +45,7 @@ const GameMultiplayerLayout = () => {
         <CardHeader className=" text-center">
           <div className="flex justify-between items-center">
             <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-              v0.7.0
+              v0.7.1
             </label>
             <CardTitle className="flex justify-center items-center">
               Musidle - Multiplayer

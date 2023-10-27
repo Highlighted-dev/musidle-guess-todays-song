@@ -172,7 +172,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
       });
     socket?.emit('chooseSong', song, room_code);
     if (phase == 3 && song_id != 'song_id') useAudioStore.getState().audio?.pause();
-
     useAudioStore.setState({ songId: song });
     setAudio(new Audio(`/music/${song}.mp3`));
     const audio = useAudioStore.getState().audio;

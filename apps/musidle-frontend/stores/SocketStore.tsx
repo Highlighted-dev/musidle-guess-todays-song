@@ -96,7 +96,7 @@ useSocketStore.subscribe(async ({ socket }) => {
         if (intervalId !== null) clearInterval(intervalId);
         setTime(1000);
         setAudioTime(0);
-        setAudio(null);
+        if (useRoomStore.getState().round <= maxRoundsPhaseOne + maxRoundsPhaseTwo) setAudio(null);
         setValue('');
         setAnswer('');
         setPossibleAnswers([

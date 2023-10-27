@@ -22,6 +22,14 @@ import { toast } from './ui/use-toast';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNextAuthStore } from '@/stores/NextAuthStore';
 import axios from 'axios';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 const LoginAndRegister = () => {
   const { data } = useSession();
@@ -218,18 +226,26 @@ const LoginAndRegister = () => {
           </DialogContent>
         </Dialog>
       ) : (
-        <Button
-          onClick={async () => {
-            setLoading(true);
-            await signOut({ redirect: false });
-            useNextAuthStore.setState({ session: null });
-            setLoading(false);
-          }}
-          variant={'ghost'}
-          disabled={loading}
-        >
-          Logout
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost">Profile</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel className="text-center">{data?.user?.username}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem disabled>Stats</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                signOut();
+                useNextAuthStore.setState({
+                  session: null,
+                });
+              }}
+            >
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
     </>
   );

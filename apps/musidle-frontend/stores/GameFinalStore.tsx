@@ -44,8 +44,8 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
         })
         .then(res => res.data)
         .then(res => {
-          setAnswer(res.data.answer || null);
-          useRoomStore.getState().updatePlayerScore(res.data.score, currentPlayer);
+          setAnswer(res.answer || null);
+          useRoomStore.getState().updatePlayerScore(res.score, currentPlayer);
           socket?.emit(
             'changeSongToCompleted',
             useRoomStore.getState().room_code,

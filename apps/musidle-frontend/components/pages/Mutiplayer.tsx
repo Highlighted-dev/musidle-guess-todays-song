@@ -15,16 +15,15 @@ export default function Mutiplayer({ data }: { data: IRoom[] }) {
   const router = useRouter();
 
   const handleRoomJoin = async (room_id: string) => {
-    if (!user?._id) return;
     joinRoom(room_id, user?._id, user?.username).then(() => {
+      if (!user?._id) return;
       router.push(`/multiplayer/${room_id}`);
     });
-    router.push(`/multiplayer/${room_id}`);
   };
 
   const handleRoomCreate = async () => {
-    if (!user?._id) return;
     joinRoom(null, user?._id, user?.username).then(() => {
+      if (!user?._id) return;
       router.push(`/multiplayer/${useRoomStore.getState().room_code}`);
     });
   };

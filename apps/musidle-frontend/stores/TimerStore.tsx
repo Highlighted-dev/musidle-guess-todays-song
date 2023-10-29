@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { useAnswerStore } from './AnswerStore';
 import { useRoomStore } from './RoomStore';
-import { getSession, useSession } from 'next-auth/react';
 import { useNextAuthStore } from './NextAuthStore';
 
 interface ITimerStore {

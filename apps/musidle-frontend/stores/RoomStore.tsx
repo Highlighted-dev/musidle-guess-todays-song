@@ -70,6 +70,15 @@ export const useRoomStore = create<IRoomStore>(set => ({
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setTimer } = useTimerStore.getState();
     const { setPossibleSongs } = useAnswerStore.getState();
+    if (!user_id) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Please login to join a room`,
+        style: { whiteSpace: 'pre-line' },
+      });
+      return;
+    }
     if (user_id && username) {
       const { data } = await axios.post(`/externalApi/rooms/join`, {
         room_code: room_code,
@@ -168,8 +177,9 @@ export const useRoomStore = create<IRoomStore>(set => ({
         song_id: song_id,
       })
       .then(res => {
-        return res.data.data.song_id;
+        return res.data.data;
       });
+    console.log(song);
     socket?.emit('chooseSong', song, room_code);
     if (phase == 3 && song_id != 'song_id') useAudioStore.getState().audio?.pause();
     useAudioStore.setState({ songId: song });

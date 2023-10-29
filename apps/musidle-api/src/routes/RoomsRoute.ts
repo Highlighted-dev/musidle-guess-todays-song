@@ -106,7 +106,10 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
     if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
 
     // If the player is the only one in the room, delete the room
-    if (room.players.length === 1) {
+    if (
+      (room.players.length === 1 && room.spectators.length === 0) ||
+      (room.players.length === 0 && room.spectators.length === 1)
+    ) {
       await roomModel.deleteOne({ room_code: room_code });
       Timer(room_code, 0, (req as ICustomRequest).io).stop();
       return res.status(200).json({ message: 'Room deleted' });
@@ -288,11 +291,9 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
           return res.status(200).json({
             status: 'success',
             message: 'Correct answer',
-            data: {
-              score: score(),
-              player_id: player_id,
-              answer: correctAnswer.value,
-            },
+            score: score(),
+            player_id: player_id,
+            answer: correctAnswer.value,
           });
         } else {
           axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
@@ -303,11 +304,9 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
           return res.status(200).json({
             status: 'success',
             message: 'Wrong answer',
-            data: {
-              score: 0,
-              player_id: player_id,
-              answer: correctAnswer.value,
-            },
+            score: 0,
+            player_id: player_id,
+            answer: correctAnswer.value,
           });
         }
       })

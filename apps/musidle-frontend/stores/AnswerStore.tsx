@@ -6,6 +6,7 @@ import { useAudioStore } from './AudioStore';
 import axios from 'axios';
 import { IAnswer, IAnswerStore, ISong } from '@/@types/AnswerStore';
 import { useNextAuthStore } from '@/stores/NextAuthStore';
+import { toast } from '@/components/ui/use-toast';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   answer: '',
@@ -80,9 +81,9 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         })
         .then(res => res.data)
         .then(res => {
-          useAnswerStore.getState().setAnswer(res.data.answer || null);
-          useRoomStore.getState().updatePlayerScore(res.data.score, currentPlayer);
-          socket?.emit('answerSubmit', res.data.score, currentPlayer, res.data.answer, room_code);
+          useAnswerStore.getState().setAnswer(res.answer || null);
+          useRoomStore.getState().updatePlayerScore(res.score, currentPlayer);
+          socket?.emit('answerSubmit', res.score, currentPlayer, res.answer, room_code);
         });
     }
     if (useAudioStore.getState().audio?.paused) useAudioStore.getState().audio?.play();
@@ -137,11 +138,17 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     }
   },
   revealArtist: async (song_id: string) => {
-    const artist = await axios.get(`/externalApi/songs/${song_id}`).then(res => {
-      if (res.data.data.artist == null) return undefined;
-      return res.data.data.artist;
-    });
-    useAnswerStore.getState().setArtist(artist || '');
+    const possibleSongs = useAnswerStore.getState().possibleSongs;
+    const song = possibleSongs.find(song => song.song_id === song_id);
+    if (!song) {
+      return toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Song for song_id ${song_id} not found, cannot reveal artist`,
+        style: { whiteSpace: 'pre-line' },
+      });
+    }
+    useAnswerStore.getState().setArtist(song.artist || '');
   },
   changeSongToCompleted: (song_id: string) => {
     //Change "completed" boolean in possibleSongs for song with song_id to true

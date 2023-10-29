@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useSocketStore } from '@/stores/SocketStore';
+import { toast } from '@/components/ui/use-toast';
 
 export default function Page() {
   const {
@@ -39,13 +40,20 @@ export default function Page() {
   const params = useParams();
 
   const handleRoomJoin = async (room_code: string) => {
-    if (!user?._id) return;
     joinRoom(room_code, user?._id, user?.username).then(() => {
       router.push(`/multiplayer/${room_code}`);
     });
   };
 
   useEffect(() => {
+    if (!user?._id) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Please login to join a room`,
+        style: { whiteSpace: 'pre-line' },
+      });
+    }
     if (params.room_code.length > 6) {
       router.push('/multiplayer');
       return;

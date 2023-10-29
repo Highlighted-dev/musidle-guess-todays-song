@@ -153,10 +153,10 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
     //get all songs with category == song_id in songs array
     if (song_id.includes('final')) {
       const finalSongs = songs.filter((song: ISong) => song.song_id === song_id);
-      return res.json({ message: 'Song found', data: finalSongs[0] });
+      return res.json({ message: 'Song found', data: finalSongs[0].song_id });
     } else if (song_id.includes('artist')) {
       const artistSong = songs.filter((song: ISong) => song.song_id === song_id);
-      return res.json({ message: 'Song found', data: artistSong[0] });
+      return res.json({ message: 'Song found', data: artistSong[0].song_id });
     }
 
     const songsWithCategory = songs.filter((song: ISong) => song.category === song_id);
@@ -170,7 +170,7 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
       }
     };
     if (!song()) return res.status(404).json({ message: 'Song not found' });
-    return res.json({ message: 'Song found', data: song() });
+    return res.json({ message: 'Song found', data: song().song_id });
   } catch (error) {
     next(error);
   }

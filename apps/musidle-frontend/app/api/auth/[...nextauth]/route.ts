@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
             username: user.username,
             email: user.email,
             role: user.role,
+            activated: user.activated,
           };
         } catch (e: unknown) {
           if (e instanceof Error) throw new Error(e.message);

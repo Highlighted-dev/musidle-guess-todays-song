@@ -1,9 +1,18 @@
+import { Session } from 'next-auth';
 import { Socket } from 'socket.io-client';
 
 export type IPlayer = {
   _id: string;
   name: string;
   score: number;
+};
+
+export type IUser = {
+  _id: string;
+  username: string;
+  email: string;
+  role: string;
+  activated: boolean;
 };
 export interface IRoomStore {
   room_code: string;
@@ -26,11 +35,7 @@ export interface IRoomStore {
   setSelectMode: (renderGame: boolean) => void;
   turnChangeDialogOpen: boolean;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
-  joinRoom: (
-    room: any,
-    user_id: string | null = null,
-    username: string | null = null,
-  ) => Promise<void>;
+  joinRoom: (room: any, user: IUser | undefined) => Promise<void>;
   leaveRoom: (router: Router, user_id: string | null = null) => void;
   startGame: () => Promise<void>;
   updatePlayerScore: (points: number, player: player) => void;

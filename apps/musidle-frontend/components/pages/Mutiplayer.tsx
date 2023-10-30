@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { IRoom } from '@/@types/Rooms';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useSession } from 'next-auth/react';
-import { toast } from '../ui/use-toast';
 
 export default function Mutiplayer({ data }: { data: IRoom[] }) {
   const user = useSession().data?.user;
@@ -15,14 +14,14 @@ export default function Mutiplayer({ data }: { data: IRoom[] }) {
   const router = useRouter();
 
   const handleRoomJoin = async (room_id: string) => {
-    joinRoom(room_id, user?._id, user?.username).then(() => {
-      if (!user?._id) return;
+    joinRoom(room_id, user).then(() => {
+      if (!user?._id || !user?.activated) return;
       router.push(`/multiplayer/${room_id}`);
     });
   };
 
   const handleRoomCreate = async () => {
-    joinRoom(null, user?._id, user?.username).then(() => {
+    joinRoom(null, user).then(() => {
       if (!user?._id) return;
       router.push(`/multiplayer/${useRoomStore.getState().room_code}`);
     });

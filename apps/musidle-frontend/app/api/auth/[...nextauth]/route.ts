@@ -28,7 +28,6 @@ export const authOptions: NextAuthOptions = {
           const userCollection = client
             .db(process.env.NODE_ENV == 'development' ? 'musidle' : 'musidle-prod')
             .collection('userData');
-          console.log('Connected to MongoDB');
           const user = await userCollection.findOne({ email: credentials?.email });
           if (!user) throw new Error('User not found');
           const isPasswordValid = await bcrypt.compare(credentials?.password, user.password);
@@ -39,8 +38,8 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             role: user.role,
           };
-        } catch (e) {
-          throw new Error('Could not log in');
+        } catch (e: unknown) {
+          if (e instanceof Error) throw new Error(e.message);
         }
       },
     }),
@@ -60,6 +59,7 @@ export const authOptions: NextAuthOptions = {
         token.username = user.username;
         token.email = user.email;
         token.role = user.role;
+        token.activated = user.activated;
       }
       return token;
     },
@@ -68,6 +68,7 @@ export const authOptions: NextAuthOptions = {
       session.user.username = token.username as string;
       session.user.email = token.email as string;
       session.user.role = token.role as string;
+      session.user.activated = token.activated as boolean;
       return session;
     },
   },

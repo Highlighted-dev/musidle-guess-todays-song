@@ -40,17 +40,17 @@ export default function Page() {
   const params = useParams();
 
   const handleRoomJoin = async (room_code: string) => {
-    joinRoom(room_code, user?._id, user?.username).then(() => {
+    joinRoom(room_code, user).then(() => {
       router.push(`/multiplayer/${room_code}`);
     });
   };
 
   useEffect(() => {
-    if (!user?._id) {
+    if (!user?._id || !user?.activated) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: `Please login to join a room`,
+        description: `Please login and activate your account to join a room`,
         style: { whiteSpace: 'pre-line' },
       });
     }

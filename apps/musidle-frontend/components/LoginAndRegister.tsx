@@ -79,9 +79,15 @@ const LoginAndRegister = () => {
               email,
               password,
               redirect: false,
+            }).catch(error => {
+              toast({
+                variant: 'destructive',
+                title: 'Failed to login',
+                description: error,
+              });
             });
             return toast({
-              title: 'Registered successfully',
+              title: 'Registered successfully, please check your email to verify your account',
             });
           } else {
             throw response_data.message.message;
@@ -135,6 +141,14 @@ const LoginAndRegister = () => {
           email,
           password,
           redirect: false,
+        }).then(response => {
+          if (response?.error) {
+            return toast({
+              variant: 'destructive',
+              title: 'Failed to login',
+              description: response.error,
+            });
+          }
         });
         setLoading(false);
       }

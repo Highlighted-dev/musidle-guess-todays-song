@@ -5,6 +5,8 @@ export interface IUser {
   email: string;
   password: string;
   role: 'admin' | 'user';
+  token: string;
+  activated: boolean;
 }
 
 const userSchema = new Schema<IUser>(
@@ -13,6 +15,8 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
+    token: { type: String, required: true },
+    activated: { type: Boolean, default: false },
   },
   { versionKey: false, timestamps: true },
 );

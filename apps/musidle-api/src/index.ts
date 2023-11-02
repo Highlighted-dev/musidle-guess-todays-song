@@ -18,7 +18,6 @@ import roomModel from './models/RoomModel';
 import Timer from './utils/Timer';
 import CategoriesRoute from './routes/CategoriesRoute';
 dotenv.config();
-
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const mongodb_url =
   process.env.NODE_ENV == 'production'
@@ -32,8 +31,8 @@ const server =
     ? https.createServer(
         {
           key: process.env.SERVER_KEY,
+          ca: process.env.INTERMIDIATE_CA,
           cert: process.env.SERVER_CERT,
-          ca: process.env.SERVER_CA,
           keepAlive: true,
         },
         app,

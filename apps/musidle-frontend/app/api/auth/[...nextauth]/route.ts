@@ -24,14 +24,17 @@ export const authOptions: NextAuthOptions = {
           if (!uri) {
             throw new Error('MONGODB_URI is not defined');
           }
+
           const client = await clientPromise;
           const userCollection = client
             .db(process.env.NODE_ENV == 'development' ? 'musidle' : 'musidle-prod')
             .collection('userData');
           const user = await userCollection.findOne({ email: credentials?.email });
+
           if (!user) throw new Error('User not found');
           const isPasswordValid = await bcrypt.compare(credentials?.password, user.password);
           if (!isPasswordValid) throw new Error('Password is not valid');
+
           return {
             _id: user._id,
             username: user.username,
@@ -54,7 +57,11 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login',
   },
   callbacks: {
-    async jwt({ token, user }: { token: any; user: any }) {
+    async jwt({ token, trigger, user, session }) {
+      if (trigger === 'update' && session?.activated) {
+        // Note, that `session` can be any arbitrary object, remember to validate it!
+        token.activated = session.activated;
+      }
       if (user) {
         token._id = user._id;
         token.username = user.username;

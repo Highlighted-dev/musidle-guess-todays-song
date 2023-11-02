@@ -79,8 +79,8 @@ router.post('/register', jsonParser, async (req: Request, res: Response) => {
 
       console.log(user);
       const authenticationUrl = `${
-        process.env.NODE_ENV == 'production' ? process.env.NEXT_URL_PROD : process.env.NEXT_URL
-      }/externalApi/auth/activate/${user._id}/${token}`;
+        process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:4200'
+      }/verify/${user._id}/${token}`;
 
       const mailgun = new Mailgun(formData);
       const mg = mailgun.client({
@@ -112,10 +112,6 @@ router.post('/register', jsonParser, async (req: Request, res: Response) => {
             color: #555;
             font-size: 16px;
           }
-          a {
-            color: #fff;
-            text-decoration: none;
-          }
           .verification-code {
             background-color: #007BFF;
             color: #fff;
@@ -129,8 +125,8 @@ router.post('/register', jsonParser, async (req: Request, res: Response) => {
       <body>
         <div class="container">
           <h1>Hello, ${req.body.username}</h1>
-          <p>Thank you for creating your Musidle account. Paste this(${authenticationUrl}) into the browser or click the button below/p>
-          <div class="verification-code"><a href="${authenticationUrl}">VERIFY</a></div>
+          <p>Thank you for creating your Musidle account. Paste this (${authenticationUrl}) into the browser or click the button below</p>
+          <div class="verification-code"><a style="color:#fff; text-decoration:none;" href="${authenticationUrl}">VERIFY</a></div>
         </div>
       </body>
       </html>
@@ -265,26 +261,30 @@ router.put('/update', jsonParser, async (req: Request, res: Response) => {
   );
   res.status(200).json({ status: 'ok', message: 'User data updated succsefully' });
 });
-router.get('/activate/:id/:token', async (req: Request, res: Response) => {
-  if (!req.params.id || !req.params.token)
+router.post('/activate/', jsonParser, async (req: Request, res: Response) => {
+  if (!req.body.id || !req.body.token)
     return res.status(400).json({ status: 'error', message: 'Bad request' });
   const user = await userModel.findOne({
-    _id: req.params.id,
-    token: req.params.token,
+    _id: req.body.id,
   });
-  if (!user || user.activated)
+
+  if (!user)
     return res
       .status(400)
-      .json({ status: 'error', message: 'Couldnt activate account, user id or token is wrong.' });
+      .json({ status: 'error', message: 'Couldnt find user with this id in database' });
+  if (user.activated)
+    return res.status(200).json({ status: 'success', message: 'Account is already activated.' });
+  if (user.token !== req.body.token)
+    return res.status(400).json({ status: 'error', message: 'Token is wrong.' });
   await userModel.updateOne(
     {
-      _id: req.params.id,
+      _id: req.body.id,
     },
     {
       activated: true,
     },
   );
-  res.status(200).redirect('/');
+  res.status(200).json({ status: 'success', message: 'Account activated succsefully' });
 });
 
 export default router;

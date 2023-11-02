@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useRoomStore } from '@/stores/RoomStore';
 import { Label } from '../ui/label';
+import { Button } from '../ui/button';
 
 const Leaderboard = () => {
   const { players, currentPlayer, spectators } = useRoomStore();
@@ -38,6 +39,12 @@ const Leaderboard = () => {
                 ))}
               </div>
             </Card>
+            <Button className="w-full my-2" variant={'outline'}>
+              Vote skip
+              <span className="text-sm">
+                &nbsp;(0/{players.length > 1 ? players.length - 1 : players.length})
+              </span>
+            </Button>
           </CardContent>
         </Card>
       </div>

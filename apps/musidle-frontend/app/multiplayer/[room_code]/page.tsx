@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { useSocketStore } from '@/stores/SocketStore';
 import { toast } from '@/components/ui/use-toast';
+import { useNextAuthStore } from '@/stores/NextAuthStore';
 
 export default function Page() {
   const {
@@ -35,7 +36,7 @@ export default function Page() {
   } = useRoomStore();
   const [progress, setProgress] = React.useState(0);
   const { value, answer, possibleAnswers } = useAnswerStore();
-  const user = useSession().data?.user;
+  const user = useNextAuthStore.getState().session?.user;
   const router = useRouter();
   const params = useParams();
 

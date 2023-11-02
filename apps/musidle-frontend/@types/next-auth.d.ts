@@ -6,10 +6,18 @@ declare module 'next-auth' {
    */
   interface Session {
     user: {
+      activated: boolean;
       role: string;
       _id: string;
       username: string;
       email: string;
     };
+  }
+  interface User {
+    activated: boolean;
+    role: string;
+    _id: string;
+    username: string;
+    email: string;
   }
 }

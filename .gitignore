@@ -45,3 +45,5 @@ Thumbs.db
 .env
 
 deploy.sh
+
+.nx/cache

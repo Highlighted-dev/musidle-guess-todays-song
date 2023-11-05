@@ -9,27 +9,20 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 export default function GameLobby(params: { room_code: string }) {
-  const {
-    players,
-    spectators,
-    maxRoundsPhaseOne,
-    maxRoundsPhaseTwo,
-    updateSettings,
-    startGame,
-    leaveRoom,
-  } = useRoomStore();
+  const { maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame, leaveRoom } =
+    useRoomStore();
   const user = useSession().data?.user;
 
   const router = useRouter();
 
   return (
-    <div className="xl:p-0 p-4 w-full md:h-4/5 h-full flex xl:flex-row xl:relative flex-col justify-center align-center min-h-[750px] md:min-h-0">
-      <Card className=" xl:w-4/6 w-full h-full">
-        <CardHeader className=" text-center h-1/6">
-          <CardTitle>Game lobby</CardTitle>
-          <p>Room: {params.room_code}</p>
-        </CardHeader>
-        <CardContent className="flex flex-col h-5/6 w-full">
+    <>
+      <CardHeader className=" text-center h-1/6">
+        <CardTitle>Game lobby</CardTitle>
+        <p>Room: {params.room_code}</p>
+      </CardHeader>
+      <CardContent className="flex flex-col h-5/6 w-full">
+        <div className="h-[92%]">
           <Card className="mb-4">
             <CardHeader className=" text-center">
               <CardTitle>Settings</CardTitle>
@@ -85,57 +78,17 @@ export default function GameLobby(params: { room_code: string }) {
               </div>
             </CardContent>
           </Card>
-          <div className="flex md:flex-row flex-col justify-between items-center">
-            <Card className="flex flex-col justify-center items-center m-2 md:w-1/2 w-full h-full">
-              <CardHeader className=" text-center">
-                <CardTitle>Players</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4">
-                <ul className="grid grid-cols-2 gap-2">
-                  {players.map((player, index) => (
-                    <li key={index} className="text-center">
-                      {player.name}
-                    </li>
-                  ))}
-                </ul>
-                {!players.find(player => player._id == user?._id) ? (
-                  <Button variant={'outline'}>Join</Button>
-                ) : null}
-              </CardContent>
-            </Card>
+        </div>
 
-            <Card className="flex flex-col justify-center items-center m-2 md:w-1/2 w-full h-full">
-              <CardHeader className=" text-center">
-                <CardTitle>Spectators</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4">
-                <ul className="grid grid-cols-2 gap-2">
-                  {spectators.map((spectator, index) => (
-                    <li key={index} className="text-center">
-                      {spectator.name}
-                    </li>
-                  ))}
-                </ul>
-                {!spectators.find(spectator => spectator._id == user?._id) ? (
-                  <Button variant={'outline'}>Join</Button>
-                ) : null}
-              </CardContent>
-            </Card>
-          </div>
-          <div className="flex justify-between items-center p-4">
-            <Button variant={'outline'} onClick={() => leaveRoom(router, user?._id)}>
-              Leave game
-            </Button>
-            <Button
-              variant={'default'}
-              disabled={user?.role != 'Admin'}
-              onClick={() => startGame()}
-            >
-              Start game
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <div className="flex justify-between items-center p-4">
+          <Button variant={'outline'} onClick={() => leaveRoom(router, user?._id)}>
+            Leave game
+          </Button>
+          <Button variant={'default'} disabled={user?.role != 'Admin'} onClick={() => startGame()}>
+            Start game
+          </Button>
+        </div>
+      </CardContent>
+    </>
   );
 }

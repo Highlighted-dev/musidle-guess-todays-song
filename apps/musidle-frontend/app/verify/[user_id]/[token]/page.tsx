@@ -1,7 +1,7 @@
 import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import VerifyPage from '@/components/pages/VerifyPage';
+import Verify from '@/components/Verify';
 
 async function verifyUser(user_id: string, token: string) {
   const session = await getServerSession(authOptions);
@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: { user_id: string; toke
 
   return (
     <>
-      <VerifyPage response={response} />
+      <Verify response={response} />
     </>
   );
 }

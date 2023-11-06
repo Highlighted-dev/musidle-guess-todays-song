@@ -1,6 +1,11 @@
 import { IRoom } from '@/@types/Rooms';
-import RoomSelector from '@/components/multiplayer/RoomSelector';
+import JoinRoomButton from '@/components/CreateRoomButton';
+import NoRooms from '@/components/NoRooms';
+import RoomSelector from '@/components/NoRooms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { EmptyPlaceholder } from '@/components/ui/empty-placeholder';
+import { Label } from '@/components/ui/label';
+import { MdBedroomChild } from 'react-icons/md';
 
 async function getRooms() {
   let url;
@@ -26,7 +31,30 @@ export default async function Page() {
         <CardTitle>Choose Lobby</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col h-full w-full">
-        <RoomSelector data={rooms} />
+        <div className="h-[92%]">
+          {rooms?.length ? (
+            rooms.map((room: any, index: number) => (
+              <div key={index}>
+                <div className=" w-full h-[15%] flex justify-between p-4">
+                  <Label className="text-center flex justify-center items-center">
+                    {room.room_code}
+                  </Label>
+                  <div>
+                    <Label className="text-center pr-4">Players: {room.players.length}/8</Label>
+                    <JoinRoomButton room_code={room.room_code} />
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <NoRooms />
+          )}
+        </div>
+        {rooms?.length ? (
+          <div className="flex justify-end items-center p-3 h-[8%]">
+            <JoinRoomButton />
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );

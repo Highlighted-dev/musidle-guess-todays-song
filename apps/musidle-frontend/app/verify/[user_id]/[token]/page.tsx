@@ -12,7 +12,7 @@ async function verifyUser(user_id: string, token: string) {
   if (process.env.NODE_ENV === 'development') {
     url = new URL('http://localhost:4200/externalApi/auth/activate/');
   } else {
-    url = new URL(`${url}/externalApi/auth/activate/`);
+    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/auth/activate/`);
   }
   try {
     const res = await fetch(url, {

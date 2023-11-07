@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -22,7 +21,6 @@ import { useRoomStore } from '@/stores/RoomStore';
 import { useAudioStore } from '@/stores/AudioStore';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
-import Leaderboard from './Leaderboard';
 import { useSession } from 'next-auth/react';
 const GameMultiplayerLayout = () => {
   const user = useSession().data?.user;

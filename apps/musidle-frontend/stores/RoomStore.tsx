@@ -7,7 +7,6 @@ import { io } from 'socket.io-client';
 import { useAnswerStore } from './AnswerStore';
 import { useAudioStore } from './AudioStore';
 import { toast } from '@/components/ui/use-toast';
-import { useGameFinalStore } from './GameFinalStore';
 import { useTimerStore } from '@/stores/TimerStore';
 import { Router } from 'next/router';
 import dotenv from 'dotenv';
@@ -169,7 +168,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
 
   handleChooseCategory: async (song_id: string, phase = 1, socket = null) => {
     if (!socket) socket = useSocketStore.getState().socket;
-    const { setAudio, setSongId } = useAudioStore.getState();
+    const { setAudio } = useAudioStore.getState();
     const { setSelectMode, room_code } = useRoomStore.getState();
     const song: string = await axios
       .post(`/externalApi/songs/chooseSong`, {

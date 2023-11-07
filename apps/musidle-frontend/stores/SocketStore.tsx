@@ -3,11 +3,10 @@ import { Socket } from 'socket.io-client';
 import { useRoomStore } from './RoomStore';
 import { useAudioStore } from './AudioStore';
 import { useAnswerStore } from './AnswerStore';
-import { IAnswer, ISong } from '@/@types/AnswerStore';
+import { IAnswer } from '@/@types/AnswerStore';
 import { IPlayer } from '@/@types/Rooms';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useGameFinalStore } from './GameFinalStore';
-import { getSession, useSession } from 'next-auth/react';
 import { useNextAuthStore } from './NextAuthStore';
 
 interface ISocketStore {

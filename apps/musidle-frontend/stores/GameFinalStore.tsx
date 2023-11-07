@@ -15,7 +15,6 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
   handleFinal: () => {
     const { socket } = useSocketStore.getState();
     const { players, setCurrentPlayer, room_code, handleChooseCategory } = useRoomStore.getState();
-    const { setSongId, setAudio } = useAudioStore.getState();
 
     socket?.emit('handleFinal', room_code);
     if (useRoomStore.getState().currentPlayer) {

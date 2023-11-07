@@ -96,8 +96,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
     if (audio.currentTime >= useAudioStore.getState().time / 1000) audio.currentTime = 0;
 
     audio.paused ? audio.play() : audio.pause();
-    if (useAudioStore.getState().intervalId !== null)
-      clearInterval(useAudioStore.getState().intervalId!); // Clear the previous interval
+    if (useAudioStore.getState().intervalId) clearInterval(useAudioStore.getState().intervalId!); // Clear the previous interval
     const newIntervalId = setInterval(() => {
       if (audio.currentTime >= useAudioStore.getState().time / 1000) {
         audio.pause();

@@ -1,8 +1,6 @@
 'use client';
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { use, useEffect, useState } from 'react';
-import { toast } from './ui/use-toast';
+import { CardContent, CardHeader, CardTitle } from './ui/card';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Label } from './ui/label';

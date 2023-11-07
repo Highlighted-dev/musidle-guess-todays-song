@@ -1,11 +1,8 @@
 import { IRoom } from '@/@types/Rooms';
 import JoinRoomButton from '@/components/CreateRoomButton';
 import NoRooms from '@/components/NoRooms';
-import RoomSelector from '@/components/NoRooms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { EmptyPlaceholder } from '@/components/ui/empty-placeholder';
 import { Label } from '@/components/ui/label';
-import { MdBedroomChild } from 'react-icons/md';
 
 async function getRooms() {
   let url;
@@ -33,7 +30,7 @@ export default async function Page() {
       <CardContent className="flex flex-col h-full w-full">
         <div className="h-[92%]">
           {rooms?.length ? (
-            rooms.map((room: any, index: number) => (
+            rooms.map((room: IRoom, index: number) => (
               <div key={index}>
                 <div className=" w-full h-[15%] flex justify-between p-4">
                   <Label className="text-center flex justify-center items-center">

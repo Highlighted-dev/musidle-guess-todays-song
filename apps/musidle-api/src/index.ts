@@ -107,8 +107,9 @@ io.on('connection', socket => {
     );
     socket.to(room_code).emit('chooseSong', song_id);
   });
-  socket.on('handlePlay', (room_code, timer) => {
-    Timer(room_code, timer, io).start();
+  socket.on('handlePlay', async (room_code, timer) => {
+    const room = await roomModel.findOne({ room_code: room_code });
+    Timer(room_code, room?.maxTimer || 35, io).start();
     socket.to(room_code).emit('handlePlay');
   });
   socket.on('skip', (time, room_code) => {

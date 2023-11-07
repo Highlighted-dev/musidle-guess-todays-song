@@ -209,7 +209,7 @@ router.post('/turnChange', jsonParser, async (req: Request, res: Response, next:
           current_player: current_player,
           isInSelectMode: true,
           $inc: { round: 1 },
-          timer: 35,
+          timer: room[0].maxTimer,
           $set: { 'songs.$.completed': true },
         },
       );
@@ -342,20 +342,30 @@ router.post('/updateScore', jsonParser, async (req: Request, res: Response, next
 //update settings
 router.put('/settings', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.room_code || !req.body.maxRoundsPhaseOne || !req.body.maxRoundsPhaseTwo) {
+    if (
+      !req.body.room_code ||
+      !req.body.maxRoundsPhaseOne ||
+      !req.body.maxRoundsPhaseTwo ||
+      !req.body.maxTimer
+    ) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     }
     const room_code = req.body.room_code;
     const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
     const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
+    const maxTimer = req.body.maxTimer;
 
     await roomModel.findOneAndUpdate(
       { room_code: room_code },
-      { maxRoundsPhaseOne: maxRoundsPhaseOne, maxRoundsPhaseTwo: maxRoundsPhaseTwo },
+      {
+        maxRoundsPhaseOne: maxRoundsPhaseOne,
+        maxRoundsPhaseTwo: maxRoundsPhaseTwo,
+        maxTimer: maxTimer,
+      },
     );
     (req as ICustomRequest).io
       .in(room_code)
-      .emit('roomSettingsUpdate', maxRoundsPhaseOne, maxRoundsPhaseTwo);
+      .emit('roomSettingsUpdate', maxRoundsPhaseOne, maxRoundsPhaseTwo, maxTimer);
 
     return res.status(200).json({ status: 'success', message: 'Settings updated' });
   } catch (error) {

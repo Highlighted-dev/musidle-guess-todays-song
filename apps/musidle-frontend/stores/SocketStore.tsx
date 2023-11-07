@@ -113,13 +113,17 @@ useSocketStore.subscribe(async ({ socket }) => {
     socket.on('searchSong', (songs: IAnswer[]) => {
       useAnswerStore.setState({ possibleAnswers: songs });
     });
-    socket.on('roomSettingsUpdate', (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => {
-      if (role == 'admin') return;
-      useRoomStore.setState({
-        maxRoundsPhaseOne: maxRoundsPhaseOne,
-        maxRoundsPhaseTwo: maxRoundsPhaseTwo,
-      });
-    });
+    socket.on(
+      'roomSettingsUpdate',
+      (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number, maxTimer: number) => {
+        if (role == 'admin') return;
+        useRoomStore.setState({
+          maxRoundsPhaseOne: maxRoundsPhaseOne,
+          maxRoundsPhaseTwo: maxRoundsPhaseTwo,
+        });
+        useTimerStore.setState({ maxTimer: maxTimer });
+      },
+    );
     socket.on('timerUpdate', (timer: number) => {
       useTimerStore.getState().setTimer(timer);
     });

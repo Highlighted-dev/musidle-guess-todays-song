@@ -14,6 +14,7 @@ const roomSchema = new Schema<IRoomModel>(
     isInGameLobby: { type: Boolean, required: true },
     isInSelectMode: { type: Boolean, required: true },
     timer: { type: Number, default: 35 },
+    maxTimer: { type: Number, default: 35 },
     songs: [
       {
         song_id: { type: String, required: true },

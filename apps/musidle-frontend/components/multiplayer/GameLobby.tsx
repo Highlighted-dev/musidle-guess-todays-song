@@ -7,10 +7,12 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useTimerStore } from '@/stores/TimerStore';
 
 export default function GameLobby(params: { room_code: string }) {
   const { maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame, leaveRoom } =
     useRoomStore();
+  const { maxTimer } = useTimerStore();
   const user = useSession().data?.user;
 
   const router = useRouter();
@@ -59,6 +61,21 @@ export default function GameLobby(params: { room_code: string }) {
                   placeholder={maxRoundsPhaseTwo.toString()}
                 />
               </div>
+              <div className="grid grid-cols-4 items-center gap-4 ">
+                <Label htmlFor="name" className="text-right">
+                  Maximum time to guess the song (seconds)
+                </Label>
+                <Input
+                  type="number"
+                  step={1}
+                  min={1}
+                  max={120}
+                  id="mxTimer"
+                  className="col-span-3"
+                  placeholder={maxTimer.toString()}
+                  disabled={user?.role != 'Admin'}
+                />
+              </div>
               <div className="grid items-center gap-4">
                 <Button
                   variant={'secondary'}
@@ -70,6 +87,7 @@ export default function GameLobby(params: { room_code: string }) {
                       parseInt(
                         (document.getElementById('mxRoundsPhaseTwo') as HTMLInputElement).value,
                       ),
+                      parseInt((document.getElementById('mxTimer') as HTMLInputElement).value),
                     );
                   }}
                 >

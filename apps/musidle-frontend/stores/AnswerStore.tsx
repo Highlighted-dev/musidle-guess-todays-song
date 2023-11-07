@@ -89,7 +89,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     if (useAudioStore.getState().audio?.paused) useAudioStore.getState().audio?.play();
     useAudioStore.getState().setTime(12000);
     const audio = useAudioStore.getState().audio;
-    useTimerStore.getState().setTimer(35.0);
+    useTimerStore.getState().setTimer(useTimerStore.getState().maxTimer);
     if (audio) audio.volume = 0.05;
     if (currentPlayer && currentPlayer._id === session?.user?._id) handleTurnChange();
   },

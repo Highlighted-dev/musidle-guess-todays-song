@@ -44,7 +44,11 @@ export interface IRoomStore {
     phase: number,
     socket: Socket | null = null,
   ) => Promise<string>;
-  updateSettings: (maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) => Promise<void>;
+  updateSettings: (
+    maxRoundsPhaseOne: number,
+    maxRoundsPhaseTwo: number,
+    maxTimer: number,
+  ) => Promise<void>;
 }
 export interface IRoom {
   _id: string;

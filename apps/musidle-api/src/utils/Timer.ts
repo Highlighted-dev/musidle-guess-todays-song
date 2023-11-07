@@ -28,7 +28,8 @@ const Timer = (room_code: string, timer = 0, io: Server) => {
         io.in(room_code).emit('timerUpdate', timer);
       } else {
         stop();
-        await roomModel.findOneAndUpdate({ room_code: room_code }, { timer: 35 });
+        const room = await roomModel.findOne({ room_code: room_code });
+        await roomModel.findOneAndUpdate({ room_code: room_code }, { timer: room?.maxTimer || 35 });
       }
     }, 1000);
 

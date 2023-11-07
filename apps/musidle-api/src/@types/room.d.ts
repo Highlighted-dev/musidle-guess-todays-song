@@ -22,6 +22,7 @@ export interface IRoomModel {
   isInGameLobby: boolean;
   isInSelectMode: boolean;
   timer: number;
+  maxTimer: number;
   songs: [
     {
       song_id: string;

@@ -99,6 +99,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       selectMode: !data.isInSelectMode,
     }));
     setTimer(data.timer);
+    useTimerStore.setState({ maxTimer: data.maxTimer });
     setPossibleSongs(data.songs);
     setSongId(data.song_id);
     setAudio(new Audio(`/music/${data.song_id}.mp3`));
@@ -193,17 +194,19 @@ export const useRoomStore = create<IRoomStore>(set => ({
     useRoomStore.getState().setIsInLobby(false);
     return song;
   },
-  async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number) {
+  async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number, maxTimer: number) {
     if (
       maxRoundsPhaseOne < 1 ||
       maxRoundsPhaseTwo < 1 ||
       maxRoundsPhaseOne > 400 ||
-      maxRoundsPhaseTwo > 200
+      maxRoundsPhaseTwo > 200 ||
+      maxTimer < 1 ||
+      maxTimer > 120
     ) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: `Please enter a valid number of rounds\nPhase 1: 1-400\nPhase 2: 1-200`,
+        description: `Please enter a valid number of\n Rounds in phase 1: 1-400\nRounds in phase 2: 1-200 \n Seconds for timer: 1-120`,
         style: { whiteSpace: 'pre-line' },
       });
       return;
@@ -216,12 +219,14 @@ export const useRoomStore = create<IRoomStore>(set => ({
     const mxRoundsPhaseTwo = isNaN(maxRoundsPhaseTwo)
       ? useRoomStore.getState().maxRoundsPhaseTwo
       : maxRoundsPhaseTwo;
+    const mxTimer = isNaN(maxTimer) ? useTimerStore.getState().maxTimer : maxTimer;
 
     await axios
       .put(`/externalApi/rooms/settings`, {
         room_code: useRoomStore.getState().room_code,
         maxRoundsPhaseOne: mxRoundsPhaseOne,
         maxRoundsPhaseTwo: mxRoundsPhaseTwo,
+        maxTimer: mxTimer,
       })
       .then(res => {
         if (res.status === 200) {

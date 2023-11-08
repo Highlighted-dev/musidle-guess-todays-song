@@ -153,6 +153,49 @@ io.on('connection', socket => {
     }
     socket.to(room_code).emit('changeSongToCompleted', song_id);
   });
+  socket.on('voteForTurnSkip', async (room_code, player_id, song_id) => {
+    if (!room_code) return;
+    socket.to(room_code).emit('voteForTurnSkip', player_id);
+    //Change the player.votedForTurnSkip to true for player that voted, but only if he hasnt voted yet. If he voted, then return;
+    await roomModel.findOne({ room_code: room_code }).then(async room => {
+      if (!room) return;
+      const players = room.players.filter(player => player._id === player_id);
+      if (players[0].votedForTurnSkip === true) return;
+      await roomModel.updateOne(
+        {
+          room_code: room_code,
+          'players._id': player_id,
+        },
+        {
+          $set: { 'players.$.votedForTurnSkip': true },
+          $inc: { votesForTurnSkip: 1 },
+        },
+      );
+    });
+
+    //Check if all players voted for turn skip
+    await roomModel.findOne({ room_code: room_code }).then(async room => {
+      if (!room) return;
+      const players = room.players.filter(player => player.votedForTurnSkip === true);
+      //if there is only one player in a room or all players - 1 voted for turn skip, then call turnChange endpoint and set votedForTurnSkip to false for every player
+      if (room.players.length === 1 ? 1 : room.players.length - 1 === players.length) {
+        await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
+          room_code: room_code,
+          song_id: song_id,
+        });
+        await roomModel.updateMany(
+          {
+            room_code: room_code,
+          },
+          {
+            $set: { 'players.$[].votedForTurnSkip': false, votesForTurnSkip: 0 },
+          },
+        );
+
+        return;
+      }
+    });
+  });
 });
 
 mongoose

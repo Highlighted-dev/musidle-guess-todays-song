@@ -41,6 +41,7 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         completed: false,
       };
     });
+    player.votedForTurnSkip = false;
     if (!room) {
       const songs = await axios
         .post(`${apiUrl}/externalApi/songs/possibleSongs`, {
@@ -169,7 +170,7 @@ router.post('/start', jsonParser, async (req: Request, res: Response, next: Next
 
 router.post('/turnChange', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.room_code || !req.body.song_id)
+    if (!req.body.room_code)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     const room_code = req.body.room_code;
     const song_id = req.body.song_id;
@@ -202,7 +203,19 @@ router.post('/turnChange', jsonParser, async (req: Request, res: Response, next:
           (req as ICustomRequest).io.in(room_code).emit('updatePlayerList', newPlayers, spectators);
         }
       }
-
+      if (!song_id) {
+        await roomModel.updateOne(
+          { room_code: room_code },
+          {
+            current_player: current_player,
+            isInSelectMode: true,
+            $inc: { round: 1 },
+            timer: room[0].maxTimer,
+          },
+        );
+        (req as ICustomRequest).io.in(room_code).emit('turnChange', current_player);
+        return res.status(200).json({ status: 'success', message: 'Turn changed' });
+      }
       await roomModel.updateOne(
         { room_code: room_code, 'songs.song_id': song_id },
         {

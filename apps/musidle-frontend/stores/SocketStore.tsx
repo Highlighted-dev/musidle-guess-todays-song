@@ -89,6 +89,7 @@ useSocketStore.subscribe(async ({ socket }) => {
       setCurrentPlayer(current_player);
       setSelectMode(false);
       setTurnChangeDialogOpen(true);
+      useRoomStore.getState().votesForTurnSkip = 0;
       setTimeout(() => {
         useRoomStore.setState({ turnChangeDialogOpen: false });
         useAudioStore.getState().audio?.pause();
@@ -133,6 +134,9 @@ useSocketStore.subscribe(async ({ socket }) => {
         useAudioStore.getState().setSongId(song_id);
         useAnswerStore.getState().changeSongToCompleted(song_id);
       }, 3000);
+    });
+    socket.on('voteForTurnSkip', () => {
+      useRoomStore.getState().votesForTurnSkip++;
     });
 
     return () => {

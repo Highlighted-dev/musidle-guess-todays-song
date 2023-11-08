@@ -1,5 +1,5 @@
 import { IRoom } from '@/@types/Rooms';
-import JoinRoomButton from '@/components/CreateRoomButton';
+import JoinRoomButton from '@/components/buttons/CreateRoomButton';
 import NoRooms from '@/components/NoRooms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';

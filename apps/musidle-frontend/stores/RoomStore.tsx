@@ -10,6 +10,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useTimerStore } from '@/stores/TimerStore';
 import { Router } from 'next/router';
 import dotenv from 'dotenv';
+import { useNextAuthStore } from './NextAuthStore';
 dotenv.config();
 
 export const useRoomStore = create<IRoomStore>(set => ({
@@ -97,6 +98,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       round: data.round,
       isInLobby: data.isInGameLobby,
       selectMode: !data.isInSelectMode,
+      votesForTurnSkip: data.votesForTurnSkip,
     }));
     setTimer(data.timer);
     useTimerStore.setState({ maxTimer: data.maxTimer });
@@ -149,7 +151,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       room_code: useRoomStore.getState().room_code,
     });
   },
-  updatePlayerScore: (points: number, player: IPlayer) => {
+  updatePlayerScore: (points, player) => {
     const temp_players = useRoomStore.getState().players.map(p => {
       if (p._id === player._id) {
         p.score += points;
@@ -167,7 +169,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     });
   },
 
-  handleChooseCategory: async (song_id: string, phase = 1, socket = null) => {
+  handleChooseCategory: async (song_id, phase = 1, socket = null) => {
     if (!socket) socket = useSocketStore.getState().socket;
     const { setAudio } = useAudioStore.getState();
     const { setSelectMode, room_code } = useRoomStore.getState();
@@ -194,7 +196,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     useRoomStore.getState().setIsInLobby(false);
     return song;
   },
-  async updateSettings(maxRoundsPhaseOne: number, maxRoundsPhaseTwo: number, maxTimer: number) {
+  async updateSettings(maxRoundsPhaseOne, maxRoundsPhaseTwo, maxTimer) {
     if (
       maxRoundsPhaseOne < 1 ||
       maxRoundsPhaseTwo < 1 ||
@@ -241,5 +243,17 @@ export const useRoomStore = create<IRoomStore>(set => ({
           maxRoundsPhaseTwo: mxRoundsPhaseTwo,
         });
       });
+  },
+  votesForTurnSkip: 0,
+  voteForTurnSkip(socket) {
+    socket?.emit(
+      'voteForTurnSkip',
+      useRoomStore.getState().room_code,
+      useNextAuthStore.getState().session?.user?._id,
+      useAudioStore.getState().songId,
+    );
+    useRoomStore.setState({
+      votesForTurnSkip: useRoomStore.getState().votesForTurnSkip + 1,
+    });
   },
 }));

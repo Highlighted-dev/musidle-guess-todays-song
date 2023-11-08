@@ -49,6 +49,8 @@ export interface IRoomStore {
     maxRoundsPhaseTwo: number,
     maxTimer: number,
   ) => Promise<void>;
+  votesForTurnSkip: number;
+  voteForTurnSkip: (socket: Socket | null) => void;
 }
 export interface IRoom {
   _id: string;

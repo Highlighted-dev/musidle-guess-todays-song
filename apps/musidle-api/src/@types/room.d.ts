@@ -8,6 +8,7 @@ export interface IPlayer {
       completed: boolean;
     },
   ];
+  votedForTurnSkip: boolean;
 }
 
 export interface IRoomModel {
@@ -23,6 +24,7 @@ export interface IRoomModel {
   isInSelectMode: boolean;
   timer: number;
   maxTimer: number;
+  votesForTurnSkip: number;
   songs: [
     {
       song_id: string;

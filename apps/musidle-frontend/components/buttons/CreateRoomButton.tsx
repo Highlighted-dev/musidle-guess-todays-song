@@ -3,7 +3,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 export default function JoinRoomButton({
   className,

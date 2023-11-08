@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useRoomStore } from '@/stores/RoomStore';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
+import VoteForTurnSkipButton from '../buttons/VoteForTurnSkipButton';
 
 const Leaderboard = () => {
   const { players, currentPlayer, spectators } = useRoomStore();
@@ -17,6 +18,7 @@ const Leaderboard = () => {
           </CardHeader>
           <CardContent>
             <Card className=" min-h-[100px] p-2">
+              <CardTitle className="text-center pb-1 text-xs">Players</CardTitle>
               <div className="flex flex-col">
                 {players.map((player, index) => (
                   <div className="flex justify-between" key={index}>
@@ -31,6 +33,7 @@ const Leaderboard = () => {
               </div>
             </Card>
             <Card className=" min-h-[100px] p-2 mt-2">
+              <CardTitle className="text-center pb-1 text-xs hr">Spectators</CardTitle>
               <div className="flex flex-col">
                 {spectators.map((spectator, index) => (
                   <div className="flex justify-between" key={index}>
@@ -39,12 +42,7 @@ const Leaderboard = () => {
                 ))}
               </div>
             </Card>
-            <Button className="w-full my-2" variant={'outline'}>
-              Vote skip
-              <span className="text-sm">
-                &nbsp;(0/{players.length > 1 ? players.length - 1 : players.length})
-              </span>
-            </Button>
+            <VoteForTurnSkipButton className="w-full my-2" />
           </CardContent>
         </Card>
       </div>

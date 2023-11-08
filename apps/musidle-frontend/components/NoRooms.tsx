@@ -2,7 +2,7 @@
 import { MdBedroomChild } from 'react-icons/md';
 import React from 'react';
 import { EmptyPlaceholder } from './ui/empty-placeholder';
-import JoinRoomButton from './CreateRoomButton';
+import JoinRoomButton from './buttons/CreateRoomButton';
 
 export default async function NoRooms() {
   return (

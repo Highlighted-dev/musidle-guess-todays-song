@@ -15,6 +15,7 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
   handleFinal: () => {
     const { socket } = useSocketStore.getState();
     const { players, setCurrentPlayer, room_code, handleChooseCategory } = useRoomStore.getState();
+    const { possibleSongs } = useAnswerStore.getState();
 
     socket?.emit('handleFinal', room_code);
     if (useRoomStore.getState().currentPlayer) {
@@ -24,7 +25,10 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
       );
       setCurrentPlayer(finalist);
     }
-    handleChooseCategory('final1', 3);
+    handleChooseCategory(
+      possibleSongs.find(song => song.song_id.includes('final'))?.song_id || 'final1',
+      3,
+    );
   },
   handleFinalAnswerSubmit: async () => {
     const { currentPlayer } = useRoomStore.getState();

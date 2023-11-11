@@ -76,7 +76,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
     }
     useSocketStore
       .getState()
-      .socket?.emit('skip', useAudioStore.getState().time, useRoomStore.getState().room_code);
+      .socket?.emit('skip', useAudioStore.getState().time, useRoomStore.getState().roomCode);
   },
   handlePlay: async () => {
     const { audio } = useAudioStore.getState();
@@ -88,7 +88,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
         .getState()
         .socket?.emit(
           'handlePlay',
-          useRoomStore.getState().room_code,
+          useRoomStore.getState().roomCode,
           useTimerStore.getState().timer,
         );
     }

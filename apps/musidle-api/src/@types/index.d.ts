@@ -3,6 +3,6 @@ export interface ISocketMiddleware {
 }
 export interface IUsers {
   id: string;
-  socket_id: string;
-  room_code: string | null;
+  socketId: string;
+  roomCode: string | null;
 }

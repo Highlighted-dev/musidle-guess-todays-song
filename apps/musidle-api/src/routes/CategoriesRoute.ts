@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import categoryModel from '../models/CategoryModel';
 import bodyParser from 'body-parser';
 
-interface CustomResponse extends Response {
+interface ICustomResponse extends Response {
   category?: any;
 }
 
@@ -10,7 +10,7 @@ const router = Router();
 const jsonParser = bodyParser.json();
 
 // GET all categories
-router.get('/', async (req: Request, res: CustomResponse, next: NextFunction) => {
+router.get('/', async (req: Request, res: ICustomResponse, next: NextFunction) => {
   try {
     const categories = await categoryModel.find();
     res.status(200).json(categories);
@@ -20,7 +20,7 @@ router.get('/', async (req: Request, res: CustomResponse, next: NextFunction) =>
 });
 
 // GET a specific category by ID
-router.get('/:id', getCategory, (req: Request, res: CustomResponse, next: NextFunction) => {
+router.get('/:id', getCategory, (req: Request, res: ICustomResponse, next: NextFunction) => {
   try {
     res.status(200).json(res.category);
   } catch (err) {
@@ -46,7 +46,7 @@ router.put(
   '/:id',
   getCategory,
   jsonParser,
-  async (req: Request, res: CustomResponse, next: NextFunction) => {
+  async (req: Request, res: ICustomResponse, next: NextFunction) => {
     try {
       if (req.body.category == null)
         return res.status(400).json({ message: 'Missing required fields' });
@@ -63,7 +63,7 @@ router.put(
 router.delete(
   '/:id',
   getCategory,
-  async (req: Request, res: CustomResponse, next: NextFunction) => {
+  async (req: Request, res: ICustomResponse, next: NextFunction) => {
     try {
       await res.category.remove();
       res.json({ message: 'Category deleted' });
@@ -74,7 +74,7 @@ router.delete(
 );
 
 // Middleware function to get a category by ID
-async function getCategory(req: Request, res: CustomResponse, next: NextFunction) {
+async function getCategory(req: Request, res: ICustomResponse, next: NextFunction) {
   let category;
 
   try {

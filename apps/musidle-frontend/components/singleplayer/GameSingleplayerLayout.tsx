@@ -48,17 +48,17 @@ export default function GameSingleplayerLayout() {
     const data = await response;
 
     if (data.length > 0) {
-      const temp_songs: ISongs[] = [];
+      const tempSongs: ISongs[] = [];
       data.map((track: any) => {
         // Check if the song is already in the songs state
-        if (temp_songs.find(song => song.key === track.url)) return;
-        temp_songs.push({
+        if (tempSongs.find(song => song.key === track.url)) return;
+        tempSongs.push({
           value: `${track.artist} - ${track.name}`,
           label: `${track.name} - ${track.artist}`,
           key: track.url,
         });
       });
-      setSongs(temp_songs.slice(0, 8)); // Update the songs state with the new search results
+      setSongs(tempSongs.slice(0, 8)); // Update the songs state with the new search results
     } else {
       setSongs([]); // Clear the songs state if there are no search results
     }

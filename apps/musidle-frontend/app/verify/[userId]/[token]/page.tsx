@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Verify from '@/components/Verify';
 
-async function verifyUser(user_id: string, token: string) {
+async function verifyUser(userId: string, token: string) {
   const session = await getServerSession(authOptions);
   if (session?.user?.activated) {
     return { status: 'success' };
@@ -17,7 +17,7 @@ async function verifyUser(user_id: string, token: string) {
   try {
     const res = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ id: user_id, token: token }),
+      body: JSON.stringify({ id: userId, token: token }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -30,8 +30,8 @@ async function verifyUser(user_id: string, token: string) {
   }
 }
 
-export default async function Page({ params }: { params: { user_id: string; token: string } }) {
-  const response = await verifyUser(params.user_id, params.token);
+export default async function Page({ params }: { params: { userId: string; token: string } }) {
+  const response = await verifyUser(params.userId, params.token);
 
   return (
     <>

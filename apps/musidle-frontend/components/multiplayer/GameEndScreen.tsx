@@ -6,7 +6,7 @@ import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-const GameEndScreen = () => {
+function GameEndScreen() {
   const { currentPlayer, players, spectators, leaveRoom } = useRoomStore.getState();
   const router = useRouter();
   const user = useSession().data?.user;
@@ -53,6 +53,6 @@ const GameEndScreen = () => {
       </CardContent>
     </>
   );
-};
+}
 
 export default GameEndScreen;

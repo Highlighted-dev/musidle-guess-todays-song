@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { useGameFinalStore } from '@/stores/GameFinalStore';
 import { useSession } from 'next-auth/react';
-const GamePhase3 = () => {
+function GamePhase3() {
   const user = useSession().data?.user;
   const { currentPlayer, handleChooseCategory } = useRoomStore();
   const { handlePlay } = useAudioStore();
@@ -25,16 +25,13 @@ const GamePhase3 = () => {
   const { handleFinalAnswerSubmit } = useGameFinalStore();
   const [open, setOpen] = useState(false);
 
-  const handleTogglePress = (final_song_id: string) => {
-    console.log(
-      possibleSongs.find(song => song.song_id == final_song_id)?.completed,
-      final_song_id,
-    );
-    if (possibleSongs.find(song => song.song_id == final_song_id)?.completed) return;
-    handleChooseCategory(final_song_id, 3);
+  const handleTogglePress = (finalSongId: string) => {
+    console.log(possibleSongs.find(song => song.songId == finalSongId)?.completed, finalSongId);
+    if (possibleSongs.find(song => song.songId == finalSongId)?.completed) return;
+    handleChooseCategory(finalSongId, 3);
     for (let i = 1; i <= 6; i++) {
       const element = document.getElementById(`final${i}`);
-      if (element && element.id != final_song_id) {
+      if (element && element.id != finalSongId) {
         element.setAttribute('data-state', 'off');
         element.setAttribute('aria-pressed', 'false');
       } else {
@@ -52,17 +49,17 @@ const GamePhase3 = () => {
         <CardContent className="flex flex-col justify-center items-center h-4/5">
           <div className="grid grid-cols-3 gap-2 w-full h-full">
             {possibleSongs
-              .filter(song => song.song_id.includes('final'))
+              .filter(song => song.songId.includes('final'))
               .map((song, index) => (
                 <div className="w-full h-full" key={index}>
                   <Toggle
                     className="col-span-1 p-2 w-full h-full"
                     disabled={currentPlayer?._id != user?._id || song.completed}
-                    id={song.song_id}
+                    id={song.songId}
                     key={`toggle${index}`}
                     defaultPressed={index + 1 == 1 ? true : false}
                     onPressedChange={() => {
-                      handleTogglePress(song.song_id);
+                      handleTogglePress(song.songId);
                     }}
                     variant={'outline'}
                   >
@@ -157,6 +154,6 @@ const GamePhase3 = () => {
       </div>
     </div>
   );
-};
+}
 
 export default GamePhase3;

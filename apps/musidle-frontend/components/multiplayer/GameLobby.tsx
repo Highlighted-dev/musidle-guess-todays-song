@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTimerStore } from '@/stores/TimerStore';
 
-export default function GameLobby(params: { room_code: string }) {
+export default function GameLobby(params: { roomCode: string }) {
   const { maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame, leaveRoom } =
     useRoomStore();
   const { maxTimer } = useTimerStore();
@@ -21,7 +21,7 @@ export default function GameLobby(params: { room_code: string }) {
     <>
       <CardHeader className=" text-center h-1/6">
         <CardTitle>Game lobby</CardTitle>
-        <p>Room: {params.room_code}</p>
+        <p>Room: {params.roomCode}</p>
       </CardHeader>
       <CardContent className="flex flex-col h-5/6 w-full">
         <div className="h-[92%]">

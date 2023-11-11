@@ -5,43 +5,57 @@ import roomModel from '../models/RoomModel';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import Timer from '../utils/Timer';
+import { IPlayer } from '../@types/room';
+import { ICategory } from '../@types/categories';
+
+// Load environment variables
 dotenv.config();
 
+// Middleware for parsing JSON bodies
 const jsonParser = bodyParser.json();
 
+// Create a new router
 const router: Router = express.Router();
 
+// Determine the API URL based on the environment
 const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
 
+// Extend the Request interface to include the socket.io server
 interface ICustomRequest extends Request {
   io: Server;
 }
 
+// Helper function to generate a unique room code
+async function generateRoomCode() {
+  let roomCode;
+  while (true) {
+    roomCode = Math.random().toString(36).substr(2, 5);
+    if ((await roomModel.findOne({ roomCode })) === null) {
+      break;
+    }
+  }
+  return roomCode;
+}
+
+// Helper function to prepare a player: add completedCategories and votedForTurnSkip
+function preparePlayer(player: IPlayer, categories: ICategory[]) {
+  player.completedCategories = categories.map((category: ICategory) => ({
+    category: category.category,
+    completed: false,
+  }));
+  player.votedForTurnSkip = false;
+  return player;
+}
+
 router.post('/join', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let room_code = req.body.room_code;
-    if (!room_code) {
-      while (true) {
-        room_code = Math.random().toString(36).substr(2, 5);
-        if ((await roomModel.findOne({ room_code: room_code })) === null) {
-          req.body.room_code = room_code;
-          break;
-        }
-      }
-    }
-
-    let room = await roomModel.findOne({ room_code: room_code });
+    const roomCode = req.body.roomCode || (await generateRoomCode());
+    let room = await roomModel.findOne({ roomCode });
     const categories = await axios
       .get(`${apiUrl}/externalApi/categories`)
       .then(response => response.data);
-    const player = req.body.player;
-    player.completedCategories = categories.map((category: any) => {
-      return {
-        category: category.category,
-        completed: false,
-      };
-    });
-    player.votedForTurnSkip = false;
+    const player = preparePlayer(req.body.player, categories);
+
     if (!room) {
       const songs = await axios
         .post(`${apiUrl}/externalApi/songs/possibleSongs`, {
@@ -51,14 +65,12 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         .then(response => response.data);
 
       await roomModel.create({
-        room_code: room_code,
+        roomCode,
         players: [player],
-        maxRoundsPhaseOne: req.body.maxRoundsPhaseOne
-          ? req.body.maxRoundsPhaseOne
-          : roomModel.schema.paths.maxRoundsPhaseOne.options.default,
-        maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo
-          ? req.body.maxRoundsPhaseTwo
-          : roomModel.schema.paths.maxRoundsPhaseTwo.options.default,
+        maxRoundsPhaseOne:
+          req.body.maxRoundsPhaseOne || roomModel.schema.paths.maxRoundsPhaseOne.options.default,
+        maxRoundsPhaseTwo:
+          req.body.maxRoundsPhaseTwo || roomModel.schema.paths.maxRoundsPhaseTwo.options.default,
         round: 1,
         isInGameLobby: true,
         isInSelectMode: true,
@@ -68,27 +80,18 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
       !room.players.some(player => player._id === req.body.player._id) &&
       !room.spectators.some(spectator => spectator._id === req.body.player._id)
     ) {
-      //add player to spectators if game has already started
-      if (room?.round > 1) {
-        room = await roomModel.findOneAndUpdate(
-          { room_code: room_code },
-          { $push: { spectators: req.body.player } },
-          { new: true },
-        );
-        (req as ICustomRequest).io
-          .in(room_code)
-          .emit('updatePlayerList', room?.players, room?.spectators);
-        return res.json(room);
-      }
-      room = await roomModel.findOneAndUpdate(
-        { room_code: room_code },
-        { $push: { players: req.body.player } },
-        { new: true },
-      );
-      (req as ICustomRequest).io.in(room_code).emit('updatePlayerList', room?.players);
+      const update =
+        room.round > 1
+          ? { $push: { spectators: req.body.player } }
+          : { $push: { players: req.body.player } };
+      room = await roomModel.findOneAndUpdate({ roomCode }, update, { new: true });
+      (req as ICustomRequest).io
+        .in(roomCode)
+        .emit('updatePlayerList', room?.players, room?.spectators);
       return res.json(room);
     }
-    room = await roomModel.findOne({ room_code: room_code });
+
+    room = await roomModel.findOne({ roomCode });
     return res.json(room);
   } catch (error) {
     next(error);
@@ -97,12 +100,12 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
 
 router.post('/leave', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.room_code || !req.body.player_id)
+    if (!req.body.roomCode || !req.body.playerId)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
-    const room_code = req.body.room_code;
-    const player_id = req.body.player_id;
+    const roomCode = req.body.roomCode;
+    const playerId = req.body.playerId;
 
-    let room = await roomModel.findOne({ room_code: room_code });
+    let room = await roomModel.findOne({ roomCode: roomCode });
 
     if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
 
@@ -111,14 +114,14 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
       (room.players.length === 1 && room.spectators.length === 0) ||
       (room.players.length === 0 && room.spectators.length === 1)
     ) {
-      await roomModel.deleteOne({ room_code: room_code });
-      Timer(room_code, 0, (req as ICustomRequest).io).stop();
+      await roomModel.deleteOne({ roomCode: roomCode });
+      Timer(roomCode, 0, (req as ICustomRequest).io).stop();
       return res.status(200).json({ message: 'Room deleted' });
     }
 
     room = await roomModel.findOneAndUpdate(
-      { room_code: room_code },
-      { $pull: { players: { _id: player_id } } },
+      { roomCode: roomCode },
+      { $pull: { players: { _id: playerId } } },
       { new: true },
     );
 
@@ -137,11 +140,11 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-router.get('/:room_code', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:roomCode', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const room_code = req.params.room_code;
+    const roomCode = req.params.roomCode;
 
-    const room = await roomModel.findOne({ room_code: room_code });
+    const room = await roomModel.findOne({ roomCode: roomCode });
     if (!room) return res.status(404).json({ message: 'Room not found' });
     return res.status(200).json(room);
   } catch (error) {
@@ -150,19 +153,19 @@ router.get('/:room_code', async (req: Request, res: Response, next: NextFunction
 });
 
 router.post('/start', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
-  const room_code = req.body.room_code;
-  if (!room_code) return res.status(400).json({ status: 'error', message: 'Missing parameters' });
-  const room = await roomModel.findOne({ room_code: room_code });
+  const roomCode = req.body.roomCode;
+  if (!roomCode) return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+  const room = await roomModel.findOne({ roomCode: roomCode });
   if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
 
   const random = Math.floor(Math.random() * room.players.length);
-  const current_player = room.players[random];
+  const currentPlayer = room.players[random];
 
-  (req as ICustomRequest).io.in(room_code).emit('togglePhaseOne', current_player);
+  (req as ICustomRequest).io.in(roomCode).emit('togglePhaseOne', currentPlayer);
 
   await roomModel.findOneAndUpdate(
-    { room_code: room_code },
-    { current_player: current_player, isInGameLobby: false },
+    { roomCode: roomCode },
+    { currentPlayer: currentPlayer, isInGameLobby: false },
   );
 
   return res.status(200).json({ status: 'success', message: 'Game started' });
@@ -170,23 +173,23 @@ router.post('/start', jsonParser, async (req: Request, res: Response, next: Next
 
 router.post('/turnChange', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.room_code)
+    if (!req.body.roomCode)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
-    const room_code = req.body.room_code;
-    const song_id = req.body.song_id;
+    const roomCode = req.body.roomCode;
+    const songId = req.body.songId;
 
-    await roomModel.find({ room_code: room_code }).then(async room => {
+    await roomModel.find({ roomCode: roomCode }).then(async room => {
       const maxRoundsPhaseOne = room[0].maxRoundsPhaseOne;
       const round = room[0].round;
       const players = room[0].players;
 
-      let current_player = room[0].current_player;
+      let currentPlayer = room[0].currentPlayer;
 
-      const index = players.findIndex(p => p._id === current_player?._id);
+      const index = players.findIndex(p => p._id === currentPlayer?._id);
       if (index === players.length - 1) {
-        current_player = players[0];
+        currentPlayer = players[0];
       } else {
-        current_player = players[index + 1];
+        currentPlayer = players[index + 1];
       }
 
       if (round === maxRoundsPhaseOne) {
@@ -194,39 +197,39 @@ router.post('/turnChange', jsonParser, async (req: Request, res: Response, next:
           const sortedPlayers = players.sort((a, b) => b.score - a.score);
           const newPlayers = sortedPlayers.splice(0, Math.ceil(players.length / 2));
           const spectators = sortedPlayers.filter(player => !newPlayers.includes(player));
-          current_player = newPlayers[0];
+          currentPlayer = newPlayers[0];
           await roomModel.updateOne(
-            { room_code: room_code },
-            { players: newPlayers, currentPlayer: current_player, spectators: spectators },
+            { roomCode: roomCode },
+            { players: newPlayers, currentPlayer: currentPlayer, spectators: spectators },
           );
 
-          (req as ICustomRequest).io.in(room_code).emit('updatePlayerList', newPlayers, spectators);
+          (req as ICustomRequest).io.in(roomCode).emit('updatePlayerList', newPlayers, spectators);
         }
       }
-      if (!song_id) {
+      if (!songId) {
         await roomModel.updateOne(
-          { room_code: room_code },
+          { roomCode: roomCode },
           {
-            current_player: current_player,
+            currentPlayer: currentPlayer,
             isInSelectMode: true,
             $inc: { round: 1 },
             timer: room[0].maxTimer,
           },
         );
-        (req as ICustomRequest).io.in(room_code).emit('turnChange', current_player);
+        (req as ICustomRequest).io.in(roomCode).emit('turnChange', currentPlayer);
         return res.status(200).json({ status: 'success', message: 'Turn changed' });
       }
       await roomModel.updateOne(
-        { room_code: room_code, 'songs.song_id': song_id },
+        { roomCode: roomCode, 'songs.songId': songId },
         {
-          current_player: current_player,
+          currentPlayer: currentPlayer,
           isInSelectMode: true,
           $inc: { round: 1 },
           timer: room[0].maxTimer,
           $set: { 'songs.$.completed': true },
         },
       );
-      (req as ICustomRequest).io.in(room_code).emit('turnChange', current_player);
+      (req as ICustomRequest).io.in(roomCode).emit('turnChange', currentPlayer);
     });
     return res.status(200).json({ status: 'success', message: 'Turn changed' });
   } catch (error) {
@@ -236,25 +239,25 @@ router.post('/turnChange', jsonParser, async (req: Request, res: Response, next:
 
 router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.room_code || !req.body.player_id || !req.body.song_id || !req.body.time)
+    if (!req.body.roomCode || !req.body.playerId || !req.body.songId || !req.body.time)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
-    const room_code = req.body.room_code;
-    const player_id = req.body.player_id;
-    const player_answer = req.body.player_answer;
-    const song_id = req.body.song_id;
+    const roomCode = req.body.roomCode;
+    const playerId = req.body.playerId;
+    const playerAnswer = req.body.playerAnswer;
+    const songId = req.body.songId;
     const time = req.body.time;
     const category = req.body.category;
-    Timer(room_code, 0, (req as ICustomRequest).io).stop();
+    Timer(roomCode, 0, (req as ICustomRequest).io).stop();
     axios
-      .get(`${apiUrl}/externalApi/songs/${song_id}`)
+      .get(`${apiUrl}/externalApi/songs/${songId}`)
       .then(response => response.data)
       .then(async response => {
-        //update players.completedCategories for a player with player_id = player_id in room with room_code = room_code
+        //update players.completedCategories for a player with player_id = player_id in room with roomCode = roomCode
         if (category) {
           await roomModel.findOneAndUpdate(
             {
-              room_code: room_code,
-              'players._id': player_id,
+              roomCode: roomCode,
+              'players._id': playerId,
             },
             {
               $set: {
@@ -270,11 +273,11 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
         const correctAnswer = response.data;
         if (!correctAnswer) {
           return res.status(404).json({ status: 'error', message: 'Answer not found' });
-        } else if (player_answer.toLowerCase().includes(correctAnswer.value.toLowerCase())) {
+        } else if (playerAnswer.toLowerCase().includes(correctAnswer.value.toLowerCase())) {
           const modifier = () => {
-            if (song_id.includes('final')) {
+            if (songId.includes('final')) {
               return 3;
-            } else if (song_id.includes('artist')) {
+            } else if (songId.includes('artist')) {
               return 1.5;
             } else {
               return 1;
@@ -297,28 +300,28 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
           };
 
           axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
-            room_code: room_code,
-            player_id: player_id,
+            roomCode: roomCode,
+            playerId: playerId,
             score: score(),
           });
           return res.status(200).json({
             status: 'success',
             message: 'Correct answer',
             score: score(),
-            player_id: player_id,
+            playerId: playerId,
             answer: correctAnswer.value,
           });
         } else {
           axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
-            room_code: room_code,
-            player_id: player_id,
+            roomCode: roomCode,
+            playerId: playerId,
             score: 0,
           });
           return res.status(200).json({
             status: 'success',
             message: 'Wrong answer',
             score: 0,
-            player_id: player_id,
+            playerId: playerId,
             answer: correctAnswer.value,
           });
         }
@@ -333,15 +336,15 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
 
 router.post('/updateScore', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.room_code || !req.body.player_id || req.body.score === undefined) {
+    if (!req.body.roomCode || !req.body.playerId || req.body.score === undefined) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     }
-    const room_code = req.body.room_code;
-    const player_id = req.body.player_id;
+    const roomCode = req.body.roomCode;
+    const playerId = req.body.playerId;
     const score = req.body.score;
 
     await roomModel.findOneAndUpdate(
-      { room_code: room_code, 'players._id': player_id },
+      { roomCode: roomCode, 'players._id': playerId },
       { $inc: { 'players.$.score': score } },
       { new: true },
     );
@@ -356,20 +359,20 @@ router.post('/updateScore', jsonParser, async (req: Request, res: Response, next
 router.put('/settings', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (
-      !req.body.room_code ||
+      !req.body.roomCode ||
       !req.body.maxRoundsPhaseOne ||
       !req.body.maxRoundsPhaseTwo ||
       !req.body.maxTimer
     ) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     }
-    const room_code = req.body.room_code;
+    const roomCode = req.body.roomCode;
     const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
     const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
     const maxTimer = req.body.maxTimer;
 
     await roomModel.findOneAndUpdate(
-      { room_code: room_code },
+      { roomCode: roomCode },
       {
         maxRoundsPhaseOne: maxRoundsPhaseOne,
         maxRoundsPhaseTwo: maxRoundsPhaseTwo,
@@ -377,7 +380,7 @@ router.put('/settings', jsonParser, async (req: Request, res: Response, next: Ne
       },
     );
     (req as ICustomRequest).io
-      .in(room_code)
+      .in(roomCode)
       .emit('roomSettingsUpdate', maxRoundsPhaseOne, maxRoundsPhaseTwo, maxTimer);
 
     return res.status(200).json({ status: 'success', message: 'Settings updated' });

@@ -20,9 +20,9 @@ export default function Page() {
   const router = useRouter();
   const params = useParams();
 
-  const handleRoomJoin = async (room_code: string) => {
-    joinRoom(room_code, user).then(() => {
-      router.push(`/multiplayer/${room_code}`);
+  const handleRoomJoin = async (roomCode: string) => {
+    joinRoom(roomCode, user).then(() => {
+      router.push(`/multiplayer/${roomCode}`);
     });
   };
 
@@ -35,18 +35,18 @@ export default function Page() {
         style: { whiteSpace: 'pre-line' },
       });
     }
-    if (params.room_code.length > 6) {
+    if (params.roomCode.length > 6) {
       router.push('/multiplayer');
       return;
     }
     if (
-      params.room_code &&
+      params.roomCode &&
       user?._id &&
       !players.find(player => player['_id'] == user?._id && !useSocketStore.getState().socket)
     ) {
-      handleRoomJoin(params.room_code as string);
+      handleRoomJoin(params.roomCode as string);
     }
-  }, [user?._id, params.room_code]);
+  }, [user?._id, params.roomCode]);
 
   return (
     <>
@@ -73,7 +73,7 @@ export default function Page() {
             spectators.find(spectator => spectator['_id'] == user?._id)) ? (
           <GameEndScreen />
         ) : (
-          <GameLobby room_code={params.room_code as string} />
+          <GameLobby roomCode={params.roomCode as string} />
         )
       }
     </>

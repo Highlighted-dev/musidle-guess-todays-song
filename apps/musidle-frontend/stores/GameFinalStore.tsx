@@ -14,10 +14,10 @@ interface IGameFinalStore {
 export const useGameFinalStore = create<IGameFinalStore>(set => ({
   handleFinal: () => {
     const { socket } = useSocketStore.getState();
-    const { players, setCurrentPlayer, room_code, handleChooseCategory } = useRoomStore.getState();
+    const { players, setCurrentPlayer, roomCode, handleChooseCategory } = useRoomStore.getState();
     const { possibleSongs } = useAnswerStore.getState();
 
-    socket?.emit('handleFinal', room_code);
+    socket?.emit('handleFinal', roomCode);
     if (useRoomStore.getState().currentPlayer) {
       //Get the player with the highest score
       const finalist = players.reduce((prev, current) =>
@@ -26,7 +26,7 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
       setCurrentPlayer(finalist);
     }
     handleChooseCategory(
-      possibleSongs.find(song => song.song_id.includes('final'))?.song_id || 'final1',
+      possibleSongs.find(song => song.songId.includes('final'))?.songId || 'final1',
       3,
     );
   },
@@ -39,10 +39,10 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
     if (currentPlayer?._id == session?.user?._id) {
       await axios
         .post(`/externalApi/rooms/checkAnswer`, {
-          room_code: useRoomStore.getState().room_code,
-          player_id: currentPlayer._id,
-          player_answer: useAnswerStore.getState().value,
-          song_id: useAudioStore.getState().songId,
+          roomCode: useRoomStore.getState().roomCode,
+          playerId: currentPlayer._id,
+          playerAnswer: useAnswerStore.getState().value,
+          songId: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,
         })
         .then(res => res.data)
@@ -51,7 +51,7 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
           useRoomStore.getState().updatePlayerScore(res.score, currentPlayer);
           socket?.emit(
             'changeSongToCompleted',
-            useRoomStore.getState().room_code,
+            useRoomStore.getState().roomCode,
             useAudioStore.getState().songId,
           );
           changeSongToCompleted(useAudioStore.getState().songId);

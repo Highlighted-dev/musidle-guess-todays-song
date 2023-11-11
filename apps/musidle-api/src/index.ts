@@ -19,7 +19,7 @@ import Timer from './utils/Timer';
 import CategoriesRoute from './routes/CategoriesRoute';
 dotenv.config();
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
-const mongodb_url =
+const mongodbUrl =
   process.env.NODE_ENV == 'production'
     ? process.env.MONGODB_URL_PROD || 'musidle'
     : process.env.MONGODB_URL || 'musidle';
@@ -54,11 +54,11 @@ setInterval(async () => {
   const rooms = await roomModel.find();
   rooms.forEach(async room => {
     //check if user is in room
-    let usersInRoom = users.filter(user => user.room_code === room.room_code);
+    let usersInRoom = users.filter(user => user.roomCode === room.roomCode);
     if (usersInRoom.length >= 1) {
       //check if user is in room and is connected to socket
       usersInRoom.forEach(async user => {
-        const socket = io.sockets.sockets.get(user.socket_id);
+        const socket = io.sockets.sockets.get(user.socketId);
         if (socket == undefined) {
           users.splice(users.indexOf(user), 1);
           usersToBeDeleted.push(user);
@@ -66,18 +66,18 @@ setInterval(async () => {
       });
       return;
     }
-    usersInRoom = usersToBeDeleted.filter(user => user.room_code === room.room_code);
+    usersInRoom = usersToBeDeleted.filter(user => user.roomCode === room.roomCode);
     if (usersInRoom.length >= 1) {
       //Remove every user from room
       usersInRoom.forEach(async user => {
         await axios
           .post(`${apiUrl}/externalApi/rooms/leave`, {
-            room_code: user.room_code,
-            player_id: user.id,
+            roomCode: user.roomCode,
+            playerId: user.id,
           })
           .then(res => {
             usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
-            io.in(user.room_code!).emit('updatePlayerList', res.data.players);
+            io.in(user.roomCode!).emit('updatePlayerList', res.data.players);
           });
       });
     }
@@ -86,85 +86,85 @@ setInterval(async () => {
 }, 120000);
 
 io.on('connection', socket => {
-  socket.on('id', (id, room_code) => {
+  socket.on('id', (id, roomCode) => {
     //if user is already in users array, remove him from there
     let user = users.find(user => user.id === id);
     if (user) {
       users.splice(users.indexOf(user), 1);
     }
-    users.push({ id, socket_id: socket.id, room_code: room_code });
+    users.push({ id, socketId: socket.id, roomCode: roomCode });
     //if user is in usersToBeDeleted array, remove him from there
     user = usersToBeDeleted.find(user => user.id === id);
     if (user) {
       usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
     }
-    socket.join(room_code);
+    socket.join(roomCode);
   });
-  socket.on('chooseSong', async (song_id: string, room_code) => {
+  socket.on('chooseSong', async (songId: string, roomCode) => {
     await roomModel.updateOne(
-      { room_code: room_code },
-      { isInSelectMode: song_id.includes('final') ? true : false, song_id: song_id },
+      { roomCode: roomCode },
+      { isInSelectMode: songId.includes('final') ? true : false, songId: songId },
     );
-    socket.to(room_code).emit('chooseSong', song_id);
+    socket.to(roomCode).emit('chooseSong', songId);
   });
-  socket.on('handlePlay', async (room_code, timer) => {
-    const room = await roomModel.findOne({ room_code: room_code });
-    Timer(room_code, room?.maxTimer || 35, io).start();
-    socket.to(room_code).emit('handlePlay');
+  socket.on('handlePlay', async (roomCode, timer) => {
+    const room = await roomModel.findOne({ roomCode: roomCode });
+    Timer(roomCode, room?.maxTimer || 35, io).start();
+    socket.to(roomCode).emit('handlePlay');
   });
-  socket.on('skip', (time, room_code) => {
-    socket.to(room_code).emit('skip', time);
+  socket.on('skip', (time, roomCode) => {
+    socket.to(roomCode).emit('skip', time);
   });
-  socket.on('searchSong', (songs, room_code) => {
-    socket.to(room_code).emit('searchSong', songs);
+  socket.on('searchSong', (songs, roomCode) => {
+    socket.to(roomCode).emit('searchSong', songs);
   });
-  socket.on('valueChange', (value, room_code) => {
-    socket.to(room_code).emit('valueChange', value);
+  socket.on('valueChange', (value, roomCode) => {
+    socket.to(roomCode).emit('valueChange', value);
   });
-  socket.on('answerSubmit', (score, player, answer, room_code) => {
-    socket.to(room_code).emit('answerSubmit', score, player, answer);
+  socket.on('answerSubmit', (score, player, answer, roomCode) => {
+    socket.to(roomCode).emit('answerSubmit', score, player, answer);
   });
-  socket.on('changeSongToCompleted', async (room_code, song_id) => {
+  socket.on('changeSongToCompleted', async (roomCode, songId) => {
     await roomModel.updateOne(
       {
-        room_code: room_code,
-        'songs.song_id': song_id,
+        roomCode: roomCode,
+        'songs.songId': songId,
       },
       {
         $set: { 'songs.$.completed': true },
       },
     );
 
-    if (song_id.includes('final')) {
+    if (songId.includes('final')) {
       //Check if all song with category 'final' are completed
-      await roomModel.findOne({ room_code: room_code }).then(async room => {
+      await roomModel.findOne({ roomCode: roomCode }).then(async room => {
         const songs = room?.songs.filter(
           song => song.category === 'final' && song.completed === true,
         );
         if (songs?.length === 6) {
           //If all songs with category 'final' are completed, then add +1 to round
           await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
-            room_code: room_code,
-            song_id: song_id,
+            roomCode: roomCode,
+            songId: songId,
           });
           return;
         }
       });
     }
-    socket.to(room_code).emit('changeSongToCompleted', song_id);
+    socket.to(roomCode).emit('changeSongToCompleted', songId);
   });
-  socket.on('voteForTurnSkip', async (room_code, player_id, song_id) => {
-    if (!room_code) return;
-    socket.to(room_code).emit('voteForTurnSkip', player_id);
+  socket.on('voteForTurnSkip', async (roomCode, playerId, songId) => {
+    if (!roomCode) return;
+    socket.to(roomCode).emit('voteForTurnSkip', playerId);
     //Change the player.votedForTurnSkip to true for player that voted, but only if he hasnt voted yet. If he voted, then return;
-    await roomModel.findOne({ room_code: room_code }).then(async room => {
+    await roomModel.findOne({ roomCode: roomCode }).then(async room => {
       if (!room) return;
-      const players = room.players.filter(player => player._id === player_id);
+      const players = room.players.filter(player => player._id === playerId);
       if (players[0].votedForTurnSkip === true) return;
       await roomModel.updateOne(
         {
-          room_code: room_code,
-          'players._id': player_id,
+          roomCode: roomCode,
+          'players._id': playerId,
         },
         {
           $set: { 'players.$.votedForTurnSkip': true },
@@ -174,18 +174,18 @@ io.on('connection', socket => {
     });
 
     //Check if all players voted for turn skip
-    await roomModel.findOne({ room_code: room_code }).then(async room => {
+    await roomModel.findOne({ roomCode: roomCode }).then(async room => {
       if (!room) return;
       const players = room.players.filter(player => player.votedForTurnSkip === true);
       //if there is only one player in a room or all players - 1 voted for turn skip, then call turnChange endpoint and set votedForTurnSkip to false for every player
       if (room.players.length === 1 ? 1 : room.players.length - 1 === players.length) {
         await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
-          room_code: room_code,
-          song_id: song_id,
+          roomCode: roomCode,
+          songId: songId,
         });
         await roomModel.updateMany(
           {
-            room_code: room_code,
+            roomCode: roomCode,
           },
           {
             $set: { 'players.$[].votedForTurnSkip': false, votesForTurnSkip: 0 },
@@ -199,7 +199,7 @@ io.on('connection', socket => {
 });
 
 mongoose
-  .connect(mongodb_url)
+  .connect(mongodbUrl)
   .then(() => {
     server.listen(port, () => {
       console.log(

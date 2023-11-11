@@ -1,8 +1,6 @@
 import express, { Request, Response, Router } from 'express';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-
 import dotenv from 'dotenv';
 import userModel from '../models/UserModel';
 import Mailgun from 'mailgun.js';
@@ -11,15 +9,6 @@ dotenv.config();
 
 const router: Router = express.Router();
 const jsonParser = bodyParser.json();
-
-const JWT_SECRET = process.env.JWT_SECRET!;
-
-interface IUserModel {
-  _id: string;
-  username: string;
-  email: string;
-  password: string;
-}
 
 const doesPasswordHaveCapitalLetter = (password: string) => {
   // Check if there is any uppercase letter in password. If there is not, return error
@@ -77,7 +66,6 @@ router.post('/register', jsonParser, async (req: Request, res: Response) => {
         token: token,
       });
 
-      console.log(user);
       const authenticationUrl = `${
         process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:4200'
       }/verify/${user._id}/${token}`;
@@ -156,111 +144,6 @@ router.post('/register', jsonParser, async (req: Request, res: Response) => {
   });
 });
 
-router.post('/login', jsonParser, async (req: Request, res: Response) => {
-  try {
-    // Try to find user by email
-    const user = await userModel.findOne({
-      email: req.body.email,
-    });
-
-    if (user) {
-      // bcrypt compares function compares password with hashed password in database. If password is not valid, return error.
-      const isPasswordValid = await bcrypt.compare(req.body.password, user!.password);
-
-      // If password is valid and user is found, return token.
-      if (isPasswordValid) {
-        const token = jwt.sign({ _id: user._id }, JWT_SECRET);
-        const cookie = req.cookies.token;
-        // If cookie is already set, return error. If cookie is not set, set cookie.
-        if (cookie === undefined) {
-          res.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 168, // 7 days,
-          });
-          return res.status(200).json({
-            status: 'ok',
-            message: 'login success',
-            isUserLoggedIn: true,
-          });
-        }
-        return res.status(400).json({ status: 'error', message: 'You are already logged in' });
-      }
-      // If password is not valid, return error.
-      return res.status(400).json({ status: 'error', message: 'Password is not valid' });
-    }
-    // If user is not found, return error.
-    return res.status(400).json({ status: 'error', message: 'Email is not valid' });
-  } catch (e) {
-    res.status(400).json({
-      status: 'error',
-      error: 'BAD REQUEST',
-      message: `Something went wrong when trying to sign in User, ${e}`,
-    });
-  }
-});
-
-// logout user by deleting cookie.
-router.get('/logout', jsonParser, async (req: Request, res: Response) => {
-  res.cookie('token', '', { maxAge: 1 });
-  res.status(200).json({ status: 'ok', message: 'logout success' });
-});
-
-router.get('/isAuthenticated', jsonParser, async (req: Request, res: Response) => {
-  const request_token = req.cookies.token;
-  let auth = false;
-  // If Request token is not set
-  if (!request_token) {
-    // We want to return status code 200, becouse it just means user did not login yet, it is not an error.
-    return res.status(200).json({
-      status: 'ok',
-      message: 'User is not logged in.',
-      isUserLoggedIn: false,
-    });
-  }
-  try {
-    // Verify token
-    if (!jwt.verify(request_token, JWT_SECRET)) {
-      return res.status(400).json({
-        status: 'error',
-        error: 'BAD REQUEST',
-        message: 'Token is not valid',
-      });
-    }
-    auth = true;
-  } catch (err) {
-    console.log(err);
-  }
-  // If Token is valid
-  if (auth) {
-    const data = jwt.verify(request_token, JWT_SECRET) as IUserModel;
-    userModel.findById(data._id).exec((err, user) => {
-      if (err || !user) {
-        return res.status(400).json({
-          status: 'error',
-          error: 'BAD REQUEST',
-          message: 'User not found',
-        });
-      }
-      // If user is found
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { _id, username, email, role } = user;
-      return res.status(200).json({ user: { _id, username, email, role } });
-    });
-  }
-});
-router.put('/update', jsonParser, async (req: Request, res: Response) => {
-  await userModel.updateOne(
-    {
-      _id: req.body._id,
-    },
-    {
-      username: req.body.username,
-      email: req.body.email,
-      birthdate: req.body.birthdate,
-    },
-  );
-  res.status(200).json({ status: 'ok', message: 'User data updated succsefully' });
-});
 router.post('/activate/', jsonParser, async (req: Request, res: Response) => {
   if (!req.body.id || !req.body.token)
     return res.status(400).json({ status: 'error', message: 'Bad request' });

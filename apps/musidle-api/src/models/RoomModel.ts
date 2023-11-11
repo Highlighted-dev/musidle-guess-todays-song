@@ -3,11 +3,11 @@ import { IRoomModel } from '../@types/room';
 
 const roomSchema = new Schema<IRoomModel>(
   {
-    room_code: { type: String, required: true },
+    roomCode: { type: String, required: true },
     players: { type: [], required: true, unique: true },
-    current_player: { type: Object, default: null },
+    currentPlayer: { type: Object, default: null },
     spectators: { type: [], required: true },
-    song_id: { type: String, default: null },
+    songId: { type: String, default: null },
     maxRoundsPhaseOne: { type: Number, default: 4 },
     maxRoundsPhaseTwo: { type: Number, default: 2 },
     round: { type: Number, required: true },
@@ -18,7 +18,7 @@ const roomSchema = new Schema<IRoomModel>(
     votesForTurnSkip: { type: Number, default: 0, required: true },
     songs: [
       {
-        song_id: { type: String, required: true },
+        songId: { type: String, required: true },
         category: { type: String, required: true },
         completed: { type: Boolean, default: false },
         artist: { type: String },

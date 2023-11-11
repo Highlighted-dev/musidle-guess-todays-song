@@ -22,7 +22,7 @@ import { useAudioStore } from '@/stores/AudioStore';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 import { useSession } from 'next-auth/react';
-const GameMultiplayerLayout = () => {
+function GameMultiplayerLayout() {
   const user = useSession().data?.user;
   const { timer } = useTimerStore();
   const {
@@ -106,8 +106,8 @@ const GameMultiplayerLayout = () => {
             </div>
             <div className="h-1/2 flex flex-col justify-center items-center">
               <div className="p-3">
-                {possibleSongs.find(song => song.song_id == songId)?.artist
-                  ? possibleSongs.find(song => song.song_id == songId)?.artist
+                {possibleSongs.find(song => song.songId == songId)?.artist
+                  ? possibleSongs.find(song => song.songId == songId)?.artist
                   : null}
               </div>
               <div>
@@ -208,6 +208,6 @@ const GameMultiplayerLayout = () => {
       </CardFooter>
     </>
   );
-};
+}
 
 export default GameMultiplayerLayout;

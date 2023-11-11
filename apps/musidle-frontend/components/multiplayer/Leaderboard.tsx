@@ -3,10 +3,9 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useRoomStore } from '@/stores/RoomStore';
 import { Label } from '../ui/label';
-import { Button } from '../ui/button';
 import VoteForTurnSkipButton from '../buttons/VoteForTurnSkipButton';
 
-const Leaderboard = () => {
+function Leaderboard() {
   const { players, currentPlayer, spectators } = useRoomStore();
 
   return (
@@ -48,6 +47,6 @@ const Leaderboard = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Leaderboard;

@@ -2,21 +2,16 @@ export interface IPlayer {
   _id: string;
   name: string;
   score: number;
-  completedCategories: [
-    {
-      category: string;
-      completed: boolean;
-    },
-  ];
+  completedCategories: IPlayerCategories[];
   votedForTurnSkip: boolean;
 }
 
 export interface IRoomModel {
-  room_code: string;
+  roomCode: string;
   players: IPlayer[];
-  current_player: IPlayer | null;
+  currentPlayer: IPlayer | null;
   spectators: IPlayer[];
-  song_id: string;
+  songId: string;
   maxRoundsPhaseOne: number;
   maxRoundsPhaseTwo: number;
   round: number;
@@ -27,7 +22,7 @@ export interface IRoomModel {
   votesForTurnSkip: number;
   songs: [
     {
-      song_id: string;
+      songId: string;
       category: string;
       completed: boolean;
     },

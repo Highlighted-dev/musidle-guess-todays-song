@@ -5,7 +5,7 @@
     "next/core-web-vitals",
     "../../.eslintrc.json"
   ],
-  "ignorePatterns": ["!**/*", ".next/**/*"],
+  "ignorePatterns": ["!**/*", ".next/**/*", "**/ui/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -15,7 +15,29 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
+
+      "rules": {
+        "@typescript-eslint/naming-convention": [
+          "error",
+          { "selector": "variable", "format": ["camelCase"] },
+          { "selector": "function", "format": ["camelCase", "PascalCase"] },
+          { "selector": "parameter", "format": ["camelCase"], "leadingUnderscore": "allow" },
+          { "selector": "memberLike", "format": ["camelCase"], "leadingUnderscore": "allow" },
+          { "selector": "typeParameter", "format": ["PascalCase"], "prefix": ["T"] },
+          { "selector": "objectLiteralProperty", "format": null },
+          {
+            "selector": "interface",
+            "format": ["PascalCase"],
+            "custom": { "regex": "^I[A-Z]", "match": true }
+          },
+          {
+            "selector": "typeAlias",
+            "format": ["PascalCase"],
+            "custom": { "regex": "^I[A-Z]", "match": true }
+          },
+          { "selector": "enum", "format": ["PascalCase"] }
+        ]
+      }
     },
     {
       "files": ["*.js", "*.jsx"],

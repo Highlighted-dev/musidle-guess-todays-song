@@ -44,12 +44,12 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     if (useRoomStore.getState().currentPlayer?._id == session?.user?._id) {
       useSocketStore
         .getState()
-        .socket?.emit('valueChange', value, useRoomStore.getState().room_code);
+        .socket?.emit('valueChange', value, useRoomStore.getState().roomCode);
     }
     useAnswerStore.setState({ value: value });
   },
   handleAnswerSubmit: async () => {
-    const { currentPlayer, room_code, handleTurnChange } = useRoomStore.getState();
+    const { currentPlayer, roomCode, handleTurnChange } = useRoomStore.getState();
     const session = useNextAuthStore.getState().session;
     const socket = useSocketStore.getState().socket;
     let category = '';
@@ -72,10 +72,10 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     if (currentPlayer?._id == session?.user?._id) {
       await axios
         .post(`/externalApi/rooms/checkAnswer`, {
-          room_code: useRoomStore.getState().room_code,
-          player_id: currentPlayer._id,
-          player_answer: useAnswerStore.getState().value,
-          song_id: useAudioStore.getState().songId,
+          roomCode: useRoomStore.getState().roomCode,
+          playerId: currentPlayer._id,
+          playerAnswer: useAnswerStore.getState().value,
+          songId: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,
           category: category,
         })
@@ -83,7 +83,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         .then(res => {
           useAnswerStore.getState().setAnswer(res.answer || null);
           useRoomStore.getState().updatePlayerScore(res.score, currentPlayer);
-          socket?.emit('answerSubmit', res.score, currentPlayer, res.answer, room_code);
+          socket?.emit('answerSubmit', res.score, currentPlayer, res.answer, roomCode);
         });
     }
     if (useAudioStore.getState().audio?.paused) useAudioStore.getState().audio?.play();
@@ -101,19 +101,19 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     });
 
     const data = await response;
-    const temp_songs: IAnswer[] = [];
+    const tempSongs: IAnswer[] = [];
     if (data.length > 0) {
       data.map((track: any) => {
         // Check if the song is already in the songs state
-        if (temp_songs.find(song => song.key === track.url)) return;
-        temp_songs.push({
+        if (tempSongs.find(song => song.key === track.url)) return;
+        tempSongs.push({
           value: `${track.artist} - ${track.name}`,
           key: track.url,
         });
       });
       const { round, maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
       useAnswerStore.setState({
-        possibleAnswers: temp_songs.slice(
+        possibleAnswers: tempSongs.slice(
           0,
           round > maxRoundsPhaseOne && round <= maxRoundsPhaseOne + maxRoundsPhaseTwo
             ? 2
@@ -133,29 +133,29 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       socket?.emit(
         'searchSong',
         useAnswerStore.getState().possibleAnswers,
-        useRoomStore.getState().room_code,
+        useRoomStore.getState().roomCode,
       );
     }
   },
-  revealArtist: async (song_id: string) => {
+  revealArtist: async (songId: string) => {
     const possibleSongs = useAnswerStore.getState().possibleSongs;
-    const song = possibleSongs.find(song => song.song_id === song_id);
+    const song = possibleSongs.find(song => song.songId === songId);
     if (!song) {
       return toast({
         variant: 'destructive',
         title: 'Error',
-        description: `Song for song_id ${song_id} not found, cannot reveal artist`,
+        description: `Song for song id ${songId} not found, cannot reveal artist`,
         style: { whiteSpace: 'pre-line' },
       });
     }
     useAnswerStore.getState().setArtist(song.artist || '');
   },
-  changeSongToCompleted: (song_id: string) => {
+  changeSongToCompleted: (songId: string) => {
     //Change "completed" boolean in possibleSongs for song with song_id to true
     const possibleSongs = useAnswerStore.getState().possibleSongs;
 
-    possibleSongs.map((song: { song_id: string; completed: boolean }) => {
-      if (song.song_id == song_id) {
+    possibleSongs.map((song: { songId: string; completed: boolean }) => {
+      if (song.songId == songId) {
         song.completed = true;
       }
     });

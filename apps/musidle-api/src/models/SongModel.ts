@@ -3,7 +3,7 @@ import { ISong } from '../@types/song';
 
 const songsSchema = new Schema<ISong>(
   {
-    song_id: { type: String, required: true, unique: true },
+    songId: { type: String, required: true, unique: true },
     category: { type: String, required: true },
     value: { type: String, required: true },
     artist: { type: String },

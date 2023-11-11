@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import NextAuth from 'next-auth';
 
 declare module 'next-auth' {

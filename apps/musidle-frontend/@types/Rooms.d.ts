@@ -14,8 +14,8 @@ export type IUser = {
   activated: boolean;
 };
 export interface IRoomStore {
-  room_code: string;
-  setRoomCode: (room_code: string) => void;
+  roomCode: string;
+  setRoomCode: (roomCode: string) => void;
   players: player[];
   setPlayers: (players: player[]) => void;
   spectators: player[];
@@ -35,7 +35,7 @@ export interface IRoomStore {
   turnChangeDialogOpen: boolean;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
   joinRoom: (room: any, user: IUser | undefined) => Promise<void>;
-  leaveRoom: (router: Router, user_id: string | null = null) => void;
+  leaveRoom: (router: Router, userId: string | null = null) => void;
   startGame: () => Promise<void>;
   updatePlayerScore: (points: number, player: player) => void;
   handleTurnChange: () => void;
@@ -54,11 +54,11 @@ export interface IRoomStore {
 }
 export interface IRoom {
   _id: string;
-  room_code: string;
+  roomCode: string;
   players: player[];
   spectators: player[];
   currentPlayer: player | null;
-  song_id: string | null;
+  songId: string | null;
   maxRoundsPhaseOne: number;
   maxRoundsPhaseTwo: number;
   round: number;

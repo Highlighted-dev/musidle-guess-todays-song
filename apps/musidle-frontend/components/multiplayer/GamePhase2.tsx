@@ -8,7 +8,7 @@ import { useAnswerStore } from '@/stores/AnswerStore';
 import { useSocketStore } from '@/stores/SocketStore';
 import { useSession } from 'next-auth/react';
 
-const GamePhase2 = () => {
+function GamePhase2() {
   const user = useSession().data?.user;
   const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const { artist, revealArtist, possibleSongs, changeSongToCompleted } = useAnswerStore();
@@ -33,26 +33,26 @@ const GamePhase2 = () => {
                     variant={'secondary'}
                     onClick={e => {
                       setChoosingArtist(true);
-                      revealArtist(song.song_id);
+                      revealArtist(song.songId);
                       if (currentPlayer?._id == user?._id) {
                         useSocketStore
                           .getState()
                           .socket?.emit(
                             'changeSongToCompleted',
-                            useRoomStore.getState().room_code,
-                            song.song_id,
+                            useRoomStore.getState().roomCode,
+                            song.songId,
                           );
                       }
                       setTimeout(() => {
-                        changeSongToCompleted(song.song_id);
-                        handleChooseCategory(song.song_id, 2);
+                        changeSongToCompleted(song.songId);
+                        handleChooseCategory(song.songId, 2);
                         setChoosingArtist(false);
                       }, 3000);
                     }}
-                    id={song.song_id}
+                    id={song.songId}
                     disabled={
                       currentPlayer?._id != user?._id ||
-                      possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
+                      possibleSongs.find(possibleSong => possibleSong.songId == song.songId)
                         ?.completed ||
                       choosingArtist
                         ? true
@@ -63,7 +63,7 @@ const GamePhase2 = () => {
                     <label
                       className={
                         artist == song.artist ||
-                        possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
+                        possibleSongs.find(possibleSong => possibleSong.songId == song.songId)
                           ?.completed
                           ? 'pointer-events-none'
                           : 'blur-sm cursor-pointer'
@@ -71,7 +71,7 @@ const GamePhase2 = () => {
                       id={`label_artist${index}`}
                     >
                       {artist == song.artist ||
-                      possibleSongs.find(possibleSong => possibleSong.song_id == song.song_id)
+                      possibleSongs.find(possibleSong => possibleSong.songId == song.songId)
                         ?.completed
                         ? song.artist
                         : '******* *** **********'}
@@ -84,6 +84,6 @@ const GamePhase2 = () => {
       )}
     </>
   );
-};
+}
 
 export default GamePhase2;

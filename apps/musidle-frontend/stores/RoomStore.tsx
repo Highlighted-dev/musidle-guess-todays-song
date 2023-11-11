@@ -14,10 +14,10 @@ import { useNextAuthStore } from './NextAuthStore';
 dotenv.config();
 
 export const useRoomStore = create<IRoomStore>(set => ({
-  room_code: '',
-  setRoomCode: (room_code: string) =>
+  roomCode: '',
+  setRoomCode: (roomCode: string) =>
     set(() => ({
-      room_code: room_code,
+      roomCode: roomCode,
     })),
   players: [],
   setPlayers: (players: IPlayer[]) =>
@@ -66,7 +66,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       turnChangeDialogOpen: turnChangeDialogOpen,
     })),
   random: 0,
-  joinRoom: async (room_code, user) => {
+  joinRoom: async (roomCode, user) => {
     const { setAudio, setSongId } = useAudioStore.getState();
     const { setTimer } = useTimerStore.getState();
     const { setPossibleSongs } = useAnswerStore.getState();
@@ -81,7 +81,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     }
 
     const { data } = await axios.post(`/externalApi/rooms/join`, {
-      room_code: room_code,
+      roomCode: roomCode,
       player: {
         _id: user._id,
         name: user.username,
@@ -89,10 +89,10 @@ export const useRoomStore = create<IRoomStore>(set => ({
       },
     });
     set(() => ({
-      room_code: data.room_code,
+      roomCode: data.roomCode,
       players: data.players,
       spectators: data.spectators,
-      currentPlayer: data.current_player,
+      currentPlayer: data.currentPlayer,
       maxRoundsPhaseOne: data.maxRoundsPhaseOne,
       maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
       round: data.round,
@@ -103,8 +103,8 @@ export const useRoomStore = create<IRoomStore>(set => ({
     setTimer(data.timer);
     useTimerStore.setState({ maxTimer: data.maxTimer });
     setPossibleSongs(data.songs);
-    setSongId(data.song_id);
-    setAudio(new Audio(`/music/${data.song_id}.mp3`));
+    setSongId(data.songId);
+    setAudio(new Audio(`/music/${data.songId}.mp3`));
     const audio = useAudioStore.getState().audio;
     if (audio) {
       audio.volume = useAudioStore.getState().volume;
@@ -121,20 +121,20 @@ export const useRoomStore = create<IRoomStore>(set => ({
           ),
         );
 
-      useSocketStore.getState().socket?.emit('id', user._id, room_code);
+      useSocketStore.getState().socket?.emit('id', user._id, roomCode);
     }
   },
-  leaveRoom: async (router: Router, user_id = null) => {
-    const { room_code } = useRoomStore.getState();
-    if (user_id) {
+  leaveRoom: async (router: Router, userId = null) => {
+    const { roomCode } = useRoomStore.getState();
+    if (userId) {
       await axios.post(`/externalApi/rooms/leave`, {
-        room_code: room_code,
-        player_id: user_id,
+        roomCode: roomCode,
+        playerId: userId,
       });
       useSocketStore.getState().socket?.disconnect();
       router.push('/multiplayer');
       useRoomStore.setState({
-        room_code: '',
+        roomCode: '',
         players: [],
         currentPlayer: null,
         maxRoundsPhaseOne: 2,
@@ -148,41 +148,41 @@ export const useRoomStore = create<IRoomStore>(set => ({
   },
   startGame: async () => {
     await axios.post(`/externalApi/rooms/start`, {
-      room_code: useRoomStore.getState().room_code,
+      roomCode: useRoomStore.getState().roomCode,
     });
   },
   updatePlayerScore: (points, player) => {
-    const temp_players = useRoomStore.getState().players.map(p => {
+    const tempPlayers = useRoomStore.getState().players.map(p => {
       if (p._id === player._id) {
         p.score += points;
       }
       return p;
     });
-    useRoomStore.setState({ players: temp_players });
+    useRoomStore.setState({ players: tempPlayers });
   },
   handleTurnChange: async () => {
     if (!useRoomStore.getState().currentPlayer) return;
 
     await axios.post(`/externalApi/rooms/turnChange`, {
-      room_code: useRoomStore.getState().room_code,
-      song_id: useAudioStore.getState().songId,
+      roomCode: useRoomStore.getState().roomCode,
+      songId: useAudioStore.getState().songId,
     });
   },
 
-  handleChooseCategory: async (song_id, phase = 1, socket = null) => {
+  handleChooseCategory: async (songId, phase = 1, socket = null) => {
     if (!socket) socket = useSocketStore.getState().socket;
     const { setAudio } = useAudioStore.getState();
-    const { setSelectMode, room_code } = useRoomStore.getState();
+    const { setSelectMode, roomCode } = useRoomStore.getState();
     const song: string = await axios
       .post(`/externalApi/songs/chooseSong`, {
-        room_code: room_code,
-        song_id: song_id,
+        roomCode: roomCode,
+        songId: songId,
       })
       .then(res => {
         return res.data.data;
       });
-    socket?.emit('chooseSong', song, room_code);
-    if (phase == 3 && song_id != 'song_id') useAudioStore.getState().audio?.pause();
+    socket?.emit('chooseSong', song, roomCode);
+    if (phase == 3 && songId != 'songId') useAudioStore.getState().audio?.pause();
     useAudioStore.setState({ songId: song });
     setAudio(new Audio(`/music/${song}.mp3`));
     const audio = useAudioStore.getState().audio;
@@ -225,7 +225,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
 
     await axios
       .put(`/externalApi/rooms/settings`, {
-        room_code: useRoomStore.getState().room_code,
+        roomCode: useRoomStore.getState().roomCode,
         maxRoundsPhaseOne: mxRoundsPhaseOne,
         maxRoundsPhaseTwo: mxRoundsPhaseTwo,
         maxTimer: mxTimer,
@@ -248,7 +248,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
   voteForTurnSkip(socket) {
     socket?.emit(
       'voteForTurnSkip',
-      useRoomStore.getState().room_code,
+      useRoomStore.getState().roomCode,
       useNextAuthStore.getState().session?.user?._id,
       useAudioStore.getState().songId,
     );

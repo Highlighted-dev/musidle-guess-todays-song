@@ -7,10 +7,10 @@ import { Button } from '../ui/button';
 
 export default function JoinRoomButton({
   className,
-  room_code,
+  roomCode,
 }: {
   className?: string;
-  room_code?: string;
+  roomCode?: string;
 }) {
   const { joinRoom } = useRoomStore();
   const router = useRouter();
@@ -19,14 +19,14 @@ export default function JoinRoomButton({
   const handleRoomCreate = async () => {
     joinRoom(null, user).then(() => {
       if (!user?._id) return;
-      router.push(`/multiplayer/${useRoomStore.getState().room_code}`);
+      router.push(`/multiplayer/${useRoomStore.getState().roomCode}`);
     });
   };
 
-  const handleRoomJoin = async (room_code: string) => {
-    joinRoom(room_code, user).then(() => {
+  const handleRoomJoin = async (roomCode: string) => {
+    joinRoom(roomCode, user).then(() => {
       if (!user?._id || !user?.activated) return;
-      router.push(`/multiplayer/${room_code}`);
+      router.push(`/multiplayer/${roomCode}`);
     });
   };
 
@@ -34,12 +34,12 @@ export default function JoinRoomButton({
     <Button
       variant={'default'}
       onClick={() => {
-        if (room_code) handleRoomJoin(room_code);
+        if (roomCode) handleRoomJoin(roomCode);
         else handleRoomCreate();
       }}
       className={className}
     >
-      {room_code ? 'Join room' : 'Create room'}
+      {roomCode ? 'Join room' : 'Create room'}
     </Button>
   );
 }

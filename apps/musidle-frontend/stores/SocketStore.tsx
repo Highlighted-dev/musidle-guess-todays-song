@@ -13,12 +13,6 @@ interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
 }
-type player = {
-  _id: string;
-  name: string;
-  score: number;
-};
-
 export const useSocketStore = create<ISocketStore>(set => ({
   socket: null,
   setSocket: (socket: Socket | null) =>
@@ -30,31 +24,31 @@ export const useSocketStore = create<ISocketStore>(set => ({
 // Connect the socket and add event listeners
 useSocketStore.subscribe(async ({ socket }) => {
   if (socket) {
-    const { _id: user_id, role } = useNextAuthStore.getState().session?.user || {};
+    const { _id: userId, role } = useNextAuthStore.getState().session?.user || {};
     if (
-      !useRoomStore.getState().players.find(p => p._id === user_id) &&
-      !useRoomStore.getState().spectators.find(p => p._id === user_id)
+      !useRoomStore.getState().players.find(p => p._id === userId) &&
+      !useRoomStore.getState().spectators.find(p => p._id === userId)
     )
       return;
     socket.on('updatePlayerList', (players: IPlayer[], spectators: IPlayer[]) => {
       useRoomStore.setState({ players: players });
       if (spectators) useRoomStore.setState({ spectators: spectators });
     });
-    socket.on('togglePhaseOne', current_player => {
+    socket.on('togglePhaseOne', currentPlayer => {
       if (useRoomStore.getState().isInLobby) {
-        useRoomStore.getState().setCurrentPlayer(current_player);
+        useRoomStore.getState().setCurrentPlayer(currentPlayer);
       }
       useRoomStore.getState().setIsInLobby(false);
     });
     socket.on('skip', (time: number) => {
       useAudioStore.getState().setTime(time);
     });
-    socket.on('chooseSong', (song_id: string) => {
+    socket.on('chooseSong', (songId: string) => {
       const { setAudio, setSongId } = useAudioStore.getState();
       const setSelectMode = useRoomStore.getState().setSelectMode;
 
-      const audio = new Audio(`/music/${song_id}.mp3`);
-      setSongId(song_id);
+      const audio = new Audio(`/music/${songId}.mp3`);
+      setSongId(songId);
       setAudio(audio);
       if (audio) {
         audio.volume = useAudioStore.getState().volume;
@@ -64,7 +58,7 @@ useSocketStore.subscribe(async ({ socket }) => {
     socket.on('handlePlay', () => {
       useAudioStore.getState().handlePlay();
     });
-    socket.on('answerSubmit', (score: number, player: player, answer: string) => {
+    socket.on('answerSubmit', (score: number, player: IPlayer, answer: string) => {
       useRoomStore.getState().updatePlayerScore(score, player);
       useAnswerStore.getState().setAnswer(answer);
       useAnswerStore.getState().handleAnswerSubmit();
@@ -72,7 +66,7 @@ useSocketStore.subscribe(async ({ socket }) => {
     socket.on('valueChange', (value: string) => {
       useAnswerStore.getState().handleValueChange(value);
     });
-    socket.on('turnChange', current_player => {
+    socket.on('turnChange', currentPlayer => {
       const {
         round,
         maxRoundsPhaseOne,
@@ -86,7 +80,7 @@ useSocketStore.subscribe(async ({ socket }) => {
       const { setAudioTime, setAudio, setTime, intervalId } = useAudioStore.getState();
       const { handleFinal } = useGameFinalStore.getState();
 
-      setCurrentPlayer(current_player);
+      setCurrentPlayer(currentPlayer);
       setSelectMode(false);
       setTurnChangeDialogOpen(true);
       useRoomStore.getState().votesForTurnSkip = 0;
@@ -128,11 +122,11 @@ useSocketStore.subscribe(async ({ socket }) => {
     socket.on('timerUpdate', (timer: number) => {
       useTimerStore.getState().setTimer(timer);
     });
-    socket.on('changeSongToCompleted', (song_id: string) => {
-      useAnswerStore.getState().revealArtist(song_id);
+    socket.on('changeSongToCompleted', (songId: string) => {
+      useAnswerStore.getState().revealArtist(songId);
       setTimeout(() => {
-        useAudioStore.getState().setSongId(song_id);
-        useAnswerStore.getState().changeSongToCompleted(song_id);
+        useAudioStore.getState().setSongId(songId);
+        useAnswerStore.getState().changeSongToCompleted(songId);
       }, 3000);
     });
     socket.on('voteForTurnSkip', () => {

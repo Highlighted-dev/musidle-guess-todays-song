@@ -18,10 +18,10 @@ interface ICustomRequest extends Request {
   io: Server;
 }
 
-router.get('/:song_id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:songId', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const song_id = req.params.song_id;
-    const song = await songModel.findOne({ song_id: song_id });
+    const songId = req.params.songId;
+    const song = await songModel.findOne({ songId: songId });
 
     if (!song) {
       return res.status(404).json({ message: 'Answer not found', data: null });
@@ -34,7 +34,7 @@ router.get('/:song_id', async (req: Request, res: Response, next: NextFunction) 
 
 router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.song_id || !req.body.category || !req.body.value) {
+    if (!req.body.songId || !req.body.category || !req.body.value) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
     if (!req.body.key) {
@@ -80,10 +80,10 @@ router.get('/category/:category', async (req: Request, res: Response, next: Next
   }
 });
 
-router.delete('/:song_id', async (req: Request, res: Response, next: NextFunction) => {
+router.delete('/:songId', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const song_id = req.params.song_id;
-    const answer = await songModel.findOne({ song_id: song_id });
+    const songId = req.params.songId;
+    const answer = await songModel.findOne({ songId: songId });
 
     if (!answer) {
       return res.status(404).json({ message: 'Answer not found' });
@@ -139,10 +139,10 @@ router.post(
 
 router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const song_id = req.body.song_id;
-    const room_code = req.body.room_code;
+    const songId = req.body.songId;
+    const roomCode = req.body.roomCode;
 
-    const room = await axios.get(`${apiUrl}/externalApi/rooms/${room_code}`);
+    const room = await axios.get(`${apiUrl}/externalApi/rooms/${roomCode}`);
 
     if (!room) {
       return res.status(404).json({ message: 'Room not found' });
@@ -150,16 +150,16 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
 
     const songs = room.data.songs;
 
-    //get all songs with category == song_id in songs array
-    if (song_id.includes('final')) {
-      const finalSongs = songs.filter((song: ISong) => song.song_id === song_id);
-      return res.json({ message: 'Song found', data: finalSongs[0].song_id });
-    } else if (song_id.includes('artist')) {
-      const artistSong = songs.filter((song: ISong) => song.song_id === song_id);
-      return res.json({ message: 'Song found', data: artistSong[0].song_id });
+    //get all songs with category == songId in songs array
+    if (songId.includes('final')) {
+      const finalSongs = songs.filter((song: ISong) => song.songId === songId);
+      return res.json({ message: 'Song found', data: finalSongs[0].songId });
+    } else if (songId.includes('artist')) {
+      const artistSong = songs.filter((song: ISong) => song.songId === songId);
+      return res.json({ message: 'Song found', data: artistSong[0].songId });
     }
 
-    const songsWithCategory = songs.filter((song: ISong) => song.category === song_id);
+    const songsWithCategory = songs.filter((song: ISong) => song.category === songId);
 
     //Now loop through the songs and choose random song that does not have song.completed === true
     const song = () => {
@@ -170,7 +170,7 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
       }
     };
     if (!song()) return res.status(404).json({ message: 'Song not found' });
-    return res.json({ message: 'Song found', data: song().song_id });
+    return res.json({ message: 'Song found', data: song().songId });
   } catch (error) {
     next(error);
   }

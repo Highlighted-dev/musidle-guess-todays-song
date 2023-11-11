@@ -4,7 +4,7 @@ export interface IAnswer {
 }
 
 export interface ISong {
-  song_id: string;
+  songId: string;
   category: string;
   completed: boolean;
   artist?: string;

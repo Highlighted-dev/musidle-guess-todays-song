@@ -1,11 +1,10 @@
 import express, { Router, Request, Response, NextFunction } from 'express';
-import { Server } from 'socket.io';
 import songModel from '../models/SongModel';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import categoryModel from '../models/CategoryModel';
-import { ISong } from '../@types/song';
+import { ILastFmSong, ISong } from '../@types/songs';
 dotenv.config();
 
 const jsonParser = bodyParser.json();
@@ -13,10 +12,6 @@ const jsonParser = bodyParser.json();
 const router: Router = express.Router();
 
 const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
-
-interface ICustomRequest extends Request {
-  io: Server;
-}
 
 router.get('/:songId', async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -42,7 +37,7 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
         .get(`${apiUrl}/externalApi/track/search/` + encodeURIComponent(req.body.value))
         .then(res => res.data);
 
-      possibleLastFmUrls.map((song: any) => {
+      possibleLastFmUrls.map((song: ILastFmSong) => {
         if ((song.artist + ' - ' + song.name).toLowerCase() == req.body.value.toLowerCase()) {
           req.body.key = song.url;
           return;

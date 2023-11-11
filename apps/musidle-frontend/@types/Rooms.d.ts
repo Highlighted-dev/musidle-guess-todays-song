@@ -4,6 +4,8 @@ export type IPlayer = {
   _id: string;
   name: string;
   score: number;
+  completedCategories: IPlayerCategories[];
+  votedForTurnSkip: boolean;
 };
 
 export type IUser = {
@@ -16,10 +18,10 @@ export type IUser = {
 export interface IRoomStore {
   roomCode: string;
   setRoomCode: (roomCode: string) => void;
-  players: player[];
-  setPlayers: (players: player[]) => void;
-  spectators: player[];
-  setSpectators: (spectators: player[]) => void;
+  players: IPlayer[];
+  setPlayers: (players: IPlayer[]) => void;
+  spectators: IPlayer[];
+  setSpectators: (spectators: IPlayer[]) => void;
   round: number;
   setRound: (round: number) => void;
   maxRoundsPhaseOne: number;
@@ -28,16 +30,16 @@ export interface IRoomStore {
   setMaxRoundsPhaseTwo: (maxRounds: number) => void;
   isInLobby: boolean;
   setIsInLobby: (isInLobby: boolean) => void;
-  currentPlayer: player | null;
-  setCurrentPlayer: (player: player) => void;
+  currentPlayer: IPlayer | null;
+  setCurrentPlayer: (player: IPlayer) => void;
   selectMode: boolean;
   setSelectMode: (renderGame: boolean) => void;
   turnChangeDialogOpen: boolean;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
-  joinRoom: (room: any, user: IUser | undefined) => Promise<void>;
+  joinRoom: (roomCode: string | null, user: IUser | undefined) => Promise<void>;
   leaveRoom: (router: Router, userId: string | null = null) => void;
   startGame: () => Promise<void>;
-  updatePlayerScore: (points: number, player: player) => void;
+  updatePlayerScore: (points: number, player: IPlayer) => void;
   handleTurnChange: () => void;
   handleChooseCategory: (
     category: string,
@@ -55,9 +57,9 @@ export interface IRoomStore {
 export interface IRoom {
   _id: string;
   roomCode: string;
-  players: player[];
-  spectators: player[];
-  currentPlayer: player | null;
+  players: IPlayer[];
+  spectators: IPlayer[];
+  currentPlayer: IPlayer | null;
   songId: string | null;
   maxRoundsPhaseOne: number;
   maxRoundsPhaseTwo: number;

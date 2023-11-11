@@ -5,7 +5,14 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Label } from './ui/label';
 
-export default function Verify({ response }: { response: any }) {
+export default function Verify({
+  response,
+}: {
+  response: {
+    status: string;
+    message: string;
+  };
+}) {
   const { update } = useSession();
   const session = useSession();
   const [loading, setLoading] = useState(true);

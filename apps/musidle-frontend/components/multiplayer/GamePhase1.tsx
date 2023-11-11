@@ -6,6 +6,7 @@ import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { useRoomStore } from '@/stores/RoomStore';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import { IPlayerCategories } from '@/@types/Categories';
 
 export default function GamePhase1() {
   const user = useSession().data?.user;
@@ -24,7 +25,7 @@ export default function GamePhase1() {
   const isCategoryCompleted = (category: string) => {
     return players
       .find(player => player._id == user?._id)
-      ?.completedCategories.find((item: any) => item.category == category).completed;
+      ?.completedCategories.find((item: IPlayerCategories) => item.category == category).completed;
   };
 
   return (

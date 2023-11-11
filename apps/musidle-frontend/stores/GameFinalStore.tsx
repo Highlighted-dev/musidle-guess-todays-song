@@ -32,6 +32,7 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
   },
   handleFinalAnswerSubmit: async () => {
     const { currentPlayer } = useRoomStore.getState();
+    if (!currentPlayer) return;
     const session = useNextAuthStore.getState().session;
     const socket = useSocketStore.getState().socket;
     const { setAnswer, changeSongToCompleted } = useAnswerStore.getState();
@@ -40,7 +41,7 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
       await axios
         .post(`/externalApi/rooms/checkAnswer`, {
           roomCode: useRoomStore.getState().roomCode,
-          playerId: currentPlayer._id,
+          playerId: currentPlayer?._id,
           playerAnswer: useAnswerStore.getState().value,
           songId: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,

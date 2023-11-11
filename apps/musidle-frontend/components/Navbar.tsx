@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
   ({ className, title, children, ...props }, ref) => {
     return (
@@ -33,7 +34,7 @@ const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWit
   },
 );
 ListItem.displayName = 'ListItem';
-const Navbar = () => {
+function Navbar() {
   const components: { title: string; href: string; description: string }[] = [
     {
       title: 'Musidle',
@@ -77,6 +78,6 @@ const Navbar = () => {
       </NavigationMenuList>
     </NavigationMenu>
   );
-};
+}
 
 export default Navbar;

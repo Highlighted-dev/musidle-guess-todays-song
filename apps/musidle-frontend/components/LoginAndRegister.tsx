@@ -31,7 +31,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 
-const LoginAndRegister = () => {
+function LoginAndRegister() {
   const { data } = useSession();
   const usernameRef = useRef() as MutableRefObject<HTMLInputElement>;
   const emailRef = useRef() as MutableRefObject<HTMLInputElement>;
@@ -73,8 +73,8 @@ const LoginAndRegister = () => {
           password,
         })
         .then(response => response.data)
-        .then(async response_data => {
-          if (response_data.status === 'ok') {
+        .then(async responseData => {
+          if (responseData.status === 'ok') {
             await signIn('credentials', {
               email,
               password,
@@ -90,7 +90,7 @@ const LoginAndRegister = () => {
               title: 'Registered successfully, please check your email to verify your account',
             });
           } else {
-            throw response_data.message.message;
+            throw responseData.message.message;
           }
         })
         .catch(error => {
@@ -263,6 +263,6 @@ const LoginAndRegister = () => {
       )}
     </>
   );
-};
+}
 
 export default LoginAndRegister;

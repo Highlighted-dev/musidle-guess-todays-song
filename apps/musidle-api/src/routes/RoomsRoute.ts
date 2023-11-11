@@ -153,22 +153,26 @@ router.get('/:roomCode', async (req: Request, res: Response, next: NextFunction)
 });
 
 router.post('/start', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
-  const roomCode = req.body.roomCode;
-  if (!roomCode) return res.status(400).json({ status: 'error', message: 'Missing parameters' });
-  const room = await roomModel.findOne({ roomCode: roomCode });
-  if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
+  try {
+    const roomCode = req.body.roomCode;
+    if (!roomCode) return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    const room = await roomModel.findOne({ roomCode: roomCode });
+    if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
 
-  const random = Math.floor(Math.random() * room.players.length);
-  const currentPlayer = room.players[random];
+    const random = Math.floor(Math.random() * room.players.length);
+    const currentPlayer = room.players[random];
 
-  (req as ICustomRequest).io.in(roomCode).emit('togglePhaseOne', currentPlayer);
+    (req as ICustomRequest).io.in(roomCode).emit('togglePhaseOne', currentPlayer);
 
-  await roomModel.findOneAndUpdate(
-    { roomCode: roomCode },
-    { currentPlayer: currentPlayer, isInGameLobby: false },
-  );
+    await roomModel.findOneAndUpdate(
+      { roomCode: roomCode },
+      { currentPlayer: currentPlayer, isInGameLobby: false },
+    );
 
-  return res.status(200).json({ status: 'success', message: 'Game started' });
+    return res.status(200).json({ status: 'success', message: 'Game started' });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post('/turnChange', jsonParser, async (req: Request, res: Response, next: NextFunction) => {

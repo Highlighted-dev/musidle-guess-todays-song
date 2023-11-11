@@ -4,9 +4,10 @@ import { useSocketStore } from './SocketStore';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useAudioStore } from './AudioStore';
 import axios from 'axios';
-import { IAnswer, IAnswerStore, ISong } from '@/@types/AnswerStore';
+import { IAnswer, IAnswerStore, ILastFmSong, ISong } from '@/@types/AnswerStore';
 import { useNextAuthStore } from '@/stores/NextAuthStore';
 import { toast } from '@/components/ui/use-toast';
+import { IPlayerCategories } from '@/@types/Categories';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   answer: '',
@@ -53,6 +54,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const session = useNextAuthStore.getState().session;
     const socket = useSocketStore.getState().socket;
     let category = '';
+    if (!currentPlayer) return;
     //set completedCategories.category.completed to true
     if (
       useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne &&
@@ -60,7 +62,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     ) {
       useRoomStore.getState().players.map(player => {
         if (player._id == session?.user?._id) {
-          player.completedCategories.map((item: any) => {
+          player.completedCategories.map((item: IPlayerCategories) => {
             if (useAudioStore.getState().songId.includes(item.category)) {
               category = item.category;
               item.completed = true;
@@ -73,7 +75,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       await axios
         .post(`/externalApi/rooms/checkAnswer`, {
           roomCode: useRoomStore.getState().roomCode,
-          playerId: currentPlayer._id,
+          playerId: currentPlayer?._id,
           playerAnswer: useAnswerStore.getState().value,
           songId: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,
@@ -103,7 +105,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const data = await response;
     const tempSongs: IAnswer[] = [];
     if (data.length > 0) {
-      data.map((track: any) => {
+      data.map((track: ILastFmSong) => {
         // Check if the song is already in the songs state
         if (tempSongs.find(song => song.key === track.url)) return;
         tempSongs.push({

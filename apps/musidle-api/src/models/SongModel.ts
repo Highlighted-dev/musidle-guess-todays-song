@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { ISong } from '../@types/song';
+import { ISong } from '../@types/songs';
 
 const songsSchema = new Schema<ISong>(
   {

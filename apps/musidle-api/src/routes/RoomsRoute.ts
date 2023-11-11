@@ -195,7 +195,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
     Timer(roomCode, 0, (req as ICustomRequest).io).stop();
 
     const response = await axios.get(`${apiUrl}/externalApi/songs/${songId}`);
-    const correctAnswer = response.data;
+    const correctAnswer = response.data.data;
 
     if (category) {
       await roomModel.findOneAndUpdate(

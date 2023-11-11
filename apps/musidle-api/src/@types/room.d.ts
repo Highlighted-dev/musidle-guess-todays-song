@@ -6,7 +6,16 @@ export interface IPlayer {
   votedForTurnSkip: boolean;
 }
 
-export interface IRoomModel {
+export interface IUpdate {
+  currentPlayer: IPlayer;
+  isInSelectMode: boolean;
+  $inc: { round: number };
+  timer: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  $set?: { 'songs.$.completed': boolean };
+}
+
+export interface IRoom {
   roomCode: string;
   players: IPlayer[];
   currentPlayer: IPlayer | null;

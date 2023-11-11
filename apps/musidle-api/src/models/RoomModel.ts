@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
-import { IRoomModel } from '../@types/room';
+import { IRoom } from '../@types/room';
 
-const roomSchema = new Schema<IRoomModel>(
+const roomSchema = new Schema<IRoom>(
   {
     roomCode: { type: String, required: true },
     players: { type: [], required: true, unique: true },
@@ -27,5 +27,5 @@ const roomSchema = new Schema<IRoomModel>(
   },
   { versionKey: false },
 );
-const roomModel = model<IRoomModel>('Rooms', roomSchema, 'rooms');
+const roomModel = model<IRoom>('Rooms', roomSchema, 'rooms');
 export default roomModel;

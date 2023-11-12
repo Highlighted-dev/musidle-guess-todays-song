@@ -1,4 +1,4 @@
-import express, { NextFunction } from 'express';
+import express from 'express';
 import SearchTrackRoute from './routes/SearchTrackRoute';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
@@ -17,7 +17,6 @@ import AnswersRoute from './routes/SongsRoute';
 import roomModel from './models/RoomModel';
 import Timer from './utils/Timer';
 import CategoriesRoute from './routes/CategoriesRoute';
-import { IUser } from './models/UserModel';
 dotenv.config();
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const mongodbUrl =

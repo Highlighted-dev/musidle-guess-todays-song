@@ -17,6 +17,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  transpilePackages: ['ui'],
   async rewrites() {
     return [
       {

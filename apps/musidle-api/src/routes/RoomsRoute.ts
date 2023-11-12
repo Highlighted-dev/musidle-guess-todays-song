@@ -27,8 +27,6 @@ const router: Router = express.Router();
 // Determine the API URL based on the environment
 const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
 
-// Extend the Request interface to include the socket.io server
-
 router.post('/join', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const roomCode = req.body.roomCode || (await generateRoomCode());

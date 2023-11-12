@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // lib/mongodb.ts
 import { MongoClient, MongoClientOptions } from 'mongodb';
 

@@ -17,6 +17,7 @@ import AnswersRoute from './routes/SongsRoute';
 import roomModel from './models/RoomModel';
 import Timer from './utils/Timer';
 import CategoriesRoute from './routes/CategoriesRoute';
+import { IUser } from './models/UserModel';
 dotenv.config();
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const mongodbUrl =
@@ -45,58 +46,62 @@ const io = new Server(server, {
   },
 });
 
-const users: IUsers[] = [];
-const usersToBeDeleted: IUsers[] = [];
+const users: Map<string, IUsers> = new Map();
+const usersToBeDeleted: Map<string, IUsers> = new Map();
 
-//set interval to check if there are no users that are connected to socket in a room
-//TODO This function definitly not scalable and its poorly written, should be replaced in future
+function removeUserFromUsersMap(user: IUsers) {
+  users.delete(user.socketId);
+}
+
+async function removeUserFromRoom(user: IUsers, io: Server) {
+  const response = await axios.post(`${apiUrl}/externalApi/rooms/leave`, {
+    roomCode: user.roomCode,
+    playerId: user.id,
+  });
+  usersToBeDeleted.delete(user.socketId);
+  io.in(user.roomCode!).emit('updatePlayerList', response.data.players);
+}
+
 setInterval(async () => {
   const rooms = await roomModel.find();
-  rooms.forEach(async room => {
-    //check if user is in room
-    let usersInRoom = users.filter(user => user.roomCode === room.roomCode);
+  const removalPromises = [];
+
+  //Check if user is still connected to socket, if not, then remove him from users Map and add him to usersToBeDeleted Map
+  for (const room of rooms) {
+    if (usersToBeDeleted.size >= 1) {
+      const usersToBeDeletedInRoom = Array.from(usersToBeDeleted.values()).filter(
+        user => user.roomCode === room.roomCode,
+      );
+      for (const user of usersToBeDeletedInRoom) {
+        removalPromises.push(removeUserFromRoom(user, io));
+      }
+    }
+    const usersInRoom = Array.from(users.values()).filter(user => user.roomCode === room.roomCode);
     if (usersInRoom.length >= 1) {
-      //check if user is in room and is connected to socket
-      usersInRoom.forEach(async user => {
+      for (const user of usersInRoom) {
         const socket = io.sockets.sockets.get(user.socketId);
-        if (socket == undefined) {
-          users.splice(users.indexOf(user), 1);
-          usersToBeDeleted.push(user);
+        if (!socket) {
+          removeUserFromUsersMap(user);
+          usersToBeDeleted.set(user.socketId, user);
         }
-      });
-      return;
+      }
     }
-    usersInRoom = usersToBeDeleted.filter(user => user.roomCode === room.roomCode);
-    if (usersInRoom.length >= 1) {
-      //Remove every user from room
-      usersInRoom.forEach(async user => {
-        await axios
-          .post(`${apiUrl}/externalApi/rooms/leave`, {
-            roomCode: user.roomCode,
-            playerId: user.id,
-          })
-          .then(res => {
-            usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
-            io.in(user.roomCode!).emit('updatePlayerList', res.data.players);
-          });
-      });
-    }
-    return;
-  });
+  }
+
+  await Promise.all(removalPromises);
 }, 120000);
 
 io.on('connection', socket => {
   socket.on('id', (id, roomCode) => {
-    //if user is already in users array, remove him from there
-    let user = users.find(user => user.id === id);
-    if (user) {
-      users.splice(users.indexOf(user), 1);
+    // If user is already in users Map, remove him from there
+    if (users.has(id)) {
+      users.delete(id);
     }
-    users.push({ id, socketId: socket.id, roomCode: roomCode });
-    //if user is in usersToBeDeleted array, remove him from there
-    user = usersToBeDeleted.find(user => user.id === id);
-    if (user) {
-      usersToBeDeleted.splice(usersToBeDeleted.indexOf(user), 1);
+    users.set(id, { id, socketId: socket.id, roomCode: roomCode });
+
+    // If user is in usersToBeDeleted Map, remove him from there
+    if (usersToBeDeleted.has(id)) {
+      usersToBeDeleted.delete(id);
     }
     socket.join(roomCode);
   });

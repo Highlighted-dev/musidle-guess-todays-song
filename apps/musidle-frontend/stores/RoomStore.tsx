@@ -121,7 +121,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
           ),
         );
 
-      useSocketStore.getState().socket?.emit('id', user._id, roomCode);
+      useSocketStore.getState().socket?.emit('id', user._id, data.roomCode);
     }
   },
   leaveRoom: async (router: Router, userId = null) => {

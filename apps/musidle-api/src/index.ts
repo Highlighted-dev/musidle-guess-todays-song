@@ -92,6 +92,16 @@ setInterval(async () => {
 
 io.on('connection', socket => {
   socket.on('id', (id, roomCode) => {
+    //if there is already a socket with the same id, then disconnect it
+    const socketWithSameId = Array.from(users.values()).filter(user => user.id === id);
+    if (socketWithSameId.length > 0) {
+      socketWithSameId.forEach(user => {
+        const socket = io.sockets.sockets.get(user.socketId);
+        if (socket) {
+          socket.disconnect();
+        }
+      });
+    }
     // If user is already in users Map, remove him from there
     if (users.has(id)) {
       users.delete(id);
@@ -111,7 +121,7 @@ io.on('connection', socket => {
     );
     socket.to(roomCode).emit('chooseSong', songId);
   });
-  socket.on('handlePlay', async (roomCode, timer) => {
+  socket.on('handlePlay', async roomCode => {
     const room = await roomModel.findOne({ roomCode: roomCode });
     Timer(roomCode, room?.maxTimer || 35, io).start();
     socket.to(roomCode).emit('handlePlay');

@@ -8,7 +8,6 @@ export default async function GameLayout({ children }: { children: React.ReactNo
       <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full">
         {children}
       </Card>
-      <Leaderboard />
     </>
   );
 }

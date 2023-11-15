@@ -1,28 +1,20 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { useRoomStore } from '@/stores/RoomStore';
-import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { IPlayerCategories } from '@/@types/Categories';
+import { useAnswerStore } from '@/stores/AnswerStore';
 
 export default function GamePhase1() {
   const user = useSession().data?.user;
   const { players, currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
-  const [categories, setCategories] = useState<string[]>([]);
+  const { categories } = useAnswerStore();
 
-  useEffect(() => {
-    if (!user?._id || categories.length > 0) return;
-    axios.get('/externalApi/categories').then(res => {
-      res.data.map((item: { _id: string; category: string }) =>
-        setCategories(prev => [...prev, item.category]),
-      );
-    });
-  }, [user?._id]);
-
-  const isCategoryCompleted = (category: string) => {
+  const isCategoryCompleted = (category: string | undefined) => {
+    if (!category) return false;
     return players
       .find(player => player._id == user?._id)
       ?.completedCategories.find((item: IPlayerCategories) => item.category == category).completed;
@@ -39,8 +31,9 @@ export default function GamePhase1() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col space-y-4">
-              {categories.length > 0 &&
-                categories.map((category, index) => (
+              {categories &&
+                categories.length > 0 &&
+                categories?.map((category, index) => (
                   <Button
                     variant={'secondary'}
                     onClick={e => handleChooseCategory(e.currentTarget.id, 1)}

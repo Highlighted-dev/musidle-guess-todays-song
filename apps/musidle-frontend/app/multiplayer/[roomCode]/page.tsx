@@ -1,81 +1,41 @@
-'use client';
-import { useRoomStore } from '@/stores/RoomStore';
-import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
-import GamePhase1 from '@/components/multiplayer/GamePhase1';
-import GamePhase2 from '@/components/multiplayer/GamePhase2';
-import GamePhase3 from '@/components/multiplayer/GamePhase3';
-import GameEndScreen from '@/components/multiplayer/GameEndScreen';
-import GameLobby from '@/components/multiplayer/GameLobby';
-import { useSocketStore } from '@/stores/SocketStore';
-import { toast } from '@/components/ui/use-toast';
-import { useSession } from 'next-auth/react';
+import React from 'react';
 import TurnChangeDialog from '@/components/multiplayer/TurnChangeDialog';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import GameController from '@/components/multiplayer/GameController';
+import { RoomStoreInitializer } from '@/stores/RoomStore';
+import Leaderboard from '@/components/multiplayer/Leaderboard';
 
-export default function Page() {
-  const { joinRoom, players, spectators, round, maxRoundsPhaseOne, maxRoundsPhaseTwo, isInLobby } =
-    useRoomStore();
-
-  const user = useSession().data?.user;
-  const router = useRouter();
-  const params = useParams();
-
-  const handleRoomJoin = async (roomCode: string) => {
-    joinRoom(roomCode, user).then(() => {
-      router.push(`/multiplayer/${roomCode}`);
-    });
-  };
-
-  useEffect(() => {
-    if (!user?._id || !user?.activated) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: `Please login and activate your account to join a room`,
-        style: { whiteSpace: 'pre-line' },
-      });
-    }
-    if (params.roomCode.length > 6) {
-      router.push('/multiplayer');
-      return;
-    }
-    if (
-      params.roomCode &&
-      user?._id &&
-      !players.find(player => player['_id'] == user?._id && !useSocketStore.getState().socket)
-    ) {
-      handleRoomJoin(params.roomCode as string);
-    }
-  }, [user?._id, params.roomCode]);
+export default async function Page({ params }: { params: { roomCode: string } }) {
+  const session = await getServerSession(authOptions);
+  let url;
+  if (process.env.NODE_ENV === 'development') {
+    url = new URL('http://localhost:4200/externalApi/rooms/join');
+  } else {
+    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/rooms/join`);
+  }
+  const data = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      roomCode: params.roomCode,
+      player: {
+        _id: session?.user._id,
+        name: session?.user.username,
+        score: 0,
+      },
+    }),
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
 
   return (
     <>
-      <TurnChangeDialog />
-      {
-        //If game has started and user is in players array, render GamePhase, else render GameLobby
-        !isInLobby &&
-        round <= maxRoundsPhaseOne &&
-        (players.find(player => player['_id'] == user?._id) ||
-          spectators.find(spectator => spectator['_id'] == user?._id)) ? (
-          <GamePhase1 />
-        ) : !isInLobby &&
-          round <= maxRoundsPhaseOne + maxRoundsPhaseTwo &&
-          (players?.find(player => player['_id'] == user?._id) ||
-            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
-          <GamePhase2 />
-        ) : !isInLobby &&
-          round <= maxRoundsPhaseOne + maxRoundsPhaseTwo + 1 &&
-          (players?.find(player => player['_id'] == user?._id) ||
-            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
-          <GamePhase3 />
-        ) : !isInLobby &&
-          (players.find(player => player['_id'] == user?._id) ||
-            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
-          <GameEndScreen />
-        ) : (
-          <GameLobby roomCode={params.roomCode as string} />
-        )
-      }
+      <RoomStoreInitializer data={data} />
+      <GameController params={params} />
+      <Leaderboard />
     </>
   );
 }

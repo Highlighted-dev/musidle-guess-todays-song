@@ -1,3 +1,4 @@
+'use client';
 import { create } from 'zustand';
 import { Socket } from 'socket.io-client';
 import { useRoomStore } from './RoomStore';
@@ -12,6 +13,7 @@ import { useNextAuthStore } from './NextAuthStore';
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
+  url: string;
 }
 export const useSocketStore = create<ISocketStore>(set => ({
   socket: null,
@@ -19,6 +21,10 @@ export const useSocketStore = create<ISocketStore>(set => ({
     set(() => ({
       socket: socket,
     })),
+  url:
+    process.env.NODE_ENV == 'production'
+      ? process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:4200'
+      : 'http://localhost:4200',
 }));
 
 // Connect the socket and add event listeners
@@ -47,7 +53,7 @@ useSocketStore.subscribe(async ({ socket }) => {
       const { setAudio, setSongId } = useAudioStore.getState();
       const setSelectMode = useRoomStore.getState().setSelectMode;
 
-      const audio = new Audio(`/music/${songId}.mp3`);
+      const audio = typeof Audio != 'undefined' ? new Audio(`/music/${songId}.mp3`) : null;
       setSongId(songId);
       setAudio(audio);
       if (audio) {
@@ -64,7 +70,7 @@ useSocketStore.subscribe(async ({ socket }) => {
       useAnswerStore.getState().handleAnswerSubmit();
     });
     socket.on('valueChange', (value: string) => {
-      useAnswerStore.getState().handleValueChange(value);
+      useAnswerStore.setState({ value: value });
     });
     socket.on('turnChange', currentPlayer => {
       const {

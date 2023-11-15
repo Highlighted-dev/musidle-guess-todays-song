@@ -26,7 +26,7 @@ Now, open your browser and navigate to http://localhost:4200/. Happy coding!
 
 ## Running the tests
 
-To run test use `nx test musidle-frontend`
+To run test use `nx e2e musidle-frontend-e2e`
 
 ## Built With
 

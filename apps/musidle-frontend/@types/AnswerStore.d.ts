@@ -32,6 +32,7 @@ export interface IAnswerStore {
   possibleAnswers: IAnswer[];
   setPossibleAnswers: (songs: IAnswer[]) => void;
   possibleSongs: ISong[];
+  categories: any[] | undefined;
   setPossibleSongs: (songs: ISong[]) => void;
   handleValueChange: (value: string) => void;
   handleAnswerSubmit: () => void;

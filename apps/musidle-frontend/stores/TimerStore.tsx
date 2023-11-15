@@ -1,3 +1,4 @@
+'use client';
 import { create } from 'zustand';
 import { useAnswerStore } from './AnswerStore';
 import { useRoomStore } from './RoomStore';

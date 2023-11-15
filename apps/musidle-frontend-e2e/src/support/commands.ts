@@ -26,13 +26,13 @@ Cypress.Commands.add('login', (email, password) => {
   cy.get('input[id=email]').type(email);
   cy.get('input[id=password]').type(password);
 
-  cy.intercept('POST', 'http://localhost:4200/api/auth/login').as('login');
+  cy.intercept('GET', 'http://localhost:4200/api/auth/session').as('login');
   cy.get('button').contains('Sign in').click();
   // Wait for the 'login' intercept to complete
   cy.wait('@login');
 
   // Wait for the 'token' cookie to exist, with a timeout
-  cy.waitUntil(() => cy.getCookie('token')).should('exist');
+  cy.waitUntil(() => cy.getCookie('next-auth.session-token')).should('exist');
 });
 
 //

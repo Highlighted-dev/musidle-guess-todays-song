@@ -1,9 +1,9 @@
+'use client';
 import { create } from 'zustand';
 import { useRoomStore } from './RoomStore';
 import { useSocketStore } from './SocketStore';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useAudioStore } from './AudioStore';
-import axios from 'axios';
 import { IAnswer, IAnswerStore, ILastFmSong, ISong } from '@/@types/AnswerStore';
 import { useNextAuthStore } from '@/stores/NextAuthStore';
 import { toast } from '@/components/ui/use-toast';
@@ -40,6 +40,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     set(() => ({
       possibleSongs: possibleSongs,
     })),
+  categories: [],
   handleValueChange: async (value: string) => {
     const session = useNextAuthStore.getState().session;
     if (useRoomStore.getState().currentPlayer?._id == session?.user?._id) {
@@ -72,20 +73,28 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       });
     }
     if (currentPlayer?._id == session?.user?._id) {
-      await axios
-        .post(`/externalApi/rooms/checkAnswer`, {
+      await fetch(`${useSocketStore.getState().url}/externalApi/rooms/checkAnswer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           roomCode: useRoomStore.getState().roomCode,
           playerId: currentPlayer?._id,
           playerAnswer: useAnswerStore.getState().value,
           songId: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,
-          category: category,
-        })
-        .then(res => res.data)
+          category,
+        }),
+      })
+        .then(res => res.json())
         .then(res => {
           useAnswerStore.getState().setAnswer(res.answer || null);
           useRoomStore.getState().updatePlayerScore(res.score, currentPlayer);
           socket?.emit('answerSubmit', res.score, currentPlayer, res.answer, roomCode);
+        })
+        .catch(err => {
+          console.log(err);
         });
     }
     if (useAudioStore.getState().audio?.paused) useAudioStore.getState().audio?.play();
@@ -97,10 +106,18 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
   },
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;
+    console.log('getPossibleSongAnswers', query);
 
-    const response = axios.get(`/externalApi/track/search/${query}`).then(res => {
-      return res.data;
-    });
+    const response = await fetch(
+      `${useSocketStore.getState().url}/externalApi/track/search/${query}`,
+    )
+      .then(res => res.json())
+      .then(data => {
+        return data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
     const data = await response;
     const tempSongs: IAnswer[] = [];

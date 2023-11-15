@@ -1,3 +1,4 @@
+'use client';
 import { create } from 'zustand';
 import { useRoomStore } from './RoomStore';
 import { useSocketStore } from './SocketStore';
@@ -10,7 +11,6 @@ interface IGameFinalStore {
   handleFinal: () => void;
   handleFinalAnswerSubmit: () => void;
 }
-//TODO remove phaseStore, move togglePhaseOne to RoomStore as startGame
 export const useGameFinalStore = create<IGameFinalStore>(set => ({
   handleFinal: () => {
     const { socket } = useSocketStore.getState();

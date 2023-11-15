@@ -1,6 +1,6 @@
 describe('Testing Musidle multiplayer', () => {
   beforeEach(() => {
-    cy.session('login', () => cy.login('Cypresstest001@musidle.com', 'Cypresstest001@musidle.com'));
+    cy.session('login', () => cy.login('Cypresstest1@musidle.live', 'Cypresstest1'));
   });
 
   it('should display lobby, create a room with a "Create room" button, change settings and leave the room', () => {
@@ -18,9 +18,10 @@ describe('Testing Musidle multiplayer', () => {
     cy.contains('Leave game').click();
   });
 
-  it('Go to the room with ID: test012, change settings and start the game', () => {
+  it('Go to the room with ID: test12, change settings and start the game', () => {
     cy.visit('http://localhost:4200/multiplayer/test12');
 
+    cy.wait(2000);
     cy.get('input[id=mxRoundsPhaseOne]').type('1');
     cy.get('input[id=mxRoundsPhaseTwo]').type('1');
     cy.get('button').contains('Save').click();

@@ -36,7 +36,7 @@ export default function Loading() {
                   <Skeleton className="w-full h-4" />
                 </div>
               </Card>
-              <Button className="w-full" variant={'outline'} disabled>
+              <Button className="w-full my-2" variant={'outline'} disabled>
                 Vote for turn skip (<Skeleton className="w-6 h-4" />)
               </Button>
             </CardContent>

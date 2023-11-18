@@ -29,6 +29,10 @@ const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'htt
 
 router.post('/join', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!req.body.player) {
+      return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    }
+
     const roomCode = req.body.roomCode || (await generateRoomCode());
     let room = await roomModel.findOne({ roomCode });
     const categories = await axios

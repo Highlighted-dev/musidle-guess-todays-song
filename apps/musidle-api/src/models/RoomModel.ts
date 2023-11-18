@@ -4,7 +4,17 @@ import { IRoom } from '../@types/room';
 const roomSchema = new Schema<IRoom>(
   {
     roomCode: { type: String, required: true },
-    players: { type: [], required: true, unique: true },
+    players: {
+      type: [
+        new Schema({
+          _id: { type: String, required: true, unique: true },
+          name: { type: String, required: true },
+          score: { type: Number, default: 0, required: true },
+        }),
+      ],
+      required: true,
+      unique: true,
+    },
     currentPlayer: { type: Object, default: null },
     spectators: { type: [], required: true },
     songId: { type: String, default: null },

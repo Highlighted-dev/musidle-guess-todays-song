@@ -30,14 +30,22 @@ export default async function Page({ params }: { params: { roomCode: string } })
   })
     .then(res => res.json())
     .catch(err => console.log(err));
-  if (params.roomCode == 'null') {
-    return <Redirecter url={`/multiplayer/${params.roomCode}`} />;
-  }
-  return (
-    <>
-      <RoomStoreInitializer data={data} />
-      <GameController params={params} />
-      <Leaderboard />
-    </>
-  );
+  if (data.roomCode == undefined) {
+    return (
+      <Redirecter
+        url={`/multiplayer`}
+        message={`The room you tried to join is full, does not exist or you are already in a different room.`}
+        variant={'destructive'}
+      />
+    );
+  } else if (params.roomCode == 'null') {
+    return <Redirecter url={`/multiplayer/${data.roomCode}`} />;
+  } else
+    return (
+      <>
+        <RoomStoreInitializer data={data} />
+        <GameController params={params} />
+        <Leaderboard />
+      </>
+    );
 }

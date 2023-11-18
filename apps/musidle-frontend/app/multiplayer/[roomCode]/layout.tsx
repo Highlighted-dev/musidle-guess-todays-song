@@ -1,4 +1,3 @@
-import Leaderboard from '@/components/multiplayer/Leaderboard';
 import { Card } from '@/components/ui/card';
 import React from 'react';
 

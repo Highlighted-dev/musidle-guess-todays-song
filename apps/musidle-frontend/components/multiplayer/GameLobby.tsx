@@ -10,7 +10,7 @@ import { useSession } from 'next-auth/react';
 import { useTimerStore } from '@/stores/TimerStore';
 
 export default function GameLobby(params: { roomCode: string }) {
-  const { maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame, leaveRoom } =
+  const { maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame, leaveRoom, roomCode } =
     useRoomStore();
   const { maxTimer } = useTimerStore();
   const user = useSession().data?.user;
@@ -21,7 +21,7 @@ export default function GameLobby(params: { roomCode: string }) {
     <>
       <CardHeader className=" text-center h-1/6">
         <CardTitle>Game lobby</CardTitle>
-        <p>Room: {params.roomCode}</p>
+        <p>Room: {params.roomCode == 'null' ? roomCode : params.roomCode}</p>
       </CardHeader>
       <CardContent className="flex flex-col h-5/6 w-full">
         <div className="h-[92%]">

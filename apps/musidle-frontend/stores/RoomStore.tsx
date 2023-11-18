@@ -67,64 +67,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
       turnChangeDialogOpen: turnChangeDialogOpen,
     })),
   random: 0,
-  joinRoom: async (roomCode, user) => {
-    const { setAudio, setSongId } = useAudioStore.getState();
-    const { setTimer } = useTimerStore.getState();
-    const { setPossibleSongs } = useAnswerStore.getState();
-    if (!user?._id || !user?.activated) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: `Please login and activate your account to join a room`,
-        style: { whiteSpace: 'pre-line' },
-      });
-      return;
-    }
-
-    const { data } = await axios.post(`/externalApi/rooms/join`, {
-      roomCode: roomCode,
-      player: {
-        _id: user._id,
-        name: user.username,
-        score: 0,
-      },
-    });
-    set(() => ({
-      roomCode: data.roomCode,
-      players: data.players,
-      spectators: data.spectators,
-      currentPlayer: data.currentPlayer,
-      maxRoundsPhaseOne: data.maxRoundsPhaseOne,
-      maxRoundsPhaseTwo: data.maxRoundsPhaseTwo,
-      round: data.round,
-      isInLobby: data.isInGameLobby,
-      selectMode: !data.isInSelectMode,
-      votesForTurnSkip: data.votesForTurnSkip,
-    }));
-    setTimer(data.timer);
-    useTimerStore.setState({ maxTimer: data.maxTimer });
-    setPossibleSongs(data.songs);
-    setSongId(data.songId);
-    setAudio(new Audio(`/music/${data.songId}.mp3`));
-    const audio = useAudioStore.getState().audio;
-    if (audio) {
-      audio.volume = useAudioStore.getState().volume;
-    }
-    //set socket the to the room
-    if (!useSocketStore.getState().socket) {
-      useSocketStore
-        .getState()
-        .setSocket(
-          io(
-            process.env.NODE_ENV == 'production'
-              ? process.env.NEXT_PUBLIC_API_HOST ?? 'http://localhost:5000'
-              : 'http://localhost:5000',
-          ),
-        );
-
-      useSocketStore.getState().socket?.emit('id', user._id, data.roomCode);
-    }
-  },
   leaveRoom: async (router: Router, userId = null) => {
     const { roomCode } = useRoomStore.getState();
     if (userId) {

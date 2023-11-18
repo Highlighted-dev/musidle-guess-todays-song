@@ -1,10 +1,10 @@
 import React from 'react';
-import TurnChangeDialog from '@/components/multiplayer/TurnChangeDialog';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import GameController from '@/components/multiplayer/GameController';
 import { RoomStoreInitializer } from '@/stores/RoomStore';
 import Leaderboard from '@/components/multiplayer/Leaderboard';
+import RoomRedirecter from '@/components/multiplayer/RoomRedirecter';
 
 export default async function Page({ params }: { params: { roomCode: string } }) {
   const session = await getServerSession(authOptions);
@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: { roomCode: string } })
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      roomCode: params.roomCode,
+      roomCode: params.roomCode == 'null' ? null : params.roomCode,
       player: {
         _id: session?.user._id,
         name: session?.user.username,
@@ -30,7 +30,9 @@ export default async function Page({ params }: { params: { roomCode: string } })
   })
     .then(res => res.json())
     .catch(err => console.log(err));
-
+  if (params.roomCode == 'null') {
+    return <RoomRedirecter params={params} roomCode={data?.roomCode} />;
+  }
   return (
     <>
       <RoomStoreInitializer data={data} />

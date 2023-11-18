@@ -1,41 +1,38 @@
 'use client';
-import { useRoomStore } from '@/stores/RoomStore';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Button } from '../ui/button';
+import { toast } from '../ui/use-toast';
 
 export default function JoinRoomButton({
   className,
   roomCode,
 }: {
   className?: string;
-  roomCode?: string;
+  roomCode?: string | null;
 }) {
-  const { joinRoom } = useRoomStore();
   const router = useRouter();
   const user = useSession().data?.user;
 
-  const handleRoomCreate = async () => {
-    joinRoom(null, user).then(() => {
-      if (!user?._id) return;
-      router.push(`/multiplayer/${useRoomStore.getState().roomCode}`);
-    });
-  };
-
-  const handleRoomJoin = async (roomCode: string) => {
-    joinRoom(roomCode, user).then(() => {
-      if (!user?._id || !user?.activated) return;
-      router.push(`/multiplayer/${roomCode}`);
-    });
+  const handleRoomJoin = async (roomCode: string | null = null) => {
+    if (!user?._id || !user?.activated) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Please login and activate your account to join a room`,
+        style: { whiteSpace: 'pre-line' },
+      });
+      return;
+    }
+    router.push(`/multiplayer/${roomCode}`);
   };
 
   return (
     <Button
       variant={'default'}
       onClick={() => {
-        if (roomCode) handleRoomJoin(roomCode);
-        else handleRoomCreate();
+        handleRoomJoin(roomCode);
       }}
       className={className}
     >

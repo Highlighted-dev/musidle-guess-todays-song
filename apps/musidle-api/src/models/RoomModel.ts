@@ -10,6 +10,16 @@ const roomSchema = new Schema<IRoom>(
           _id: { type: String, required: true, unique: true },
           name: { type: String, required: true },
           score: { type: Number, default: 0, required: true },
+          completedCategories: {
+            type: [
+              new Schema({
+                category: { type: String, required: true },
+                completed: { type: Boolean, default: false, required: true },
+              }),
+            ],
+            required: true,
+          },
+          votedForTurnSkip: { type: Boolean, default: false, required: true },
         }),
       ],
       required: true,

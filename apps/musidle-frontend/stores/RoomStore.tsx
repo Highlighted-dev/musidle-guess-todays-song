@@ -201,7 +201,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function RoomStoreInitializer(data: any, user: any) {
+export function RoomStoreInitializer(data: any) {
   const initialized = useRef(false);
   const roomData = data.data;
   if (!initialized.current) {
@@ -219,7 +219,6 @@ export function RoomStoreInitializer(data: any, user: any) {
       votesForTurnSkip: roomData.votesForTurnSkip,
     });
     useTimerStore.setState({ timer: roomData.timer });
-
     useTimerStore.setState({ maxTimer: roomData.maxTimer });
     useAnswerStore.setState({ possibleSongs: roomData.songs });
     // Get all categories that aren't equal to 'final' and 'artists

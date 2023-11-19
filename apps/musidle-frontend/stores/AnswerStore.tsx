@@ -97,8 +97,11 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
           console.log(err);
         });
     }
+    if (useAudioStore.getState().audio!.currentTime > 10)
+      useAudioStore.getState().audio!.currentTime = 0;
     if (useAudioStore.getState().audio?.paused) useAudioStore.getState().audio?.play();
     useAudioStore.getState().setTime(12000);
+
     const audio = useAudioStore.getState().audio;
     useTimerStore.getState().setTimer(useTimerStore.getState().maxTimer);
     if (audio) audio.volume = 0.05;

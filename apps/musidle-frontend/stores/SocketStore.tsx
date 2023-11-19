@@ -54,11 +54,11 @@ useSocketStore.subscribe(async ({ socket }) => {
       const setSelectMode = useRoomStore.getState().setSelectMode;
       if (phase == 3) useAudioStore.getState().audio?.pause();
       setSongId(songId);
-      setAudio(new Audio(`/music/${songId}.mp3`));
       const audio = typeof Audio != 'undefined' ? new Audio(`/music/${songId}.mp3`) : null;
       if (audio) {
         audio.volume = useAudioStore.getState().volume;
       }
+      setAudio(audio);
       if (phase != 3) {
         setSelectMode(true);
       }

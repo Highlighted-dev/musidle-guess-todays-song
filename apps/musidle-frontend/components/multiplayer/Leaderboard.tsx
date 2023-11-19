@@ -6,7 +6,7 @@ import { Label } from '../ui/label';
 import VoteForTurnSkipButton from '../buttons/VoteForTurnSkipButton';
 
 function Leaderboard() {
-  const { players, currentPlayer, spectators } = useRoomStore();
+  const { players, currentPlayer, spectators, joinAsSpectator, roomCode } = useRoomStore();
   return (
     <div className=" xl:w-[16%] w-full h-full flex flex-col justify-center items-center min-w-[180px] xl:absolute top-0 right-0 xl:p-0 py-6">
       <div className=" h-full w-full ">
@@ -30,8 +30,13 @@ function Leaderboard() {
                 ))}
               </div>
             </Card>
-            <Card className=" min-h-[100px] p-2 mt-2">
-              <CardTitle className="text-center pb-1 text-xs hr">Spectators</CardTitle>
+            <Card className=" min-h-[100px] p-2 mt-2 cursor-pointer">
+              <CardTitle
+                className="text-center pb-1 text-xs hr"
+                onClick={() => joinAsSpectator(roomCode)}
+              >
+                Spectators
+              </CardTitle>
               <div className="flex flex-col">
                 {spectators?.map((spectator, index) => (
                   <div className="flex justify-between" key={index}>

@@ -67,6 +67,17 @@ export const useRoomStore = create<IRoomStore>(set => ({
       turnChangeDialogOpen: turnChangeDialogOpen,
     })),
   random: 0,
+  joinAsSpectator: async (roomCode: string) => {
+    await axios.post(`/externalApi/rooms/join`, {
+      roomCode: roomCode,
+      player: {
+        _id: useNextAuthStore.getState().session?.user?._id,
+        name: useNextAuthStore.getState().session?.user?.username,
+        score: 0,
+      },
+      asSpectator: true,
+    });
+  },
   leaveRoom: async (router: Router, userId = null) => {
     const { roomCode } = useRoomStore.getState();
     if (userId) {

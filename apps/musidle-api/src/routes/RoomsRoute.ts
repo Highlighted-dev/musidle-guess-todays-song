@@ -73,6 +73,20 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         .in(roomCode)
         .emit('updatePlayerList', room?.players, room?.spectators);
       return res.json(room);
+    } else if (
+      room.players.some(player => player._id === req.body.player._id) &&
+      req.body.asSpectator
+    ) {
+      await roomModel.updateOne({ roomCode }, { $pull: { players: { _id: req.body.player._id } } });
+      room = await roomModel.findOneAndUpdate(
+        { roomCode },
+        { $push: { spectators: req.body.player } },
+        { new: true },
+      );
+      (req as ICustomRequest).io
+        .in(roomCode)
+        .emit('updatePlayerList', room?.players, room?.spectators);
+      return res.json({ status: 'success', message: 'Player moved to spectators' });
     }
 
     room = await roomModel.findOne({ roomCode });

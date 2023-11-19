@@ -36,6 +36,7 @@ export interface IRoomStore {
   setSelectMode: (renderGame: boolean) => void;
   turnChangeDialogOpen: boolean;
   setTurnChangeDialogOpen: (turnChangeDialogOpen: boolean) => void;
+  joinAsSpectator: (roomCode: string) => Promise<void>;
   leaveRoom: (router: Router, userId: string | null = null) => void;
   startGame: () => Promise<void>;
   updatePlayerScore: (points: number, player: IPlayer) => void;

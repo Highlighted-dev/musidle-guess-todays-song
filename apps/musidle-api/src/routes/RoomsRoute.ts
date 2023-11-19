@@ -217,7 +217,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
     await axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
       roomCode,
       playerId,
-      score,
+      score: isAnswerCorrect ? score : 0,
     });
 
     return res.status(200).json({

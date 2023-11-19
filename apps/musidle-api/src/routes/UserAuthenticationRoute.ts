@@ -1,4 +1,4 @@
-import express, { Request, Response, Router } from 'express';
+import express, { NextFunction, Request, Response, Router } from 'express';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
@@ -144,30 +144,34 @@ router.post('/register', jsonParser, async (req: Request, res: Response) => {
   });
 });
 
-router.post('/activate/', jsonParser, async (req: Request, res: Response) => {
-  if (!req.body.id || !req.body.token)
-    return res.status(400).json({ status: 'error', message: 'Bad request' });
-  const user = await userModel.findOne({
-    _id: req.body.id,
-  });
-
-  if (!user)
-    return res
-      .status(400)
-      .json({ status: 'error', message: 'Couldnt find user with this id in database' });
-  if (user.activated)
-    return res.status(200).json({ status: 'success', message: 'Account is already activated.' });
-  if (user.token !== req.body.token)
-    return res.status(400).json({ status: 'error', message: 'Token is wrong.' });
-  await userModel.updateOne(
-    {
+router.post('/activate/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.body.id || !req.body.token)
+      return res.status(400).json({ status: 'error', message: 'Bad request' });
+    const user = await userModel.findOne({
       _id: req.body.id,
-    },
-    {
-      activated: true,
-    },
-  );
-  res.status(200).json({ status: 'success', message: 'Account activated succsefully' });
+    });
+
+    if (!user)
+      return res
+        .status(400)
+        .json({ status: 'error', message: 'Couldnt find user with this id in database' });
+    if (user.activated)
+      return res.status(200).json({ status: 'success', message: 'Account is already activated.' });
+    if (user.token !== req.body.token)
+      return res.status(400).json({ status: 'error', message: 'Token is wrong.' });
+    await userModel.updateOne(
+      {
+        _id: req.body.id,
+      },
+      {
+        activated: true,
+      },
+    );
+    res.status(200).json({ status: 'success', message: 'Account activated succsefully' });
+  } catch (e) {
+    next(e);
+  }
 });
 
 export default router;

@@ -25,6 +25,8 @@ export default function Verify({
   useEffect(() => {
     if (response.status === 'success') {
       updateSession();
+    } else if (response.status === 'error') {
+      setLoading(false);
     }
   }, [response]);
 

@@ -105,38 +105,14 @@ export const useRoomStore = create<IRoomStore>(set => ({
   },
   handleTurnChange: async () => {
     if (!useRoomStore.getState().currentPlayer) return;
-    await axios.post(`/externalApi/rooms/turnChange`, {
-      roomCode: useRoomStore.getState().roomCode,
-      songId: useAudioStore.getState().songId,
-    });
+    const socket = useSocketStore.getState().socket;
+    socket?.emit('turnChange', useRoomStore.getState().roomCode, useAudioStore.getState().songId);
   },
 
   handleChooseCategory: async (songId, phase = 1, socket = null) => {
     if (!socket) socket = useSocketStore.getState().socket;
-    const { setAudio } = useAudioStore.getState();
-    const { setSelectMode, roomCode } = useRoomStore.getState();
-    const song: string = await axios
-      .post(`/externalApi/songs/chooseSong`, {
-        roomCode: roomCode,
-        songId: songId,
-      })
-      .then(res => {
-        return res.data.data;
-      });
-    socket?.emit('chooseSong', song, roomCode);
-    if (phase == 3 && songId != 'songId') useAudioStore.getState().audio?.pause();
-    useAudioStore.setState({ songId: song });
-    setAudio(new Audio(`/music/${song}.mp3`));
-    const audio = useAudioStore.getState().audio;
-    if (audio) {
-      audio.volume = useAudioStore.getState().volume;
-    }
-    if (phase != 3) {
-      setSelectMode(true);
-      return song;
-    }
-    useRoomStore.getState().setIsInLobby(false);
-    return song;
+    const { roomCode } = useRoomStore.getState();
+    socket?.emit('chooseSong', songId, roomCode, phase);
   },
   async updateSettings(maxRoundsPhaseOne, maxRoundsPhaseTwo, maxTimer) {
     if (

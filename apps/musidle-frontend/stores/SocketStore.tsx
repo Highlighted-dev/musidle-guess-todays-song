@@ -49,17 +49,20 @@ useSocketStore.subscribe(async ({ socket }) => {
     socket.on('skip', (time: number) => {
       useAudioStore.getState().setTime(time);
     });
-    socket.on('chooseSong', (songId: string) => {
+    socket.on('chooseSong', (songId: string, phase: number) => {
       const { setAudio, setSongId } = useAudioStore.getState();
       const setSelectMode = useRoomStore.getState().setSelectMode;
-
-      const audio = typeof Audio != 'undefined' ? new Audio(`/music/${songId}.mp3`) : null;
+      if (phase == 3) useAudioStore.getState().audio?.pause();
       setSongId(songId);
-      setAudio(audio);
+      setAudio(new Audio(`/music/${songId}.mp3`));
+      const audio = typeof Audio != 'undefined' ? new Audio(`/music/${songId}.mp3`) : null;
       if (audio) {
         audio.volume = useAudioStore.getState().volume;
       }
-      setSelectMode(true);
+      if (phase != 3) {
+        setSelectMode(true);
+      }
+      useRoomStore.getState().setIsInLobby(false);
     });
     socket.on('handlePlay', () => {
       useAudioStore.getState().handlePlay();

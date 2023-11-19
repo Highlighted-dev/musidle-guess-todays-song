@@ -106,7 +106,6 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
   },
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;
-    console.log('getPossibleSongAnswers', query);
 
     const response = await fetch(
       `${useSocketStore.getState().url}/externalApi/track/search/${query}`,

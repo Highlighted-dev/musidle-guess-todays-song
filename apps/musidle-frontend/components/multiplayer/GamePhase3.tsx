@@ -26,7 +26,6 @@ function GamePhase3() {
   const [open, setOpen] = useState(false);
 
   const handleTogglePress = (finalSongId: string) => {
-    console.log(possibleSongs.find(song => song.songId == finalSongId)?.completed, finalSongId);
     if (possibleSongs.find(song => song.songId == finalSongId)?.completed) return;
     handleChooseCategory(finalSongId, 3);
     for (let i = 1; i <= 6; i++) {

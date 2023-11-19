@@ -114,12 +114,20 @@ io.on('connection', socket => {
     }
     socket.join(roomCode);
   });
-  socket.on('chooseSong', async (songId: string, roomCode) => {
+  socket.on('chooseSong', async (songId: string, roomCode, phase) => {
+    const song: string = await axios
+      .post(`${apiUrl}/externalApi/songs/chooseSong`, {
+        roomCode: roomCode,
+        songId: songId,
+      })
+      .then(res => {
+        return res.data.data;
+      });
     await roomModel.updateOne(
       { roomCode: roomCode },
-      { isInSelectMode: songId.includes('final') ? true : false, songId: songId },
+      { isInSelectMode: song.includes('final') ? true : false, songId: song },
     );
-    socket.to(roomCode).emit('chooseSong', songId);
+    io.to(roomCode).emit('chooseSong', song, phase);
   });
   socket.on('handlePlay', async roomCode => {
     const room = await roomModel.findOne({ roomCode: roomCode });
@@ -137,6 +145,12 @@ io.on('connection', socket => {
   });
   socket.on('answerSubmit', (score, player, answer, roomCode) => {
     socket.to(roomCode).emit('answerSubmit', score, player, answer);
+  });
+  socket.on('turnChange', async (roomCode, songId) => {
+    await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
+      roomCode: roomCode,
+      songId: songId,
+    });
   });
   socket.on('changeSongToCompleted', async (roomCode, songId) => {
     await roomModel.updateOne(

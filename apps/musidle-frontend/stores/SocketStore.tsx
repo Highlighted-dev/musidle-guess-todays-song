@@ -131,13 +131,23 @@ useSocketStore.subscribe(async ({ socket }) => {
     socket.on('timerUpdate', (timer: number) => {
       useTimerStore.getState().setTimer(timer);
     });
-    socket.on('changeSongToCompleted', (songId: string) => {
-      useAnswerStore.getState().revealArtist(songId);
-      setTimeout(() => {
-        useAudioStore.getState().setSongId(songId);
-        useAnswerStore.getState().changeSongToCompleted(songId);
-      }, 3000);
-    });
+    socket.on(
+      'changeSongToCompleted',
+      (songId: string, answer: string, score: number, player: IPlayer) => {
+        useAnswerStore.getState().revealArtist(songId);
+        // Basically, if this is final round, we don't want to change the song and have the player wait for 3 seconds. The timeout is only for phase 2
+        if (answer) {
+          useRoomStore.getState().updatePlayerScore(score, player);
+          useAnswerStore.getState().setAnswer(answer);
+          useAnswerStore.getState().changeSongToCompleted(songId);
+          return;
+        }
+        setTimeout(() => {
+          useAudioStore.getState().setSongId(songId);
+          useAnswerStore.getState().changeSongToCompleted(songId);
+        }, 3000);
+      },
+    );
     socket.on('voteForTurnSkip', () => {
       useRoomStore.getState().votesForTurnSkip++;
     });

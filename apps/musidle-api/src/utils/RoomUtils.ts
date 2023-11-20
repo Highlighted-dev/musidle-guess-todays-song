@@ -44,7 +44,6 @@ export function getNextPlayer(players: IPlayer[], currentPlayer: IPlayer | null)
 export async function updateRoomAfterTurnChange(
   roomCode: string,
   currentPlayer: IPlayer,
-  songId: string,
   room: IRoom,
   req: Request,
 ) {
@@ -55,11 +54,7 @@ export async function updateRoomAfterTurnChange(
     timer: room.maxTimer,
   };
 
-  if (songId) {
-    update.$set = { 'songs.$.completed': true };
-  }
-
-  await roomModel.updateOne({ roomCode: roomCode, 'songs.songId': songId }, update);
+  await roomModel.updateOne({ roomCode: roomCode }, update);
   (req as ICustomRequest).io.in(roomCode).emit('turnChange', currentPlayer);
 }
 

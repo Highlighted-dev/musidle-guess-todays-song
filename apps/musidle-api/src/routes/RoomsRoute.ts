@@ -172,7 +172,7 @@ router.post('/start', jsonParser, async (req: Request, res: Response, next: Next
 
 router.post('/turnChange', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { roomCode, songId } = req.body;
+    const { roomCode } = req.body;
 
     if (!roomCode) return res.status(400).json({ status: 'error', message: 'Missing parameters' });
 
@@ -193,7 +193,7 @@ router.post('/turnChange', jsonParser, async (req: Request, res: Response, next:
       (req as ICustomRequest).io.in(roomCode).emit('updatePlayerList', newPlayers, spectators);
     }
 
-    await updateRoomAfterTurnChange(roomCode, currentPlayer, songId, room, req);
+    await updateRoomAfterTurnChange(roomCode, currentPlayer, room, req);
 
     return res.status(200).json({ status: 'success', message: 'Turn changed' });
   } catch (error) {
@@ -212,6 +212,16 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
 
     const response = await axios.get(`${apiUrl}/externalApi/songs/${songId}`);
     const correctAnswer = response.data.data;
+
+    await roomModel.updateOne(
+      {
+        roomCode: roomCode,
+        'songs.songId': songId,
+      },
+      {
+        $set: { 'songs.$.completed': true },
+      },
+    );
 
     if (category) {
       await roomModel.findOneAndUpdate(
@@ -233,6 +243,23 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
       playerId,
       score: isAnswerCorrect ? score : 0,
     });
+
+    if (songId.includes('final')) {
+      //Check if all song with category 'final' are completed
+      await roomModel.findOne({ roomCode: roomCode }).then(async room => {
+        const songs = room?.songs.filter(
+          song => song.category === 'final' && song.completed === true,
+        );
+        if (songs?.length === 6) {
+          //If all songs with category 'final' are completed, then add +1 to round
+          await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
+            roomCode: roomCode,
+            songId: songId,
+          });
+          return res.status(200);
+        }
+      });
+    }
 
     return res.status(200).json({
       status: 'success',

@@ -54,6 +54,9 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
             'changeSongToCompleted',
             useRoomStore.getState().roomCode,
             useAudioStore.getState().songId,
+            res.answer,
+            res.score,
+            currentPlayer,
           );
           changeSongToCompleted(useAudioStore.getState().songId);
         });

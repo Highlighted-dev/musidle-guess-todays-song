@@ -22,7 +22,7 @@ function GameEndScreen() {
             {players.map((player, index) => (
               <div className="flex justify-between" key={index}>
                 <Label
-                  className={currentPlayer?._id == player._id ? 'text-green-600 w-24' : 'w-24'}
+                  className={currentPlayer?._id == player._id ? 'text-green-600 w-24' : 'w-28'}
                 >
                   {player.name}
                 </Label>
@@ -31,10 +31,8 @@ function GameEndScreen() {
             ))}
             {spectators.map((spectator, index) => (
               <div className="flex justify-between" key={index}>
-                <div>
-                  <Label>{spectator.name}</Label>
-                  <Label>{spectator.score}</Label>
-                </div>
+                <Label className="w-28">{spectator.name}</Label>
+                <Label>{spectator.score}</Label>
               </div>
             ))}
           </div>

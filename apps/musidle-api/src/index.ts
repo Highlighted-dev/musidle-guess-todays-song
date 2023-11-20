@@ -123,6 +123,7 @@ io.on('connection', socket => {
       .then(res => {
         return res.data.data;
       });
+
     await roomModel.updateOne(
       { roomCode: roomCode },
       { isInSelectMode: song.includes('final') ? true : false, songId: song },
@@ -152,34 +153,8 @@ io.on('connection', socket => {
       songId: songId,
     });
   });
-  socket.on('changeSongToCompleted', async (roomCode, songId) => {
-    await roomModel.updateOne(
-      {
-        roomCode: roomCode,
-        'songs.songId': songId,
-      },
-      {
-        $set: { 'songs.$.completed': true },
-      },
-    );
-
-    if (songId.includes('final')) {
-      //Check if all song with category 'final' are completed
-      await roomModel.findOne({ roomCode: roomCode }).then(async room => {
-        const songs = room?.songs.filter(
-          song => song.category === 'final' && song.completed === true,
-        );
-        if (songs?.length === 6) {
-          //If all songs with category 'final' are completed, then add +1 to round
-          await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
-            roomCode: roomCode,
-            songId: songId,
-          });
-          return;
-        }
-      });
-    }
-    socket.to(roomCode).emit('changeSongToCompleted', songId);
+  socket.on('changeSongToCompleted', async (roomCode, songId, answer, score, currentPlayer) => {
+    socket.to(roomCode).emit('changeSongToCompleted', songId, answer, score, currentPlayer);
   });
   socket.on('voteForTurnSkip', async (roomCode, playerId, songId) => {
     if (!roomCode) return;

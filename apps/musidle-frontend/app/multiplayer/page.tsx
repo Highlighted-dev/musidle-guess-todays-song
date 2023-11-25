@@ -1,5 +1,6 @@
 import { IRoom } from '@/@types/Rooms';
 import JoinRoomButton from '@/components/buttons/CreateRoomButton';
+import RefreshRooms from '@/components/multiplayer/RefreshRooms';
 import NoRooms from '@/components/NoRooms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -23,36 +24,39 @@ export default async function Page() {
   const rooms: IRoom[] = await getRooms();
 
   return (
-    <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full">
-      <CardHeader className=" text-center">
-        <CardTitle>Choose Lobby</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col h-full w-full">
-        <div className="h-[92%]">
-          {rooms?.length ? (
-            rooms.map((room: IRoom, index: number) => (
-              <div key={index}>
-                <div className=" w-full h-[15%] flex justify-between p-4">
-                  <Label className="text-center flex justify-center items-center">
-                    {room.roomCode}
-                  </Label>
-                  <div>
-                    <Label className="text-center pr-4">Players: {room.players.length}/8</Label>
-                    <JoinRoomButton roomCode={room.roomCode} />
+    <>
+      <RefreshRooms />
+      <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full">
+        <CardHeader className=" text-center">
+          <CardTitle>Choose Lobby</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col h-full w-full">
+          <div className="h-[92%]">
+            {rooms?.length ? (
+              rooms.map((room: IRoom, index: number) => (
+                <div key={index}>
+                  <div className=" w-full h-[15%] flex justify-between p-4">
+                    <Label className="text-center flex justify-center items-center">
+                      {room.roomCode}
+                    </Label>
+                    <div>
+                      <Label className="text-center pr-4">Players: {room.players.length}/8</Label>
+                      <JoinRoomButton roomCode={room.roomCode} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <NoRooms />
-          )}
-        </div>
-        {rooms?.length ? (
-          <div className="flex justify-end items-center p-3 h-[8%]">
-            <JoinRoomButton />
+              ))
+            ) : (
+              <NoRooms />
+            )}
           </div>
-        ) : null}
-      </CardContent>
-    </Card>
+          {rooms?.length ? (
+            <div className="flex justify-end items-center p-3 h-[8%]">
+              <JoinRoomButton />
+            </div>
+          ) : null}
+        </CardContent>
+      </Card>
+    </>
   );
 }

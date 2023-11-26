@@ -59,7 +59,6 @@ export const useAudioStore = create<IAudioStore>(set => ({
     useAudioStore.getState().setAudioTime(useAudioStore.getState().audio!.currentTime);
   },
   handleSkip: () => {
-    // let temporary_time: number = useAudioStore.getState().time;
     switch (useAudioStore.getState().time) {
       case 1000:
         useAudioStore.setState({ time: 3000 });
@@ -75,19 +74,23 @@ export const useAudioStore = create<IAudioStore>(set => ({
       default:
         useAudioStore.setState({ time: 1000 });
     }
-    useSocketStore
-      .getState()
-      .socket?.emit('skip', useAudioStore.getState().time, useRoomStore.getState().roomCode);
+    if (useSocketStore.getState().socket)
+      useSocketStore
+        .getState()
+        .socket!.emit('skip', useAudioStore.getState().time, useRoomStore.getState().roomCode);
   },
   handlePlay: async () => {
     const { audio } = useAudioStore.getState();
     const { maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
     const session = useNextAuthStore.getState().session;
     if (!audio) return;
-    if (useRoomStore.getState().currentPlayer?._id == session?.user._id) {
+    if (
+      useRoomStore.getState().currentPlayer?._id == session?.user._id &&
+      useSocketStore.getState().socket
+    ) {
       useSocketStore
         .getState()
-        .socket?.emit(
+        .socket!.emit(
           'handlePlay',
           useRoomStore.getState().roomCode,
           useTimerStore.getState().timer,

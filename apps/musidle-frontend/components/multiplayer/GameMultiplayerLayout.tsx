@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import {
+  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -11,7 +12,6 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
 import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
@@ -70,8 +70,8 @@ function GameMultiplayerLayout() {
         </div>
       </CardHeader>
       <CardContent className="h-full">
-        <Alert className="flex justify-center items-center h-full">
-          <AlertTitle className="h-full flex flex-col">
+        <Card className="flex justify-center items-center h-full p-4">
+          <CardContent className="h-full flex flex-col">
             <div className="h-1/2">
               <div className="text-center py-4">
                 <Slider
@@ -100,7 +100,7 @@ function GameMultiplayerLayout() {
                   className="min-w-[80px]"
                   disabled={currentPlayer?._id != user?._id}
                 >
-                  Play / Pause
+                  {!audio || audio.paused ? 'Play' : 'Pause'}
                 </Button>
               </div>
             </div>
@@ -117,7 +117,7 @@ function GameMultiplayerLayout() {
                       variant="outline"
                       role="combobox"
                       aria-expanded={open}
-                      className="w-[250px] justify-between"
+                      className="w-[250px] justify-between whitespace-normal h-auto"
                       disabled={currentPlayer?._id != user?._id}
                     >
                       {value
@@ -169,14 +169,14 @@ function GameMultiplayerLayout() {
                 </div>
               </div>
             </div>
-          </AlertTitle>
-        </Alert>
+          </CardContent>
+        </Card>
       </CardContent>
       <CardFooter className="flex justify-between text-center">
         <Button
-          variant="ghost"
+          variant={'outline'}
           onClick={() => handleSkip()}
-          className="w-[10%] min-w-[50px]"
+          className="w-[12%] min-w-[130px]"
           disabled={currentPlayer?._id != user?._id}
         >
           Change stage
@@ -199,8 +199,8 @@ function GameMultiplayerLayout() {
           }}
           className={
             currentPlayer?._id != user?._id || value === ''
-              ? 'pointer-events-none w-[9%] min-w-[50px] opacity-50'
-              : 'w-[9%] min-w-[50px'
+              ? 'pointer-events-none w-[9%] min-w-[130px] opacity-50'
+              : 'w-[9%] min-w-[130px]'
           }
         >
           Submit

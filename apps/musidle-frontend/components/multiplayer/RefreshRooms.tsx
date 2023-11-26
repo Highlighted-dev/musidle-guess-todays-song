@@ -17,5 +17,5 @@ export default function RefreshRooms() {
     };
   }, []);
 
-  return <></>;
+  return null;
 }

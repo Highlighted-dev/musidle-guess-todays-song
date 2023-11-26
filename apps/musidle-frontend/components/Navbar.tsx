@@ -40,6 +40,17 @@ function Navbar() {
       title: 'Musidle',
       href: '/',
       description:
+        'Our homepage! Not much going out there currently though, but you can check it out!',
+    },
+    {
+      title: 'Musidle Wiki (COMING SOON)',
+      href: '/',
+      description: 'Learn more about music and how to play it. Coming soon!',
+    },
+    {
+      title: 'Musidle Singleplayer',
+      href: '/singleplayer',
+      description:
         'Wordle-like game, but about guessing top music hits. You can only play once a day!',
     },
     {
@@ -47,16 +58,6 @@ function Navbar() {
       href: '/multiplayer',
       description:
         'Ever wanted to play "Guess the song" type of game with your friends? Join a room and try it out!',
-    },
-    {
-      title: 'Musidle Wiki (COMING SOON)',
-      href: '/',
-      description: 'Learn more about music and how to play it.',
-    },
-    {
-      title: '???',
-      href: '/',
-      description: 'Coming soon!',
     },
   ];
 

@@ -25,10 +25,14 @@ interface IAudioStore {
 
 export const useAudioStore = create<IAudioStore>(set => ({
   audio: null,
-  setAudio: (audio: HTMLAudioElement | null) =>
+  setAudio: (audio: HTMLAudioElement | null) => {
+    if (audio) {
+      audio.volume = useAudioStore.getState().volume;
+    }
     set(() => ({
       audio: audio,
-    })),
+    }));
+  },
   time: 1000,
   setTime: (time: number) =>
     set(() => ({

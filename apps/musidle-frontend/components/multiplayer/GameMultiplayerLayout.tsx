@@ -1,7 +1,5 @@
 'use client';
 import { useState } from 'react';
-import { AiOutlineCheck } from 'react-icons/ai';
-import { LuChevronsUpDown } from 'react-icons/lu';
 import {
   Card,
   CardContent,
@@ -14,27 +12,21 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
-import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useAudioStore } from '@/stores/AudioStore';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 import { useSession } from 'next-auth/react';
+import AnswerSelector from '../AnswerSelector';
+import AudioProgress from '../AudioProgress';
+import VolumeSlider from '../VolumeSlider';
 function GameMultiplayerLayout() {
   const user = useSession().data?.user;
   const { timer } = useTimerStore();
-  const {
-    value,
-    handleValueChange,
-    possibleAnswers,
-    handleAnswerSubmit,
-    getPossibleSongAnswers,
-    possibleSongs,
-  } = useAnswerStore();
+  const { value, handleAnswerSubmit, possibleSongs } = useAnswerStore();
   const { currentPlayer } = useRoomStore();
-  const { audio, time, audioTime, handleSkip, handlePlay, songId } = useAudioStore();
+  const { audio, time, handleSkip, handlePlay, songId } = useAudioStore();
   const [open, setOpen] = useState(false);
 
   return (
@@ -73,25 +65,7 @@ function GameMultiplayerLayout() {
         <Card className="flex justify-center items-center h-full p-4">
           <CardContent className="h-full flex flex-col">
             <div className="h-1/2">
-              <div className="text-center py-4">
-                <Slider
-                  value={[audioTime]}
-                  min={0}
-                  max={time / 1000}
-                  disabled
-                  className={cn('py-4', 'h-4')}
-                />
-                <Label>
-                  {
-                    {
-                      1: 'Stage 1',
-                      3: 'Stage 2',
-                      6: 'Stage 3',
-                      12: 'Stage 4',
-                    }[time / 1000]
-                  }
-                </Label>
-              </div>
+              <AudioProgress maxTime={time} />
               <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
                 <Button
                   onClick={e => {
@@ -111,58 +85,7 @@ function GameMultiplayerLayout() {
                   : null}
               </div>
               <div>
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={open}
-                      className="w-[250px] justify-between whitespace-normal h-auto"
-                      disabled={currentPlayer?._id != user?._id}
-                    >
-                      {value
-                        ? possibleAnswers.find(
-                            song => song.value.toLowerCase() === value.toLowerCase(),
-                          )?.value
-                        : 'Select song...'}
-                      <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0">
-                    <Command shouldFilter={false}>
-                      <CommandInput
-                        placeholder="Search song..."
-                        onValueChange={value => {
-                          getPossibleSongAnswers(value);
-                          handleValueChange(value);
-                        }}
-                        value={value}
-                      />
-
-                      <CommandGroup>
-                        {possibleAnswers.map(song => (
-                          <CommandItem
-                            key={song.key}
-                            onSelect={currentValue => {
-                              handleValueChange(currentValue === value ? '' : currentValue);
-                              setOpen(false);
-                            }}
-                          >
-                            <AiOutlineCheck
-                              className={cn(
-                                'mr-2 h-4 w-4',
-                                value.toLowerCase() == song.value.toLowerCase()
-                                  ? 'opacity-100'
-                                  : 'opacity-0',
-                              )}
-                            />
-                            {song.value}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <AnswerSelector open={open} setOpen={setOpen} />
 
                 <div className="p-2 flex justify-center items-center">
                   <Label className="text-center">{timer}s</Label>
@@ -181,17 +104,7 @@ function GameMultiplayerLayout() {
         >
           Change stage
         </Button>
-        <div className="w-1/4 text-center">
-          <Slider
-            onValueChange={value => (audio ? (audio.volume = value[0] / 100) : null)}
-            min={0}
-            max={100}
-            step={1}
-            defaultValue={[useAudioStore.getState().volume * 100]}
-            className={cn('py-4', 'h-4')}
-          />
-          <Label>Volume</Label>
-        </div>
+        <VolumeSlider audio={audio} divClassname={'w-1/4 text-center'} />
         <Button
           variant={'default'}
           onClick={() => {

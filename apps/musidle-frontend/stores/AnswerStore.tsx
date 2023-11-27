@@ -43,7 +43,10 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
   categories: [],
   handleValueChange: async (value: string) => {
     const session = useNextAuthStore.getState().session;
-    if (useRoomStore.getState().currentPlayer?._id == session?.user?._id) {
+    if (
+      useSocketStore.getState().socket &&
+      useRoomStore.getState().currentPlayer?._id == session?.user?._id
+    ) {
       useSocketStore
         .getState()
         .socket?.emit('valueChange', value, useRoomStore.getState().roomCode);

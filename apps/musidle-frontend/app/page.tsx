@@ -18,9 +18,11 @@ export default async function Page() {
                 Challange your music knowledge with new songs every day
               </CardTitle>
               <CardContent className="flex flex-col justify-center items-center">
-                <Button className="w-[250px] m-4" variant={'outline'}>
-                  <Link href={'/singleplayer'}>Singleplayer</Link>
-                </Button>
+                <Link href={'/singleplayer'}>
+                  <Button className="w-[250px] m-4" variant={'outline'}>
+                    Singleplayer
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
             <Card className="flex flex-col justify-center items-center p-8 h-full">
@@ -28,9 +30,11 @@ export default async function Page() {
                 Play with your friends to see who is the real music guru
               </CardTitle>
               <CardContent className="flex flex-col justify-center items-center">
-                <Button className="w-[250px] m-4" variant={'outline'}>
-                  <Link href={'/multiplayer'}>Multiplayer</Link>
-                </Button>
+                <Link href={'/multiplayer'}>
+                  <Button className="w-[250px] m-4" variant={'outline'}>
+                    Multiplayer
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </CardContent>

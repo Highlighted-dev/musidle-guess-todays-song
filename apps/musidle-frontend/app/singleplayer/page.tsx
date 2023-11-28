@@ -1,9 +1,21 @@
-import GameSingleplayerLayout from '@/components/singleplayer/GameSingleplayerLayout';
+import AnswerSelector from '@/components/game-related/AnswerSelector';
+import AudioProgress from '@/components/game-related/AudioProgress';
+import PlayAudioButton from '@/components/buttons/PlayAudioButton';
+import AudioSetter from '@/components/singleplayer/AudioSetter';
+import SingleplayerFooter from '@/components/singleplayer/SingleplayerFooter';
 import { Button } from '@/components/ui/button';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Label } from '@/components/ui/label';
 import React from 'react';
+import GameInstructionsHover from '@/components/game-related/GameInstructionsHover';
 
 export default async function Page() {
   return (
@@ -14,31 +26,28 @@ export default async function Page() {
             v0.8.0
           </Label>
           <CardTitle className="flex justify-center items-center">Musidle Singleplayer</CardTitle>
-          <CardDescription className="w-24">
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <Button variant="link">Instructions</Button>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80">
-                <div className="flex space-x-4">
-                  <div className="space-y-1">
-                    <h4 className="text-base font-semibold">Musidle Multiplayer Instructions</h4>
-                    <p className="text-sm">
-                      There are <label className="font-bold"> 4 stages</label>, each with longer
-                      song time: <label className="font-bold">1 | 3 | 6 | 12 seconds</label>. The
-                      faster you guess, the more points you get. You can play the song in a stage
-                      how many times you want, but there are only
-                      <label className="font-bold"> 35 seconds</label> to make a guess.
-                      <label className="font-bold"> Timer starts after you play the song.</label>
-                    </p>
-                  </div>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
-          </CardDescription>
+          <GameInstructionsHover />
         </div>
       </CardHeader>
-      <GameSingleplayerLayout />
+      <AudioSetter />
+      <CardContent className="h-full">
+        <Card className="flex justify-center items-center h-full p-4">
+          <CardContent className="h-full flex flex-col">
+            <div className="h-1/2">
+              <AudioProgress />
+              <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
+                <PlayAudioButton className="min-w-[80px]" />
+              </div>
+            </div>
+            <div className="h-1/2 flex flex-col justify-center items-center relative">
+              <AnswerSelector />
+            </div>
+          </CardContent>
+        </Card>
+      </CardContent>
+      <CardFooter className="flex justify-between text-center">
+        <SingleplayerFooter />
+      </CardFooter>
     </Card>
   );
 }

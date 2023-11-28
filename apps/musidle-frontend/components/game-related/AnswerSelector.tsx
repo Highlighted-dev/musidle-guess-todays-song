@@ -1,25 +1,20 @@
 'use client';
-import React from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Button } from './ui/button';
+import React, { useState } from 'react';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Button } from '../ui/button';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import { useRoomStore } from '@/stores/RoomStore';
-import { Command, CommandGroup, CommandInput, CommandItem } from './ui/command';
+import { Command, CommandGroup, CommandInput, CommandItem } from '../ui/command';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { useNextAuthStore } from '@/stores/NextAuthStore';
 import { cn } from '@/lib/utils';
 
-export default function AnswerSelector({
-  open,
-  setOpen,
-}: {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function AnswerSelector() {
   const { possibleAnswers, value, handleValueChange, getPossibleSongAnswers } = useAnswerStore();
   const { currentPlayer } = useRoomStore();
   const user = useNextAuthStore.getState().session?.user;
+  const [open, setOpen] = useState(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -32,7 +27,7 @@ export default function AnswerSelector({
         >
           {value
             ? possibleAnswers.find(song => song.value.toLowerCase() === value.toLowerCase())?.value
-            : 'Select song...'}
+            : 'Select answer...'}
           <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

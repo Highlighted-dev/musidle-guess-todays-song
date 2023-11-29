@@ -1,19 +1,10 @@
 'use client';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useAudioStore } from '@/stores/AudioStore';
 import { useAnswerStore } from '@/stores/AnswerStore';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 import { useSession } from 'next-auth/react';
 import AnswerSelector from '../game-related/AnswerSelector';
 import AudioProgress from '../game-related/AudioProgress';

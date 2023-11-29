@@ -48,8 +48,8 @@ function Navbar() {
       description: 'Learn more about music and how to play it. Coming soon!',
     },
     {
-      title: 'Musidle Singleplayer',
-      href: '/singleplayer',
+      title: 'Musidle Daily',
+      href: '/daily',
       description:
         'Wordle-like game, but about guessing top music hits. You can only play once a day!',
     },

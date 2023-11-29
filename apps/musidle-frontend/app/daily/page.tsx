@@ -1,18 +1,9 @@
 import AnswerSelector from '@/components/game-related/AnswerSelector';
 import AudioProgress from '@/components/game-related/AudioProgress';
 import PlayAudioButton from '@/components/buttons/PlayAudioButton';
-import AudioSetter from '@/components/singleplayer/AudioSetter';
-import SingleplayerFooter from '@/components/singleplayer/SingleplayerFooter';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import AudioSetter from '@/components/daily/AudioSetter';
+import SingleplayerFooter from '@/components/daily/SingleplayerFooter';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import React from 'react';
 import GameInstructionsHover from '@/components/game-related/GameInstructionsHover';

@@ -18,9 +18,9 @@ export default async function Page() {
                 Challange your music knowledge with new songs every day
               </CardTitle>
               <CardContent className="flex flex-col justify-center items-center">
-                <Link href={'/singleplayer'}>
+                <Link href={'/daily'}>
                   <Button className="w-[250px] m-4" variant={'outline'}>
-                    Singleplayer
+                    Musidle Daily
                   </Button>
                 </Link>
               </CardContent>
@@ -32,7 +32,7 @@ export default async function Page() {
               <CardContent className="flex flex-col justify-center items-center">
                 <Link href={'/multiplayer'}>
                   <Button className="w-[250px] m-4" variant={'outline'}>
-                    Multiplayer
+                    Musidle Multiplayer
                   </Button>
                 </Link>
               </CardContent>

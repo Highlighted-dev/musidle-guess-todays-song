@@ -9,13 +9,15 @@ export default function GameInstructionsHover() {
         <HoverCardTrigger asChild>
           <Button variant="link">Instructions</Button>
         </HoverCardTrigger>
-        <HoverCardContent className="w-80">
+        <HoverCardContent className="w-96">
           <div className="flex space-x-4">
             <div className="space-y-1">
               <h4 className="text-base font-semibold">Musidle Multiplayer Instructions</h4>
               <p className="text-sm">
-                There are <label className="font-bold"> 4 stages</label>, each with longer song
-                time: <label className="font-bold">1 | 3 | 6 | 12 seconds</label>. The faster you
+                There are <label className="font-bold"> 4 stages</label>, each with longer song time{' '}
+                <label className="font-bold">(1 | 3 | 6 | 12 seconds)</label>. You can change the
+                stage if/anytime you want with{' '}
+                <label className="font-bold">&quot;Change Stage&quot;</label> button. The faster you
                 guess, the more points you get. You can play the song in a stage how many times you
                 want, but there are only
                 <label className="font-bold"> 35 seconds</label> to make a guess.

@@ -7,6 +7,7 @@ const songsSchema = new Schema<ISong>(
     category: { type: String, required: true },
     value: { type: String, required: true },
     artist: { type: String },
+    wasInDaily: { type: Boolean, default: false },
     key: { type: String, required: true },
   },
   { versionKey: false },

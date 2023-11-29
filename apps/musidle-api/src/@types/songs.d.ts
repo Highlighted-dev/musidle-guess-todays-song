@@ -2,8 +2,9 @@ export interface ISong {
   songId: string;
   category: string;
   value: string;
-  key: string;
+  wasInDaily: boolean;
   artist?: string;
+  key: string;
 }
 
 export interface ILastFmSong {

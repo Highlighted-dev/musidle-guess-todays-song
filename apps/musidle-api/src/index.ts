@@ -18,6 +18,7 @@ import roomModel from './models/RoomModel';
 import Timer from './utils/Timer';
 import CategoriesRoute from './routes/CategoriesRoute';
 import { scheduleSongUpdate } from './utils/ScheduleDailySongChange';
+import DailyRoute from './routes/DailyRoute';
 dotenv.config();
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const mongodbUrl =
@@ -223,7 +224,7 @@ const socketMiddleware: ISocketMiddleware = (req, res, next) => {
   req.io = io;
   return next;
 };
-app.use(() => scheduleSongUpdate);
+
 server.on('request', socketMiddleware);
 app.use(cookieParser());
 app.use(cors());
@@ -233,4 +234,6 @@ app.use('/externalApi/auth/', UserAuthenticationRoute);
 app.use('/externalApi/rooms/', RoomsRoute);
 app.use('/externalApi/songs/', AnswersRoute);
 app.use('/externalApi/categories/', CategoriesRoute);
+app.use('/externalApi/daily/', DailyRoute);
+app.use(() => scheduleSongUpdate);
 app.use(errorHandler);

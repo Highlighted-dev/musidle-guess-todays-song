@@ -171,14 +171,4 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
   }
 });
 
-router.get('/daily', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const song = await songModel.findOne({ wasInDaily: false });
-    if (!song) return res.status(404).json({ message: 'Song not found' });
-    return res.json({ song });
-  } catch (error) {
-    next(error);
-  }
-});
-
 export default router;

@@ -8,7 +8,22 @@ import { Label } from '@/components/ui/label';
 import React from 'react';
 import GameInstructionsHover from '@/components/game-related/GameInstructionsHover';
 
+async function getSong() {
+  let url;
+  if (process.env.NODE_ENV === 'development') {
+    url = new URL('http://localhost:4200/externalApi/daily');
+  } else {
+    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/daily`);
+  }
+  const res = await fetch(url, {
+    cache: 'no-store',
+  });
+  const data = await res.json();
+  return data;
+}
+
 export default async function Page() {
+  const { song } = await getSong();
   return (
     <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full">
       <CardHeader className=" text-center">
@@ -20,7 +35,7 @@ export default async function Page() {
           <GameInstructionsHover />
         </div>
       </CardHeader>
-      <AudioSetter />
+      <AudioSetter songId={song.songId} />
       <CardContent className="h-full">
         <Card className="flex justify-center items-center h-full p-4">
           <CardContent className="h-full flex flex-col">

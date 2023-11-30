@@ -7,7 +7,7 @@ import GamePhase2 from './GamePhase2';
 import GamePhase3 from './GamePhase3';
 import GameEndScreen from './GameEndScreen';
 import GameLobby from './GameLobby';
-import TurnChangeDialog from './TurnChangeDialog';
+import TurnChangeDialog from '../game-related/TurnChangeDialog';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function GameController({ params }: any) {

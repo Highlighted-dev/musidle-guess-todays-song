@@ -8,6 +8,10 @@ import { Label } from '@/components/ui/label';
 import React from 'react';
 import GameInstructionsHover from '@/components/game-related/GameInstructionsHover';
 
+export const metadata = {
+  title: 'Musidle Daily',
+};
+
 async function getSong() {
   let url;
   if (process.env.NODE_ENV === 'development') {
@@ -31,7 +35,7 @@ export default async function Page() {
           <Label className=" w-24 font-semibold text-xs flex justify-center items-center">
             v0.8.0
           </Label>
-          <CardTitle className="flex justify-center items-center">Musidle Singleplayer</CardTitle>
+          <CardTitle className="flex justify-center items-center">Musidle Daily</CardTitle>
           <GameInstructionsHover />
         </div>
       </CardHeader>

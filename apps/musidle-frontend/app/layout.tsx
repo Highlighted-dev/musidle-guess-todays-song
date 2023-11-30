@@ -8,6 +8,10 @@ import NextAuthProvider from '@/components/NextAuthProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/route';
 
+export const metadata = {
+  title: 'Musidle',
+};
+
 export async function getNextSession() {
   const session = await getServerSession(authOptions);
   return session;
@@ -17,9 +21,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getNextSession();
   return (
     <html lang="en" className="w-full h-full">
-      <head>
-        <title>Musidle</title>
-      </head>
       <body className="dark h-full w-full flex">
         <NextAuthProvider session={session}>
           <Toaster />

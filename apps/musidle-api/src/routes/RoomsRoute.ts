@@ -204,14 +204,26 @@ router.post('/turnChange', jsonParser, async (req: Request, res: Response, next:
 router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { roomCode, playerId, playerAnswer, songId, time, category } = req.body;
-
-    if (!roomCode || !playerId || !songId || !time)
+    if (!playerId || !songId || !time)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
-
-    Timer(roomCode, 0, (req as ICustomRequest).io).stop();
 
     const response = await axios.get(`${apiUrl}/externalApi/songs/${songId}`);
     const correctAnswer = response.data.data;
+
+    const score = calculateScore(time, songId);
+    const isAnswerCorrect = playerAnswer.toLowerCase().includes(correctAnswer.value.toLowerCase());
+
+    if (!roomCode) {
+      return res.status(200).json({
+        status: 'success',
+        message: isAnswerCorrect ? 'Correct answer' : 'Wrong answer',
+        score: isAnswerCorrect ? score : 0,
+        playerId,
+        answer: correctAnswer.value,
+      });
+    }
+
+    Timer(roomCode, 0, (req as ICustomRequest).io).stop();
 
     await roomModel.updateOne(
       {
@@ -234,9 +246,6 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
     if (!correctAnswer) {
       return res.status(404).json({ status: 'error', message: 'Answer not found' });
     }
-
-    const score = calculateScore(time, songId);
-    const isAnswerCorrect = playerAnswer.toLowerCase().includes(correctAnswer.value.toLowerCase());
 
     await axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
       roomCode,

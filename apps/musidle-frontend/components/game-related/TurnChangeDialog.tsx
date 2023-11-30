@@ -6,7 +6,11 @@ import { Progress } from '../ui/progress';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { useRoomStore } from '@/stores/RoomStore';
 
-export default function TurnChangeDialog() {
+export default function TurnChangeDialog({
+  displayPlayerName = true,
+}: {
+  displayPlayerName?: boolean;
+}) {
   const [progress, setProgress] = React.useState(0);
   const { value, answer, possibleAnswers } = useAnswerStore();
   const { turnChangeDialogOpen, round, currentPlayer } = useRoomStore();
@@ -50,7 +54,9 @@ export default function TurnChangeDialog() {
         </Label>
         <Label className="text-center">The correct answer was: {answer}</Label>
         <br />
-        <h1 className="text-bold text-base">{currentPlayer?.name}&apos;s turn</h1>
+        {displayPlayerName && (
+          <h1 className="text-bold text-base">{currentPlayer?.name}&apos;s turn</h1>
+        )}
         <DialogFooter className="text-center">
           <Progress value={progress} />
         </DialogFooter>

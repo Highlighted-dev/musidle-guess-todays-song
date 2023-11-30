@@ -26,7 +26,7 @@ export default function SingleplayerFooter() {
     <>
       <ChangeStageButton className="w-[12%] min-w-[130px]" />
       <VolumeSlider divClassName={'w-1/4 text-center'} />
-      <SubmitAnswerButton className="w-[12%] min-w-[130px]" disabled={!value || !audio} />
+      <SubmitAnswerButton className="w-[12%] min-w-[130px]" disabled={!value || !audio} daily />
     </>
   );
 }

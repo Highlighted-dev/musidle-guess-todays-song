@@ -20,7 +20,7 @@ export default async function Loading() {
           <Label className=" w-24 font-semibold text-xs flex justify-center items-center">
             v0.8.0
           </Label>
-          <CardTitle className="flex justify-center items-center">Musidle Singleplayer</CardTitle>
+          <CardTitle className="flex justify-center items-center">Musidle Daily</CardTitle>
           <CardDescription className="w-24">
             <HoverCard>
               <HoverCardTrigger asChild>

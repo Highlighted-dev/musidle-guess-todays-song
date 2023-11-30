@@ -5,6 +5,10 @@ import NoRooms from '@/components/NoRooms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 
+export const metadata = {
+  title: 'Musidle Multiplayer',
+};
+
 async function getRooms() {
   let url;
   if (process.env.NODE_ENV === 'development') {

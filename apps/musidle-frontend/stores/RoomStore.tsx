@@ -220,6 +220,7 @@ export function RoomStoreInitializer(data: any) {
     useAudioStore.setState({
       audio: typeof Audio !== 'undefined' ? new Audio(`/music/${roomData.songId}.mp3`) : null,
     });
+    useAudioStore.setState({ time: 1000 });
     const audio = useAudioStore.getState().audio;
     if (audio) {
       audio.volume = useAudioStore.getState().volume;

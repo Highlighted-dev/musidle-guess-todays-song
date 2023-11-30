@@ -53,12 +53,15 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     }
     useAnswerStore.setState({ value: value });
   },
-  handleAnswerSubmit: async () => {
-    const { currentPlayer, roomCode, handleTurnChange } = useRoomStore.getState();
+  handleAnswerSubmit: async (daily = false) => {
+    const { currentPlayer, roomCode, handleTurnChange, setTurnChangeDialogOpen } =
+      useRoomStore.getState();
     const session = useNextAuthStore.getState().session;
     const socket = useSocketStore.getState().socket;
+    const { audio, setAudioTime } = useAudioStore.getState();
+    const { setValue, setAnswer, setPossibleAnswers } = useAnswerStore.getState();
     let category = '';
-    if (!currentPlayer) return;
+    if (!currentPlayer && !daily) return;
     //set completedCategories.category.completed to true
     if (
       useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne &&
@@ -75,7 +78,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         }
       });
     }
-    if (currentPlayer?._id == session?.user?._id) {
+    if (currentPlayer?._id == session?.user?._id || daily) {
       await fetch(`${useSocketStore.getState().url}/externalApi/rooms/checkAnswer`, {
         method: 'POST',
         headers: {
@@ -83,7 +86,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         },
         body: JSON.stringify({
           roomCode: useRoomStore.getState().roomCode,
-          playerId: currentPlayer?._id,
+          playerId: currentPlayer?._id ? currentPlayer._id : session?.user?._id,
           playerAnswer: useAnswerStore.getState().value,
           songId: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,
@@ -92,9 +95,12 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       })
         .then(res => res.json())
         .then(res => {
+          console.log(res);
           useAnswerStore.getState().setAnswer(res.answer || null);
-          useRoomStore.getState().updatePlayerScore(res.score, currentPlayer);
-          socket?.emit('answerSubmit', res.score, currentPlayer, res.answer, roomCode);
+          if (useSocketStore.getState().socket && currentPlayer) {
+            useRoomStore.getState().updatePlayerScore(res.score, currentPlayer);
+            socket?.emit('answerSubmit', res.score, currentPlayer, res.answer, roomCode);
+          }
         })
         .catch(err => {
           console.log(err);
@@ -105,10 +111,25 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     if (useAudioStore.getState().audio?.paused) useAudioStore.getState().audio?.play();
     useAudioStore.getState().setTime(12000);
 
-    const audio = useAudioStore.getState().audio;
     useTimerStore.getState().setTimer(useTimerStore.getState().maxTimer);
     if (audio) audio.volume = 0.05;
     if (currentPlayer && currentPlayer._id === session?.user?._id) handleTurnChange();
+    else if (daily) {
+      setTurnChangeDialogOpen(true);
+      setTimeout(() => {
+        setTurnChangeDialogOpen(false);
+        audio?.pause();
+        setAudioTime(0);
+        setValue('');
+        setAnswer('');
+        setPossibleAnswers([
+          {
+            value: 'Songs will appear here',
+            key: 'no-song',
+          },
+        ]);
+      }, 4000);
+    }
   },
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;

@@ -4,8 +4,8 @@ import songModel from '../models/SongModel';
 export const scheduleSongUpdate = schedule.scheduleJob('0 0 * * *', () => {
   // find song that was in daily and set wasInDaily to false, but exclude polish songs
   songModel.findOneAndUpdate(
-    { wasInDaily: true, category: { $ne: 'polish' } },
-    { wasInDaily: false },
+    { wasInDaily: false, category: { $ne: 'polish' } },
+    { wasInDaily: true },
     { new: true },
     (err, doc) => {
       if (err) {

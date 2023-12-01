@@ -41,7 +41,7 @@ export default async function Page() {
                 <div key={index}>
                   <div className=" w-full h-[15%] flex justify-between p-4">
                     <Label className="text-center flex justify-center items-center">
-                      {room.roomCode}
+                      {room.roomCode.toUpperCase()}
                     </Label>
                     <div>
                       <Label className="text-center pr-4">Players: {room.players.length}/8</Label>

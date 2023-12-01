@@ -95,7 +95,6 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       })
         .then(res => res.json())
         .then(res => {
-          console.log(res);
           useAnswerStore.getState().setAnswer(res.answer || null);
           if (useSocketStore.getState().socket && currentPlayer) {
             useRoomStore.getState().updatePlayerScore(res.score, currentPlayer);

@@ -19,12 +19,12 @@ export default function GameLobby(params: { roomCode: string }) {
 
   return (
     <>
-      <CardHeader className=" text-center h-1/6">
+      <CardHeader className=" text-center h-[15%]">
         <CardTitle>Game lobby</CardTitle>
-        <p>Room: {params.roomCode == 'null' ? roomCode : params.roomCode}</p>
+        <Label className="text-popover-foreground">{roomCode.toUpperCase()}</Label>
       </CardHeader>
-      <CardContent className="flex flex-col h-5/6 w-full">
-        <div className="h-[92%]">
+      <CardContent className="flex flex-col h-[85%] w-full">
+        <div className="h-[90%]">
           <Card className="mb-4">
             <CardHeader className=" text-center">
               <CardTitle>Settings</CardTitle>
@@ -97,7 +97,6 @@ export default function GameLobby(params: { roomCode: string }) {
             </CardContent>
           </Card>
         </div>
-
         <div className="flex justify-between items-center p-4">
           <Button variant={'outline'} onClick={() => leaveRoom(router, user?._id)}>
             Leave game

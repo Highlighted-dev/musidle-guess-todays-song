@@ -12,6 +12,7 @@ import { Router } from 'next/router';
 import dotenv from 'dotenv';
 import { useRef } from 'react';
 import { useNextAuthStore } from './NextAuthStore';
+import { ICategory } from '@/@types/Categories';
 dotenv.config();
 
 export const useRoomStore = create<IRoomStore>(set => ({
@@ -209,7 +210,7 @@ export function RoomStoreInitializer(data: any) {
     useTimerStore.setState({ maxTimer: roomData.maxTimer });
     useAnswerStore.setState({ possibleSongs: roomData.songs });
     // Get all categories that aren't equal to 'final' and 'artists
-    const categories = [...new Set(roomData.songs.map((item: any) => item.category))].filter(
+    const categories = [...new Set(roomData.songs.map((item: ICategory) => item.category))].filter(
       category => category != 'final' && category != 'artists',
     );
 

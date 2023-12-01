@@ -19,9 +19,9 @@ router.get('/:songId', async (req: Request, res: Response, next: NextFunction) =
     const song = await songModel.findOne({ songId: songId });
 
     if (!song) {
-      return res.status(404).json({ message: 'Answer not found', data: null });
+      return res.status(404).json({ message: 'Answer not found', song: null });
     }
-    return res.json({ message: 'Song found', data: song });
+    return res.json({ message: 'Song found', song });
   } catch (error) {
     next(error);
   }
@@ -50,7 +50,7 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
     }
 
     const song = await songModel.create(req.body);
-    return res.json({ message: 'Song created', data: song });
+    return res.json({ message: 'Song created', song });
   } catch (error) {
     next(error);
   }
@@ -59,7 +59,7 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const songs = await songModel.find();
-    return res.json({ message: 'Songs found', data: songs });
+    return res.json({ message: 'Songs found', songs });
   } catch (error) {
     next(error);
   }
@@ -69,7 +69,7 @@ router.get('/category/:category', async (req: Request, res: Response, next: Next
   try {
     const category = req.params.category;
     const songs = await songModel.find({ category: category });
-    return res.json({ message: 'Songs found', data: songs });
+    return res.json({ message: 'Songs found', songs });
   } catch (error) {
     next(error);
   }
@@ -84,7 +84,7 @@ router.delete('/:songId', async (req: Request, res: Response, next: NextFunction
       return res.status(404).json({ message: 'Answer not found' });
     }
 
-    return res.json({ message: 'Answer deleted', data: answer });
+    return res.json({ message: 'Answer deleted', answer });
   } catch (error) {
     next(error);
   }
@@ -97,17 +97,17 @@ router.post(
     try {
       const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
       const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
-      const songs = await axios.get(`${apiUrl}/externalApi/songs`).then(res => res.data);
+      const songs = await axios.get(`${apiUrl}/externalApi/songs`).then(res => res.data.songs);
 
       const categories = await categoryModel
         .find()
         .then(res => res.map((category: { category: string }) => category.category));
 
       //filter songs by category
-      const songsPhaseOne = songs.data.filter((song: ISong) => categories.includes(song.category));
+      const songsPhaseOne = songs.filter((song: ISong) => categories.includes(song.category));
 
-      const songsPhaseTwo = songs.data.filter((song: ISong) => song.category === 'artists');
-      const songsPhaseThree = songs.data.filter((song: ISong) => song.category === 'final');
+      const songsPhaseTwo = songs.filter((song: ISong) => song.category === 'artists');
+      const songsPhaseThree = songs.filter((song: ISong) => song.category === 'final');
 
       const shuffle = (array: ISong[]) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -119,13 +119,13 @@ router.post(
       shuffle(songsPhaseOne);
       shuffle(songsPhaseTwo);
 
-      const possibleSongs = {
+      return res.json({
+        message: 'Songs found',
         songs: songsPhaseOne
           .slice(0, maxRoundsPhaseOne)
           .concat(songsPhaseTwo.slice(0, maxRoundsPhaseTwo))
           .concat(songsPhaseThree),
-      };
-      return res.json({ message: 'Songs found', data: possibleSongs });
+      });
     } catch (error) {
       next(error);
     }
@@ -148,10 +148,10 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
     //get all songs with category == songId in songs array
     if (songId.includes('final')) {
       const finalSongs = songs.filter((song: ISong) => song.songId === songId);
-      return res.json({ message: 'Song found', data: finalSongs[0].songId });
+      return res.json({ message: 'Song found', songId: finalSongs[0].songId });
     } else if (songId.includes('artist')) {
       const artistSong = songs.filter((song: ISong) => song.songId === songId);
-      return res.json({ message: 'Song found', data: artistSong[0].songId });
+      return res.json({ message: 'Song found', songId: artistSong[0].songId });
     }
 
     const songsWithCategory = songs.filter((song: ISong) => song.category === songId);
@@ -165,7 +165,7 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
       }
     };
     if (!song()) return res.status(404).json({ message: 'Song not found' });
-    return res.json({ message: 'Song found', data: song().songId });
+    return res.json({ message: 'Song found', songId: song().songId });
   } catch (error) {
     next(error);
   }

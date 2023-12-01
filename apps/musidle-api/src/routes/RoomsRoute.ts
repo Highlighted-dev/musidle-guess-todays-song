@@ -58,7 +58,7 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         round: 1,
         isInGameLobby: true,
         isInSelectMode: true,
-        songs: songs.data.songs,
+        songs: songs.songs,
       });
     } else if (
       !room.players.some(player => player._id === req.body.player._id) &&
@@ -208,7 +208,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
 
     const response = await axios.get(`${apiUrl}/externalApi/songs/${songId}`);
-    const correctAnswer = response.data.data;
+    const correctAnswer = response.data.song;
 
     const score = calculateScore(time, songId);
     const isAnswerCorrect = playerAnswer.toLowerCase().includes(correctAnswer.value.toLowerCase());

@@ -60,6 +60,8 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
         isInSelectMode: true,
         songs: songs.songs,
       });
+    } else if (room.players.length >= 8) {
+      return res.status(400).json({ status: 'error', message: 'Room is full' });
     } else if (
       !room.players.some(player => player._id === req.body.player._id) &&
       !room.spectators.some(spectator => spectator._id === req.body.player._id)

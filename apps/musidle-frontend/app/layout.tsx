@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import NextAuthProvider from '@/components/NextAuthProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/route';
+import { TriggerCookieSheet } from '@/components/CookiesSheet';
 
 export const metadata = {
   title: 'Musidle',
@@ -24,6 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="dark h-full w-full flex">
         <NextAuthProvider session={session}>
           <Toaster />
+          <TriggerCookieSheet />
           <div className="flex flex-col w-full h-full">
             <div className="flex w-full h-[50px] p-5 z-10 relative justify-center items-center">
               <Navbar />

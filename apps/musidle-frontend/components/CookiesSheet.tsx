@@ -10,6 +10,7 @@ import {
 } from './ui/sheet';
 import { Button } from './ui/button';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 function setCookie(name: string, value: string, days: number) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
@@ -17,6 +18,7 @@ function setCookie(name: string, value: string, days: number) {
 }
 
 export function CookiesSheet() {
+  const router = useRouter();
   return (
     <Sheet open>
       <SheetContent side={'bottom'}>
@@ -27,19 +29,26 @@ export function CookiesSheet() {
             properly (e.g. to remember your login).
           </SheetDescription>
         </SheetHeader>
-        <SheetFooter>
+        <SheetFooter className="p-4">
           <Button
             type={'submit'}
             onClick={() => {
               setCookie('acceptedCookies', 'true', 1000);
               window.location.reload();
             }}
+            className="m-1"
           >
             Accept
           </Button>
-          <Link href={'https://www.google.com'}>
-            <Button variant={'destructive'}>Decline</Button>
-          </Link>
+          <Button
+            variant={'destructive'}
+            onClick={() => {
+              router.push('https://www.google.com');
+            }}
+            className="m-1"
+          >
+            Decline
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

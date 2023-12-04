@@ -3,7 +3,6 @@ import React from 'react';
 import { Slider } from '../ui/slider';
 import { useAudioStore } from '@/stores/AudioStore';
 import { Label } from '../ui/label';
-import { Skeleton } from '../ui/skeleton';
 
 export default function VolumeSlider({
   divClassName,

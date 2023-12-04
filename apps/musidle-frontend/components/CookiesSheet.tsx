@@ -10,6 +10,7 @@ import {
 } from './ui/sheet';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import { getCookie } from 'cookies-next';
 
 function setCookie(name: string, value: string, days: number) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
@@ -57,9 +58,10 @@ export function CookiesSheet() {
 export function TriggerCookieSheet() {
   const [showCookieSheet, setShowCookieSheet] = React.useState(false);
   useEffect(() => {
-    if (document.cookie.includes('acceptedCookies')) {
+    if (getCookie('acceptedCookies') === 'true') {
       return;
     }
+
     setShowCookieSheet(true);
   }, []);
   return showCookieSheet && <CookiesSheet />;

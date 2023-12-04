@@ -3,10 +3,8 @@ import AudioProgress from '@/components/game-related/AudioProgress';
 import PlayAudioButton from '@/components/buttons/PlayAudioButton';
 import AudioSetter from '@/components/daily/AudioSetter';
 import SingleplayerFooter from '@/components/daily/SingleplayerFooter';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import React from 'react';
-import GameInstructionsHover from '@/components/game-related/GameInstructionsHover';
 import { AlreadyPlayed } from '@/components/daily/AlreadyPlayed';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
@@ -33,16 +31,7 @@ export default async function Page() {
   const { song } = await getSong();
 
   return (
-    <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full">
-      <CardHeader className=" text-center">
-        <div className="flex justify-between items-center">
-          <Label className=" w-24 font-semibold text-xs flex justify-center items-center">
-            v0.8.0
-          </Label>
-          <CardTitle className="flex justify-center items-center">Musidle Daily</CardTitle>
-          <GameInstructionsHover />
-        </div>
-      </CardHeader>
+    <>
       <CardContent className="h-full">
         <Card className="flex justify-center items-center h-full p-4">
           {getCookie('playedDaily', { cookies }) === 'true' ? (
@@ -68,6 +57,6 @@ export default async function Page() {
       <CardFooter className="flex justify-between text-center">
         <SingleplayerFooter />
       </CardFooter>
-    </Card>
+    </>
   );
 }

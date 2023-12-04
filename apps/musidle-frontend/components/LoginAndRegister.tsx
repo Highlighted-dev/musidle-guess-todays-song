@@ -25,11 +25,13 @@ import axios from 'axios';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { IoIosArrowDown } from 'react-icons/io';
+import Link from 'next/link';
 
 function LoginAndRegister() {
   const { data } = useSession();
@@ -242,12 +244,33 @@ function LoginAndRegister() {
       ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost">Profile</Button>
+            <Button variant="ghost">
+              <Label className="flex flex-row">
+                {data?.user.username}
+                <IoIosArrowDown className="ml-2" />
+              </Label>
+            </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel className="text-center">{data?.user?.username}</DropdownMenuLabel>
+          <DropdownMenuContent className="font-inter">
+            <DropdownMenuGroup>
+              <Link href="/profile">
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+              </Link>
+              <Link href="/profile/settings">
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+              </Link>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>Stats</DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuItem disabled>Guild</DropdownMenuItem>
+              <DropdownMenuItem disabled>Invite</DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem disabled>Help</DropdownMenuItem>
+              <DropdownMenuItem disabled>Report a problem</DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
                 signOut();

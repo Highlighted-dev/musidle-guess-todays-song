@@ -9,7 +9,6 @@ import {
   SheetTitle,
 } from './ui/sheet';
 import { Button } from './ui/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 function setCookie(name: string, value: string, days: number) {

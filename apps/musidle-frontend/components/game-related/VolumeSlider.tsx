@@ -3,6 +3,7 @@ import React from 'react';
 import { Slider } from '../ui/slider';
 import { useAudioStore } from '@/stores/AudioStore';
 import { Label } from '../ui/label';
+import { Skeleton } from '../ui/skeleton';
 
 export default function VolumeSlider({
   divClassName,
@@ -20,7 +21,8 @@ export default function VolumeSlider({
         max={100}
         step={1}
         defaultValue={[volume * 100 || 100]}
-        className={sliderClassName || 'py-4 h-4'}
+        className={sliderClassName || audio ? 'py-4 h-4' : 'py-4 h-4 opacity-50'}
+        disabled={!audio}
       />
       <Label>Volume</Label>
     </div>

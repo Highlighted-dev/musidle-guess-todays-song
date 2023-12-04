@@ -114,6 +114,11 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     if (audio) audio.volume = 0.05;
     if (currentPlayer && currentPlayer._id === session?.user?._id) handleTurnChange();
     else if (daily) {
+      // Set cookie that ends on 00:00:00 the next day
+      const expires = new Date();
+      expires.setHours(24, 0, 0, 0);
+      document.cookie =
+        'playedDaily=' + encodeURIComponent(true) + '; expires=' + expires + '; path=/';
       setTurnChangeDialogOpen(true);
       setTimeout(() => {
         setTurnChangeDialogOpen(false);

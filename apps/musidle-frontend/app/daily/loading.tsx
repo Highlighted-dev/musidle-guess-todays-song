@@ -47,7 +47,7 @@ export default async function Loading() {
       </CardHeader>
       <CardContent className="h-full">
         <Card className="flex justify-center items-center h-full p-4">
-          <Skeleton className="h-full w-full" />
+          {/* <Skeleton className="h-full w-full" /> */}
         </Card>
       </CardContent>
       <CardFooter className="flex justify-between text-center">

@@ -53,7 +53,8 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     }
     useAnswerStore.setState({ value: value });
   },
-  handleAnswerSubmit: async (daily = false) => {
+  handleAnswerSubmit: async (router = null) => {
+    // if router is not null, it means that the user is playing daily mode
     const { currentPlayer, roomCode, handleTurnChange, setTurnChangeDialogOpen } =
       useRoomStore.getState();
     const session = useNextAuthStore.getState().session;
@@ -61,8 +62,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const { audio, setAudioTime } = useAudioStore.getState();
     const { setValue, setAnswer, setPossibleAnswers } = useAnswerStore.getState();
     let category = '';
-    if (!currentPlayer && !daily) return;
-    //set completedCategories.category.completed to true
+    if (!currentPlayer && !router) return;
     if (
       useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne &&
       currentPlayer?._id == session?.user?._id
@@ -78,7 +78,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         }
       });
     }
-    if (currentPlayer?._id == session?.user?._id || daily) {
+    if (currentPlayer?._id == session?.user?._id || router) {
       await fetch(`${useSocketStore.getState().url}/externalApi/rooms/checkAnswer`, {
         method: 'POST',
         headers: {
@@ -113,7 +113,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     useTimerStore.getState().setTimer(useTimerStore.getState().maxTimer);
     if (audio) audio.volume = 0.05;
     if (currentPlayer && currentPlayer._id === session?.user?._id) handleTurnChange();
-    else if (daily) {
+    else if (router) {
       // Set cookie that ends on 00:00:00 the next day
       const expires = new Date();
       expires.setHours(24, 0, 0, 0);
@@ -132,6 +132,8 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
             key: 'no-song',
           },
         ]);
+        router.push('/daily');
+        router.refresh();
       }, 4000);
     }
   },

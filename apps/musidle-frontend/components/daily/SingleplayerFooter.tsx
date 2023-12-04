@@ -1,17 +1,15 @@
 'use client';
 import { useEffect } from 'react';
-import { useAnswerStore } from '@/stores/AnswerStore';
-import { useAudioStore } from '@/stores/AudioStore';
 import { useRoomStore } from '@/stores/RoomStore';
 import { toast } from '../ui/use-toast';
 import VolumeSlider from '../game-related/VolumeSlider';
 import ChangeStageButton from '../buttons/ChangeStageButton';
 import SubmitAnswerButton from '../buttons/SubmitAnswerButton';
+import { useRouter } from 'next/navigation';
 
 export default function SingleplayerFooter() {
-  const { value } = useAnswerStore();
-  const { audio } = useAudioStore();
   const { currentPlayer, roomCode } = useRoomStore();
+  const router = useRouter();
 
   useEffect(() => {
     if (!currentPlayer) return;
@@ -26,7 +24,7 @@ export default function SingleplayerFooter() {
     <>
       <ChangeStageButton className="w-[12%] min-w-[130px]" />
       <VolumeSlider divClassName={'w-1/4 text-center'} />
-      <SubmitAnswerButton className="w-[12%] min-w-[130px]" disabled={!value || !audio} daily />
+      <SubmitAnswerButton className="w-[12%] min-w-[130px]" router={router} />
     </>
   );
 }

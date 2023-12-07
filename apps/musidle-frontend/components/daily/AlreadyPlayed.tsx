@@ -29,7 +29,7 @@ export function AlreadyPlayed() {
 
   return (
     <CardContent className="h-full flex flex-col justify-center items-center">
-      <Label className=" text-2xl">You already played today 😔</Label>
+      <Label className=" text-2xl">You have already played today 😔</Label>
       <div className="flex flex-col justify-center items-center p-8">
         <Label className="text-lg">Next daily in</Label>
         {hasMounted ? (

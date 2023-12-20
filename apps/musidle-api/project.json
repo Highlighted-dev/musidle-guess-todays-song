@@ -15,7 +15,13 @@
         "bundle": false,
         "main": "apps/musidle-api/src/index.ts",
         "tsConfig": "apps/musidle-api/tsconfig.app.json",
-        "assets": ["apps/musidle-api/src/assets"],
+        "assets": [
+          {
+            "input": "apps/musidle-api/src/assets",
+            "glob": "*.mp3",
+            "output": "apps/musidle-api/src/assets"
+          }
+        ],
         "generatePackageJson": true,
         "esbuildOptions": {
           "sourcemap": true,

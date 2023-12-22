@@ -19,6 +19,9 @@ import Timer from './utils/Timer';
 import CategoriesRoute from './routes/CategoriesRoute';
 import { scheduleSongUpdate } from './utils/ScheduleDailySongChange';
 import DailyRoute from './routes/DailyRoute';
+import path from 'path';
+import fs from 'fs';
+import AudioRoute from './routes/AudioRoute';
 dotenv.config();
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const mongodbUrl =
@@ -28,6 +31,18 @@ const mongodbUrl =
 const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
 
 const app = express();
+app.get('/externalApi/stream', (req, res) => {
+  const filePath = path.resolve(__dirname + `\\assets`, 'artist10.mp3');
+  const stat = fs.statSync(filePath);
+
+  res.writeHead(200, {
+    'Content-Type': 'audio/mpeg',
+    'Content-Length': stat.size,
+  });
+
+  const readStream = fs.createReadStream(filePath);
+  readStream.pipe(res);
+});
 const server =
   process.env.NODE_ENV == 'production'
     ? https.createServer(
@@ -235,5 +250,6 @@ app.use('/externalApi/rooms/', RoomsRoute);
 app.use('/externalApi/songs/', AnswersRoute);
 app.use('/externalApi/categories/', CategoriesRoute);
 app.use('/externalApi/daily/', DailyRoute);
+app.use('/externalApi/audio/', AudioRoute);
 app.use(() => scheduleSongUpdate);
 app.use(errorHandler);

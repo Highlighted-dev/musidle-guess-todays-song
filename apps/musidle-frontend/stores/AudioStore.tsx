@@ -6,8 +6,11 @@ import { useTimerStore } from '@/stores/TimerStore';
 import { useNextAuthStore } from '@/stores/NextAuthStore';
 
 interface IAudioStore {
-  audio: HTMLAudioElement | null;
-  setAudio: (audio: HTMLAudioElement | null) => void;
+  audioContext: AudioContext | null;
+  audio: AudioBufferSourceNode | null;
+  arrayBuffer: ArrayBuffer | null;
+  setAudio: (audio: AudioBufferSourceNode | null) => void;
+  audioStartTime: number;
   time: number;
   setTime: (time: number) => void;
   audioTime: number;
@@ -24,15 +27,18 @@ interface IAudioStore {
 }
 
 export const useAudioStore = create<IAudioStore>(set => ({
+  audioContext: null,
   audio: null,
-  setAudio: (audio: HTMLAudioElement | null) => {
-    if (audio) {
-      audio.volume = useAudioStore.getState().volume;
-    }
+  arrayBuffer: null,
+  setAudio: (audio: AudioBufferSourceNode | null) => {
+    // if (audio) {
+    //   audio.volume = useAudioStore.getState().volume;
+    // }
     set(() => ({
       audio: audio,
     }));
   },
+  audioStartTime: 0,
   time: 1000,
   setTime: (time: number) =>
     set(() => ({
@@ -59,8 +65,10 @@ export const useAudioStore = create<IAudioStore>(set => ({
       songId: songId,
     })),
   handleAudioTimeUpdate: () => {
-    if (!useAudioStore.getState().audio) return;
-    useAudioStore.getState().setAudioTime(useAudioStore.getState().audio!.currentTime);
+    const { audioContext } = useAudioStore.getState();
+    if (!audioContext) return;
+    const currentTime = audioContext.currentTime;
+    useAudioStore.getState().setAudioTime(currentTime);
   },
   handleSkip: () => {
     switch (useAudioStore.getState().time) {
@@ -84,10 +92,10 @@ export const useAudioStore = create<IAudioStore>(set => ({
         .socket!.emit('skip', useAudioStore.getState().time, useRoomStore.getState().roomCode);
   },
   handlePlay: async () => {
-    const { audio } = useAudioStore.getState();
+    const { audio, audioContext } = useAudioStore.getState();
     const { maxRoundsPhaseOne, maxRoundsPhaseTwo } = useRoomStore.getState();
     const session = useNextAuthStore.getState().session;
-    if (!audio) return;
+    if (!audio || !audioContext) return;
     if (
       useRoomStore.getState().currentPlayer?._id == session?.user._id &&
       useSocketStore.getState().socket
@@ -100,31 +108,43 @@ export const useAudioStore = create<IAudioStore>(set => ({
           useTimerStore.getState().timer,
         );
     }
+    console.log(audioContext.currentTime);
 
-    if (audio.currentTime >= useAudioStore.getState().time / 1000) audio.currentTime = 0;
+    const getCurrentTime = () => {
+      return audioContext.currentTime;
+    };
 
-    audio.paused ? audio.play() : audio.pause();
+    audio.context.state === 'suspended' ? audioContext.resume() : audioContext.suspend();
+
     if (useAudioStore.getState().intervalId) clearInterval(useAudioStore.getState().intervalId!); // Clear the previous interval
     const newIntervalId = setInterval(() => {
-      if (audio.currentTime >= useAudioStore.getState().time / 1000) {
-        audio.pause();
+      useAudioStore.getState().handleAudioTimeUpdate();
+      if (getCurrentTime() >= useAudioStore.getState().time / 1000) {
+        const newAudioContext = new AudioContext();
+        audio.stop();
+        const gainNode = newAudioContext.createGain();
+        gainNode.gain.value = 0.1;
+        gainNode.connect(newAudioContext.destination);
+
+        const newAudio = newAudioContext!.createBufferSource();
+        newAudio.buffer = audio.buffer;
+        newAudio.connect(gainNode);
+
+        newAudio.start();
+        newAudioContext.suspend();
+        useAudioStore.setState({
+          audio: newAudio,
+          audioContext: newAudioContext,
+        });
         clearInterval(newIntervalId);
       }
       if (
-        audio.paused &&
+        audioContext.state === 'suspended' &&
         !(useRoomStore.getState().round <= maxRoundsPhaseOne + maxRoundsPhaseTwo)
       ) {
         clearInterval(newIntervalId);
       }
-    }, 10);
+    }, 200);
     useAudioStore.getState().setIntervalId(newIntervalId);
   },
 }));
-
-useAudioStore.subscribe(({ audio }) => {
-  if (!audio) return;
-  audio.addEventListener('timeupdate', useAudioStore.getState().handleAudioTimeUpdate);
-  return () => {
-    audio.removeEventListener('timeupdate', useAudioStore.getState().handleAudioTimeUpdate);
-  };
-});

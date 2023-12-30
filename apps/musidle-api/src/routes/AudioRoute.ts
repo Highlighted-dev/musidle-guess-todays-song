@@ -35,7 +35,7 @@ router.get('/daily', async (req: Request, res: Response, next: NextFunction) => 
     next(error);
   }
 });
-router.get('/mulitplayer/:roomCode', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/multiplayer/:roomCode', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const roomCode = req.params.roomCode;
     const songId = await axios

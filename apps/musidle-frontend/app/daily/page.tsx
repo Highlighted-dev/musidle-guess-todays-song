@@ -16,19 +16,23 @@ export const metadata = {
 async function getSong() {
   let url;
   if (process.env.NODE_ENV === 'development') {
-    url = new URL('http://localhost:4200/externalApi/daily');
+    url = new URL('http://localhost:4200/externalApi/audio/daily');
   } else {
-    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/daily`);
+    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/audio/daily`);
   }
-  const res = await fetch(url, {
+  const song = await fetch(url, {
     cache: 'no-store',
-  });
-  const data = await res.json();
-  return data;
+  }).then(res => res.arrayBuffer());
+  return song;
 }
 
 export default async function Page() {
-  const { song } = await getSong();
+  const song = await getSong();
+  const buffer = () => {
+    if (song) {
+      return Buffer.from(song).toString('base64');
+    } else return null;
+  };
 
   return (
     <>
@@ -38,7 +42,7 @@ export default async function Page() {
             <AlreadyPlayed />
           ) : (
             <>
-              <AudioSetter songId={song.songId} />
+              <AudioSetter buffer={buffer()} />
               <CardContent className="h-full flex flex-col">
                 <div className="h-1/2">
                   <AudioProgress />

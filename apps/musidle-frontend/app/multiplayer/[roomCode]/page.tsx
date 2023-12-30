@@ -30,7 +30,24 @@ export default async function Page({ params }: { params: { roomCode: string } })
   })
     .then(res => res.json())
     .catch(err => console.log(err));
-  if (data.roomCode == undefined) {
+
+  if (process.env.NODE_ENV === 'development') {
+    url = new URL(`http://localhost:4200/externalApi/audio/multiplayer/${params.roomCode}`);
+  } else {
+    url = new URL(
+      `${process.env.NEXT_PUBLIC_API_HOST}/externalApi/audio/multiplayer/${params.roomCode}`,
+    );
+  }
+  const audioArrayBuffer = await fetch(url).then(res => {
+    if (res.status != 200) return null;
+    return res.arrayBuffer();
+  });
+  const buffer = () => {
+    if (audioArrayBuffer) {
+      return Buffer.from(audioArrayBuffer).toString('base64');
+    } else return null;
+  };
+  if (!data) {
     return (
       <Redirecter
         url={`/multiplayer`}
@@ -43,7 +60,7 @@ export default async function Page({ params }: { params: { roomCode: string } })
   } else
     return (
       <>
-        <RoomStoreInitializer data={data} />
+        <RoomStoreInitializer data={data} buffer={buffer()} />
         <GameController params={params} />
         <Leaderboard />
       </>

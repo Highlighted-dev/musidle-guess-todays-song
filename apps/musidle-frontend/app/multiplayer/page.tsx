@@ -16,16 +16,21 @@ async function getRooms() {
   } else {
     url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/rooms`);
   }
-  const rooms: IRoom[] = await fetch(url, {
-    cache: 'no-store',
-  })
-    .then(res => res.json())
-    .then(res => res.rooms);
-  return rooms;
+  try {
+    const rooms: IRoom[] = await fetch(url, {
+      cache: 'no-store',
+    })
+      .then(res => res.json())
+      .then(res => res.rooms);
+    return rooms;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
 
 export default async function Page() {
-  const rooms: IRoom[] = await getRooms();
+  const rooms: IRoom[] | null = await getRooms();
 
   return (
     <>

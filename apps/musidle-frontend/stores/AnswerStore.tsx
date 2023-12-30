@@ -59,7 +59,6 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       useRoomStore.getState();
     const session = useNextAuthStore.getState().session;
     const socket = useSocketStore.getState().socket;
-    const { audio, setAudioTime } = useAudioStore.getState();
     const { setValue, setAnswer, setPossibleAnswers } = useAnswerStore.getState();
     let category = '';
     if (!currentPlayer && !router) return;
@@ -105,13 +104,34 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
           console.log(err);
         });
     }
-    if (useAudioStore.getState().audio!.currentTime > 10)
-      useAudioStore.getState().audio!.currentTime = 0;
-    if (useAudioStore.getState().audio?.paused) useAudioStore.getState().audio?.play();
+    const { audio, audioContext, setAudioTime } = useAudioStore.getState();
+
+    if (audioContext!.currentTime > 10) {
+      if (audio) {
+        const newAudioContext = new AudioContext();
+        audio.stop();
+        const gainNode = newAudioContext.createGain();
+        gainNode.gain.value = 0.1;
+        gainNode.connect(newAudioContext.destination);
+
+        const newAudio = newAudioContext!.createBufferSource();
+        newAudio.buffer = audio.buffer;
+        newAudio.connect(gainNode);
+
+        newAudio.start();
+        newAudioContext.suspend();
+        useAudioStore.setState({
+          audio: newAudio,
+          audioContext: newAudioContext,
+        });
+      }
+    }
+    if (useAudioStore.getState().audioContext?.state === 'suspended')
+      useAudioStore.getState().audioContext?.resume();
     useAudioStore.getState().setTime(12000);
 
     useTimerStore.getState().setTimer(useTimerStore.getState().maxTimer);
-    if (audio) audio.volume = 0.05;
+    // if (audio) audio.volume = 0.05;
     if (currentPlayer && currentPlayer._id === session?.user?._id) handleTurnChange();
     else if (router) {
       // Set cookie that ends on 00:00:00 the next day
@@ -122,8 +142,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       setTurnChangeDialogOpen(true);
       setTimeout(() => {
         setTurnChangeDialogOpen(false);
-        audio?.pause();
-        setAudioTime(0);
+        useAudioStore.getState().setTime(1000);
         setValue('');
         setAnswer('');
         setPossibleAnswers([

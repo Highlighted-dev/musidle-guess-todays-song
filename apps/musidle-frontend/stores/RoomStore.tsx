@@ -9,6 +9,7 @@ import { useAudioStore } from './AudioStore';
 import { toast } from '@/components/ui/use-toast';
 import { useTimerStore } from '@/stores/TimerStore';
 import { Router } from 'next/router';
+import { useRouter } from 'next/navigation';
 import dotenv from 'dotenv';
 import { useRef } from 'react';
 import { useNextAuthStore } from './NextAuthStore';
@@ -189,9 +190,36 @@ export const useRoomStore = create<IRoomStore>(set => ({
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function RoomStoreInitializer(data: any) {
+export function RoomStoreInitializer({ data, buffer }: { data: any; buffer: any }) {
   const initialized = useRef(false);
-  const roomData = data.data;
+  const roomData = data;
+  useSocketStore.getState().router = useRouter();
+  if (buffer != null) {
+    try {
+      const arrayBuffer = Uint8Array.from(Buffer.from(buffer, 'base64')).buffer;
+      // Use the audio data to create an AudioContext and decode the audio data
+      const audioContext = new AudioContext();
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 0.1;
+      gainNode.connect(audioContext.destination);
+      audioContext
+        .decodeAudioData(arrayBuffer, audioBuffer => {
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+
+          source.connect(gainNode);
+          source.start();
+          audioContext.suspend();
+          useAudioStore.setState({
+            audio: source,
+            audioContext: audioContext,
+          });
+        })
+        .catch(err => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
+  }
   if (!initialized.current) {
     initialized.current = true;
     useRoomStore.setState({
@@ -218,14 +246,14 @@ export function RoomStoreInitializer(data: any) {
       categories: categories,
     });
     useAudioStore.setState({ songId: roomData.songId });
-    useAudioStore.setState({
-      audio: typeof Audio !== 'undefined' ? new Audio(`/music/${roomData.songId}.mp3`) : null,
-    });
+    // useAudioStore.setState({
+    //   audio: typeof Audio !== 'undefined' ? new Audio(`/music/${roomData.songId}.mp3`) : null,
+    // });
     useAudioStore.setState({ time: 1000 });
     const audio = useAudioStore.getState().audio;
-    if (audio) {
-      audio.volume = useAudioStore.getState().volume;
-    }
+    // if (audio) {
+    //   audio.volume = useAudioStore.getState().volume;
+    // }
     if (!useSocketStore.getState().socket) {
       useSocketStore
         .getState()

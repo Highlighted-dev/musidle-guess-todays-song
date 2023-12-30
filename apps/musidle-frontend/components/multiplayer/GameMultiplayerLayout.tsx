@@ -13,12 +13,13 @@ import PlayAudioButton from '../buttons/PlayAudioButton';
 import SubmitAnswerButton from '../buttons/SubmitAnswerButton';
 import ChangeStageButton from '../buttons/ChangeStageButton';
 import GameInstructionsHover from '../game-related/GameInstructionsHover';
+import { Button } from '../ui/button';
 function GameMultiplayerLayout() {
   const user = useSession().data?.user;
   const { timer } = useTimerStore();
   const { value, possibleSongs } = useAnswerStore();
   const { currentPlayer } = useRoomStore();
-  const { audio, songId } = useAudioStore();
+  const { audio, songId, handlePlay, audioContext } = useAudioStore();
 
   return (
     <>
@@ -37,10 +38,14 @@ function GameMultiplayerLayout() {
             <div className="h-1/2">
               <AudioProgress />
               <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
-                <PlayAudioButton
+                <Button
+                  variant={'default'}
+                  onClick={() => handlePlay()}
                   className="min-w-[80px]"
-                  disabled={currentPlayer?._id != user?._id}
-                />
+                  disabled={currentPlayer?._id != user?._id || !audio}
+                >
+                  {audioContext?.state == 'running' ? 'Pause' : 'Play'}
+                </Button>
               </div>
             </div>
             <div className="h-1/2 flex flex-col justify-center items-center">

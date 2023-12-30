@@ -2,12 +2,34 @@
 import { useAudioStore } from '@/stores/AudioStore';
 import { useEffect } from 'react';
 
-export default function AudioSetter({ songId }: { songId: string | undefined }) {
-  const { setAudio, setSongId } = useAudioStore();
+export default function AudioSetter({ buffer }: { buffer: string | null }) {
   useEffect(() => {
-    if (typeof Audio === 'undefined' || !songId) return;
-    setSongId(songId);
-    setAudio(new Audio(`/music/${songId}.mp3`));
-  }, [typeof Audio]);
+    if (buffer != null) {
+      try {
+        const arrayBuffer = Uint8Array.from(Buffer.from(buffer, 'base64')).buffer;
+        // Use the audio data to create an AudioContext and decode the audio data
+        const audioContext = new AudioContext();
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = 0.1;
+        gainNode.connect(audioContext.destination);
+        audioContext
+          .decodeAudioData(arrayBuffer, audioBuffer => {
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+
+            source.connect(gainNode);
+            source.start();
+            audioContext.suspend();
+            useAudioStore.setState({
+              audio: source,
+              audioContext: audioContext,
+            });
+          })
+          .catch(err => console.log(err));
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, [buffer]);
   return null;
 }

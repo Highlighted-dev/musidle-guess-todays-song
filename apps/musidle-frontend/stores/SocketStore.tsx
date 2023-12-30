@@ -9,11 +9,13 @@ import { IPlayer } from '@/@types/Rooms';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useGameFinalStore } from './GameFinalStore';
 import { useNextAuthStore } from './NextAuthStore';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
   url: string;
+  router: AppRouterInstance | null;
 }
 export const useSocketStore = create<ISocketStore>(set => ({
   socket: null,
@@ -25,6 +27,7 @@ export const useSocketStore = create<ISocketStore>(set => ({
     process.env.NODE_ENV == 'production'
       ? process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:4200'
       : 'http://localhost:4200',
+  router: null,
 }));
 
 // Connect the socket and add event listeners
@@ -52,17 +55,17 @@ useSocketStore.subscribe(async ({ socket }) => {
     socket.on('chooseSong', (songId: string, phase: number) => {
       const { setAudio, setSongId } = useAudioStore.getState();
       const setSelectMode = useRoomStore.getState().setSelectMode;
-      if (phase == 3) useAudioStore.getState().audio?.pause();
+      if (phase == 3) useAudioStore.getState().audioContext?.suspend();
       setSongId(songId);
-      const audio = typeof Audio != 'undefined' ? new Audio(`/music/${songId}.mp3`) : null;
-      if (audio) {
-        audio.volume = useAudioStore.getState().volume;
-      }
-      setAudio(audio);
+      // if (audio) {
+      //   audio.volume = useAudioStore.getState().volume;
+      // }
       if (phase != 3) {
         setSelectMode(true);
       }
       useRoomStore.getState().setIsInLobby(false);
+
+      useSocketStore.getState().router?.refresh();
     });
     socket.on('handlePlay', () => {
       useAudioStore.getState().handlePlay();
@@ -95,7 +98,7 @@ useSocketStore.subscribe(async ({ socket }) => {
       useRoomStore.getState().votesForTurnSkip = 0;
       setTimeout(() => {
         useRoomStore.setState({ turnChangeDialogOpen: false });
-        useAudioStore.getState().audio?.pause();
+        useAudioStore.getState().audioContext?.suspend();
         if (intervalId !== null) clearInterval(intervalId);
         setTime(1000);
         setAudioTime(0);

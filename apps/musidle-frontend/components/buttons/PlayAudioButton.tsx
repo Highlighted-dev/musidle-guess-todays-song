@@ -5,15 +5,15 @@ import { useAudioStore } from '@/stores/AudioStore';
 
 export default function PlayAudioButton({
   className,
-  disabled,
+  disabled = false,
 }: {
   className?: string;
   disabled?: boolean;
 }) {
-  const { audio, handlePlay } = useAudioStore();
+  const { handlePlay, audioContext, audio } = useAudioStore();
   return (
     <Button onClick={handlePlay} className={className} disabled={!audio || disabled}>
-      {!audio || audio.paused ? 'Play' : 'Pause'}
+      {audioContext?.state == 'running' ? 'Pause' : 'Play'}
     </Button>
   );
 }

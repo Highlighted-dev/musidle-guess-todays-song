@@ -1,4 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { getServerSession } from 'next-auth/next';
 import React from 'react';
 import { authOptions } from '../api/auth/[...nextauth]/route';
@@ -18,10 +25,10 @@ export default async function ProfilePage() {
       </CardHeader>
       <CardContent className="h-5/6 mx-8">
         <Card className="h-2/5 w-full p-2 flex flex-col justify-center items-center">
-          <CardHeader className="text-center pb-1 text-xs h-1/2 w-full flex justify-center items-center">
+          <CardHeader className="text-center pb-1 text-xs h-1/3 w-full flex justify-center items-center">
             <UserAvatar />
           </CardHeader>
-          <CardContent className="flex justify-between text-center text-lg h-1/2 w-full">
+          <CardContent className="flex justify-between text-center text-lg h-1/3 w-full">
             <div className="w-1/3 h-full">
               <Label>{session?.user.username}</Label>
               <p className="text-muted-foreground text-xs">Your username</p>
@@ -44,6 +51,14 @@ export default async function ProfilePage() {
               <p className="text-muted-foreground text-xs">Your role</p>
             </div>
           </CardContent>
+          <CardFooter className="flex justify-between text-center h-1/3 w-full">
+            <div className="w-1/2 h-full">
+              <Button variant="tertiary">Edit profile</Button>
+            </div>
+            <div className="w-1/2 h-full">
+              <Button variant="tertiary">Invite to Guild</Button>
+            </div>
+          </CardFooter>
         </Card>
       </CardContent>
     </Card>

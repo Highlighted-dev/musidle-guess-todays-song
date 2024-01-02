@@ -10,13 +10,13 @@ export default function ChangeStageButton({
   className?: string;
   disabled?: boolean;
 }) {
-  const { handleSkip, audio } = useAudioStore();
+  const { handleSkip, audioContext } = useAudioStore();
   return (
     <Button
       variant={'outline'}
       onClick={() => handleSkip()}
       className={className}
-      disabled={disabled || !audio}
+      disabled={disabled || !audioContext}
     >
       Change Stage
     </Button>

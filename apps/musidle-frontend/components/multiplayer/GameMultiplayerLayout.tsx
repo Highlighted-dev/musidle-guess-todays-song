@@ -8,7 +8,6 @@ import { useAnswerStore } from '@/stores/AnswerStore';
 import { useSession } from 'next-auth/react';
 import AnswerSelector from '../game-related/AnswerSelector';
 import AudioProgress from '../game-related/AudioProgress';
-import VolumeSlider from '../game-related/VolumeSlider';
 import PlayAudioButton from '../buttons/PlayAudioButton';
 import SubmitAnswerButton from '../buttons/SubmitAnswerButton';
 import ChangeStageButton from '../buttons/ChangeStageButton';
@@ -71,7 +70,6 @@ function GameMultiplayerLayout() {
           className="w-[12%] min-w-[130px]"
           disabled={currentPlayer?._id != user?._id}
         />
-        <VolumeSlider divClassName="w-1/4 text-center" />
         <SubmitAnswerButton
           className={
             currentPlayer?._id != user?._id || value === ''

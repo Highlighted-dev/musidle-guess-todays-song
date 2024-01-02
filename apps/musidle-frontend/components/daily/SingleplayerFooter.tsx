@@ -2,7 +2,6 @@
 import { useEffect } from 'react';
 import { useRoomStore } from '@/stores/RoomStore';
 import { toast } from '../ui/use-toast';
-import VolumeSlider from '../game-related/VolumeSlider';
 import ChangeStageButton from '../buttons/ChangeStageButton';
 import SubmitAnswerButton from '../buttons/SubmitAnswerButton';
 import { useRouter } from 'next/navigation';
@@ -23,7 +22,6 @@ export default function SingleplayerFooter() {
   return (
     <>
       <ChangeStageButton className="w-[12%] min-w-[130px]" />
-      <VolumeSlider divClassName={'w-1/4 text-center'} />
       <SubmitAnswerButton className="w-[12%] min-w-[130px]" router={router} />
     </>
   );

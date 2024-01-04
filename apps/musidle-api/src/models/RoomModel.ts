@@ -28,6 +28,7 @@ const roomSchema = new Schema<IRoom>(
     currentPlayer: { type: Object, default: null },
     spectators: { type: [], required: true },
     songId: { type: String, default: null },
+    stage: { type: Number, default: 1 },
     maxRoundsPhaseOne: { type: Number, default: 4 },
     maxRoundsPhaseTwo: { type: Number, default: 2 },
     round: { type: Number, required: true },

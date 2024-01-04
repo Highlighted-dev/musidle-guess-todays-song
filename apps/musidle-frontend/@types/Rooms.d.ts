@@ -23,6 +23,7 @@ export interface IRoomStore {
   spectators: IPlayer[];
   setSpectators: (spectators: IPlayer[]) => void;
   round: number;
+  stage: number;
   setRound: (round: number) => void;
   maxRoundsPhaseOne: number;
   setMaxRoundsPhaseOne: (maxRounds: number) => void;

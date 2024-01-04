@@ -22,7 +22,7 @@ interface IAudioStore {
   songId: string;
   setSongId: (songId: string) => void;
   handleAudioTimeUpdate: () => void;
-  handleSkip: () => void;
+  changeStage: () => void;
   handlePlay: () => void;
 }
 
@@ -70,7 +70,8 @@ export const useAudioStore = create<IAudioStore>(set => ({
     const currentTime = audioContext.currentTime;
     useAudioStore.getState().setAudioTime(currentTime);
   },
-  handleSkip: () => {
+  changeStage: () => {
+    if (useRoomStore.getState().stage >= 4) return;
     switch (useAudioStore.getState().time) {
       case 1000:
         useAudioStore.setState({ time: 3000 });
@@ -87,9 +88,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
         useAudioStore.setState({ time: 1000 });
     }
     if (useSocketStore.getState().socket)
-      useSocketStore
-        .getState()
-        .socket!.emit('skip', useAudioStore.getState().time, useRoomStore.getState().roomCode);
+      useSocketStore.getState().socket!.emit('changeStage', useRoomStore.getState().roomCode);
   },
   handlePlay: async () => {
     const { audio, audioContext } = useAudioStore.getState();

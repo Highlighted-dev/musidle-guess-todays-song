@@ -18,7 +18,7 @@ function GameMultiplayerLayout() {
   const { timer } = useTimerStore();
   const { value, possibleSongs } = useAnswerStore();
   const { currentPlayer } = useRoomStore();
-  const { audio, songId, handlePlay, audioContext } = useAudioStore();
+  const { audio, songId, handlePlay, audioContext, changeStage } = useAudioStore();
 
   return (
     <>
@@ -66,10 +66,14 @@ function GameMultiplayerLayout() {
         </Card>
       </CardContent>
       <CardFooter className="flex justify-between text-center">
-        <ChangeStageButton
+        <Button
+          variant={'outline'}
+          onClick={() => changeStage()}
           className="w-[12%] min-w-[130px]"
-          disabled={currentPlayer?._id != user?._id}
-        />
+          disabled={currentPlayer?._id != user?._id || !audioContext}
+        >
+          Change Stage
+        </Button>
         <SubmitAnswerButton
           className={
             currentPlayer?._id != user?._id || value === ''

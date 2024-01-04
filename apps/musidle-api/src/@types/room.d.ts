@@ -21,6 +21,7 @@ export interface IRoom {
   currentPlayer: IPlayer | null;
   spectators: IPlayer[];
   songId: string;
+  stage: number;
   maxRoundsPhaseOne: number;
   maxRoundsPhaseTwo: number;
   round: number;

@@ -33,6 +33,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
       spectators: spectators,
     })),
   round: 1,
+  stage: 1,
   setRound: (round: number) =>
     set(() => ({
       round: round,
@@ -230,6 +231,7 @@ export function RoomStoreInitializer({ data, buffer }: { data: any; buffer: any 
       maxRoundsPhaseOne: roomData.maxRoundsPhaseOne,
       maxRoundsPhaseTwo: roomData.maxRoundsPhaseTwo,
       round: roomData.round,
+      stage: roomData.stage,
       isInLobby: roomData.isInGameLobby,
       selectMode: !roomData.isInSelectMode,
       votesForTurnSkip: roomData.votesForTurnSkip,
@@ -245,11 +247,16 @@ export function RoomStoreInitializer({ data, buffer }: { data: any; buffer: any 
     useAnswerStore.setState({
       categories: categories,
     });
-    useAudioStore.setState({ songId: roomData.songId });
-    // useAudioStore.setState({
-    //   audio: typeof Audio !== 'undefined' ? new Audio(`/music/${roomData.songId}.mp3`) : null,
-    // });
-    useAudioStore.setState({ time: 1000 });
+    useAudioStore.setState({
+      songId: roomData.songId,
+      time: {
+        1: 1000,
+        2: 3000,
+        3: 6000,
+        4: 12000,
+        default: 1000,
+      }[roomData.stage * 1],
+    });
     const audio = useAudioStore.getState().audio;
     // if (audio) {
     //   audio.volume = useAudioStore.getState().volume;

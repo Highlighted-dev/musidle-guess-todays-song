@@ -152,8 +152,11 @@ io.on('connection', socket => {
     Timer(roomCode, room?.maxTimer || 35, io).start();
     socket.to(roomCode).emit('handlePlay');
   });
-  socket.on('skip', (time, roomCode) => {
-    socket.to(roomCode).emit('skip', time);
+  socket.on('changeStage', roomCode => {
+    // update stage by 1
+    roomModel.updateOne({ roomCode: roomCode }, { $inc: { stage: 1 } }).then(() => {
+      io.to(roomCode).emit('changeStage');
+    });
   });
   socket.on('searchSong', (songs, roomCode) => {
     socket.to(roomCode).emit('searchSong', songs);

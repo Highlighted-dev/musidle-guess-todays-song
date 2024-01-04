@@ -4,9 +4,11 @@ import { Slider } from '../ui/slider';
 import { Label } from '../ui/label';
 import { cn } from '@/lib/utils';
 import { useAudioStore } from '@/stores/AudioStore';
+import { useRoomStore } from '@/stores/RoomStore';
 
 export default function AudioProgress() {
   const { audioTime, time } = useAudioStore();
+  const { stage } = useRoomStore();
   return (
     <div className="text-center py-4">
       <Slider
@@ -16,16 +18,7 @@ export default function AudioProgress() {
         disabled
         className={cn('py-4', 'h-4')}
       />
-      <Label>
-        {
-          {
-            1: 'Stage 1',
-            3: 'Stage 2',
-            6: 'Stage 3',
-            12: 'Stage 4',
-          }[time / 1000]
-        }
-      </Label>
+      <Label>{`Stage ${stage}`}</Label>
     </div>
   );
 }

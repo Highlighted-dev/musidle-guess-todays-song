@@ -8,6 +8,7 @@ import React from 'react';
 import { AlreadyPlayed } from '@/components/daily/AlreadyPlayed';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 
 export const metadata = {
   title: 'Musidle Daily',
@@ -25,9 +26,18 @@ async function getSong() {
   }).then(res => res.arrayBuffer());
   return song;
 }
+async function getSongId() {
+  const song = await fetch(getCurrentUrl() + '/externalApi/daily', {
+    cache: 'no-store',
+  })
+    .then(res => res.json())
+    .then(res => res.song);
+  return song.songId;
+}
 
 export default async function Page() {
   const song = await getSong();
+  const songId = await getSongId();
   const buffer = () => {
     if (song) {
       return Buffer.from(song).toString('base64');
@@ -42,7 +52,7 @@ export default async function Page() {
             <AlreadyPlayed />
           ) : (
             <>
-              <AudioSetter buffer={buffer()} />
+              <AudioSetter buffer={buffer()} songId={songId} />
               <CardContent className="h-full flex flex-col">
                 <div className="h-1/2">
                   <AudioProgress />

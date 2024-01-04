@@ -8,6 +8,7 @@ import { IAnswer, IAnswerStore, ILastFmSong, ISong } from '@/@types/AnswerStore'
 import { useNextAuthStore } from '@/stores/NextAuthStore';
 import { toast } from '@/components/ui/use-toast';
 import { IPlayerCategories } from '@/@types/Categories';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   answer: '',
@@ -78,7 +79,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       });
     }
     if (currentPlayer?._id == session?.user?._id || router) {
-      await fetch(`${useSocketStore.getState().url}/externalApi/rooms/checkAnswer`, {
+      await fetch(getCurrentUrl() + `/externalApi/rooms/checkAnswer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -159,9 +160,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
   getPossibleSongAnswers: async (query: string) => {
     if (query.length < 1) return;
 
-    const response = await fetch(
-      `${useSocketStore.getState().url}/externalApi/track/search/${query}`,
-    )
+    const response = await fetch(getCurrentUrl() + `/externalApi/track/search/${query}`)
       .then(res => res.json())
       .then(data => {
         return data;

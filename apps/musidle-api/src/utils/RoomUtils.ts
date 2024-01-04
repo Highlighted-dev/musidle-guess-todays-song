@@ -52,6 +52,7 @@ export async function updateRoomAfterTurnChange(
     isInSelectMode: true,
     $inc: { round: 1 },
     timer: room.maxTimer,
+    stage: 1,
   };
 
   await roomModel.updateOne({ roomCode: roomCode }, update);

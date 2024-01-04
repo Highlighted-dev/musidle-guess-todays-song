@@ -14,7 +14,6 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 interface ISocketStore {
   socket: Socket | null;
   setSocket: (socket: Socket | null) => void;
-  url: string;
   router: AppRouterInstance | null;
 }
 export const useSocketStore = create<ISocketStore>(set => ({
@@ -23,10 +22,6 @@ export const useSocketStore = create<ISocketStore>(set => ({
     set(() => ({
       socket: socket,
     })),
-  url:
-    process.env.NODE_ENV == 'production'
-      ? process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:4200'
-      : 'http://localhost:4200',
   router: null,
 }));
 
@@ -98,7 +93,7 @@ useSocketStore.subscribe(async ({ socket }) => {
       setTurnChangeDialogOpen(true);
       useRoomStore.getState().votesForTurnSkip = 0;
       setTimeout(() => {
-        useRoomStore.setState({ turnChangeDialogOpen: false });
+        useRoomStore.setState({ turnChangeDialogOpen: false, stage: 1 });
         useAudioStore.getState().audioContext?.suspend();
         if (intervalId !== null) clearInterval(intervalId);
         setTime(1000);

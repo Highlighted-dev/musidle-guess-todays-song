@@ -19,19 +19,9 @@ import {
   isEmailValid,
 } from '@/utils/Validations';
 import { toast } from './ui/use-toast';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import { useNextAuthStore } from '@/stores/NextAuthStore';
+import { signIn, useSession } from 'next-auth/react';
 import axios from 'axios';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import { IoIosArrowDown } from 'react-icons/io';
-import Link from 'next/link';
+import UserMenu from './UserMenu';
 
 function LoginAndRegister() {
   const { data } = useSession();
@@ -220,15 +210,45 @@ function LoginAndRegister() {
                   <CardContent className="space-y-2">
                     <div className="space-y-1">
                       <Label htmlFor="username">Username</Label>
-                      <Input id="username" type="name" placeholder="user" ref={usernameRef} />
+                      <Input
+                        id="username"
+                        type="name"
+                        placeholder="user"
+                        ref={usernameRef}
+                        onKeyDown={event => {
+                          if (event.key === 'Enter') {
+                            handleSignUp();
+                          }
+                        }}
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="email">E-mail</Label>
-                      <Input id="email" type="email" placeholder="user@gmail.com" ref={emailRef} />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="user@gmail.com"
+                        ref={emailRef}
+                        onKeyDown={event => {
+                          if (event.key === 'Enter') {
+                            handleSignUp();
+                          }
+                        }}
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="password">Password</Label>
-                      <Input id="password" type="password" placeholder="******" ref={passwordRef} />
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="******"
+                        ref={passwordRef}
+                        onKeyDown={event => {
+                          if (event.key === 'Enter') {
+                            handleSignUp();
+                          }
+                        }}
+                      />
                     </div>
                   </CardContent>
                   <CardFooter>
@@ -242,47 +262,7 @@ function LoginAndRegister() {
           </DialogContent>
         </Dialog>
       ) : (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost">
-              <Label className="flex flex-row">
-                {data?.user.username}
-                <IoIosArrowDown className="ml-2" />
-              </Label>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="font-inter">
-            <DropdownMenuGroup>
-              <Link href="/profile">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-              </Link>
-              <Link href="/profile/settings">
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-              </Link>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem disabled>Guild</DropdownMenuItem>
-              <DropdownMenuItem disabled>Invite</DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem disabled>Help</DropdownMenuItem>
-              <DropdownMenuItem disabled>Report a problem</DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                signOut();
-                useNextAuthStore.setState({
-                  session: null,
-                });
-              }}
-            >
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <UserMenu />
       )}
     </>
   );

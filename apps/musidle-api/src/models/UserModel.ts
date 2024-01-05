@@ -1,13 +1,5 @@
 import { model, Schema } from 'mongoose';
-
-export interface IUser {
-  username: string;
-  email: string;
-  password: string;
-  role: 'admin' | 'user';
-  token: string;
-  activated: boolean;
-}
+import { IUser } from '../@types/user';
 
 const userSchema = new Schema<IUser>(
   {
@@ -17,6 +9,10 @@ const userSchema = new Schema<IUser>(
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
     token: { type: String, required: true },
     activated: { type: Boolean, default: false },
+    guild: {
+      _id: { type: String, default: null },
+      name: { type: String, default: null },
+    },
   },
   { versionKey: false, timestamps: true },
 );

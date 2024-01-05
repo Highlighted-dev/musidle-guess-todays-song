@@ -13,13 +13,23 @@ declare module 'next-auth' {
       _id: string;
       username: string;
       email: string;
+      guild: {
+        _id: string | null;
+        name: string | null;
+      };
     };
   }
-  interface User {
-    activated: boolean;
-    role: string;
-    _id: string;
-    username: string;
-    email: string;
-  }
+  interface User extends IUser {}
+}
+
+export interface IUser {
+  activated: boolean;
+  role: string;
+  _id: string;
+  username: string;
+  email: string;
+  guild: {
+    _id: string | null;
+    name: string | null;
+  };
 }

@@ -11,6 +11,7 @@ export interface IUpdate {
   isInSelectMode: boolean;
   $inc: { round: number };
   timer: number;
+  stage: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   $set?: { 'songs.$.completed': boolean };
 }

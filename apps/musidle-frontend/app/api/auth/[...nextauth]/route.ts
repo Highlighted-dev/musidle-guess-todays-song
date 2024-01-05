@@ -41,6 +41,7 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             role: user.role,
             activated: user.activated,
+            guild: user.guild,
           };
         } catch (e: unknown) {
           if (e instanceof Error) throw new Error(e.message);
@@ -61,6 +62,8 @@ export const authOptions: NextAuthOptions = {
       if (trigger === 'update' && session?.activated) {
         // Note, that `session` can be any arbitrary object, remember to validate it!
         token.activated = session.activated;
+      } else if (trigger === 'update' && session?.guild) {
+        token.guild = session.guild;
       }
       if (user) {
         token._id = user._id;
@@ -68,6 +71,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.role = user.role;
         token.activated = user.activated;
+        token.guild = user.guild;
       }
       return token;
     },
@@ -77,6 +81,7 @@ export const authOptions: NextAuthOptions = {
       session.user.email = token.email as string;
       session.user.role = token.role as string;
       session.user.activated = token.activated as boolean;
+      session.user.guild = token.guild as { _id: string; name: string };
       return session;
     },
   },

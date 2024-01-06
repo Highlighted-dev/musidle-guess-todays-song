@@ -18,7 +18,7 @@ export default function GameLobby(params: { roomCode: string }) {
   const router = useRouter();
 
   return (
-    <>
+    <Card className="float-left flex flex-col justify-center xl:absolute top-0 left-[16.5%] items-center h-full xl:w-[67%] w-full xl:min-h-0 min-h-screen">
       <CardHeader className=" text-center h-[15%]">
         <CardTitle>Game lobby</CardTitle>
         <Label className="text-popover-foreground">{roomCode.toUpperCase()}</Label>
@@ -106,6 +106,6 @@ export default function GameLobby(params: { roomCode: string }) {
           </Button>
         </div>
       </CardContent>
-    </>
+    </Card>
   );
 }

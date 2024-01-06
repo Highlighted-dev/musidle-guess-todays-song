@@ -8,9 +8,9 @@ import VoteForTurnSkipButton from '../buttons/VoteForTurnSkipButton';
 function Leaderboard() {
   const { players, currentPlayer, spectators, joinAsSpectator, roomCode } = useRoomStore();
   return (
-    <div className=" xl:w-[16%] w-full h-full flex flex-col justify-center items-center min-w-[180px] xl:absolute top-0 right-0 xl:p-0 py-6">
-      <div className=" h-full w-full ">
-        <Card className="h-full w-full">
+    <div className=" xl:w-[16%] w-full xl:h-full h-[80%] flex flex-col justify-center items-center min-w-[180px] xl:absolute top-0 right-0 xl:p-0 py-6">
+      <div className=" h-full w-full xl:min-h-0 min-h-[40vh]">
+        <Card className="h-full w-full xl:min-h-0 min-h-[40vh]">
           <CardHeader className=" text-center">
             <CardTitle>Leaderboard</CardTitle>
           </CardHeader>

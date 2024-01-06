@@ -4,9 +4,9 @@ import Link from 'next/link';
 
 export default async function Page() {
   return (
-    <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center relative min-h-[450px]">
-      <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full">
-        <div className="h-full">
+    <div className="xl:h-4/5 h-full w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center relative xl:min-h-0 min-h-screen">
+      <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full xl:min-h-0 min-h-screen">
+        <div className="h-full xl:min-h-0 min-h-screen">
           <CardHeader className="text-center h-1/6">
             <CardTitle>Welcome to Musidle</CardTitle>
             <CardDescription>
@@ -14,7 +14,7 @@ export default async function Page() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid xl:grid-cols-2 grid-cols-1 gap-2 h-5/6">
-            <Card className="flex flex-col justify-center items-center p-8 h-full">
+            <Card className="flex flex-col justify-center items-center h-full">
               <CardTitle className="text-sm text-center">
                 Challange your music knowledge with new songs every day
               </CardTitle>
@@ -26,7 +26,7 @@ export default async function Page() {
                 </Link>
               </CardContent>
             </Card>
-            <Card className="flex flex-col justify-center items-center p-8 h-full">
+            <Card className="flex flex-col justify-center items-center h-full ">
               <CardTitle className="text-sm text-center">
                 Play with your friends to see who is the real music guru
               </CardTitle>

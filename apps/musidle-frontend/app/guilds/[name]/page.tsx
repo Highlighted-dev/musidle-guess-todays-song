@@ -26,12 +26,11 @@ export default async function GuildOverview({ params }: { params: { name: string
   const guild: IGuild = await fetchGuild(params.name);
 
   return (
-    <div className=" flex-row  overflow-y-auto p-6 h-full w-full">
+    <div className="h-full w-[90%] flex xl:relative flex-col relative xl:min-h-0 min-h-screen">
       <Card>
         <CardHeader>
           <CardTitle className="text-center">Guild Overview</CardTitle>
         </CardHeader>
-
         {guild ? (
           <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-1">

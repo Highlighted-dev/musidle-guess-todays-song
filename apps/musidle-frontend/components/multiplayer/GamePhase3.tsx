@@ -1,5 +1,5 @@
 'use client';
-import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { LuChevronsUpDown } from 'react-icons/lu';
@@ -40,8 +40,8 @@ function GamePhase3() {
     }
   };
   return (
-    <div className=" h-full">
-      <div className="h-3/5">
+    <Card className="float-left flex flex-col justify-center xl:absolute top-0 left-[16.5%] items-center h-full xl:w-[67%] w-full xl:min-h-0 min-h-screen">
+      <div className="h-3/5 w-full">
         <CardHeader className="text-center h-1/5">
           <CardTitle className="font-bold">FINAL ROUND</CardTitle>
         </CardHeader>
@@ -151,7 +151,7 @@ function GamePhase3() {
           </Button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 

@@ -2,10 +2,8 @@ import React from 'react';
 import { IGuild } from '@/@types/Guild';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import JoinGuildButton from '@/components/buttons/JoinGuildButton';
-import { toast } from '@/components/ui/use-toast';
 
 const fetchGuilds = async () => {
   try {

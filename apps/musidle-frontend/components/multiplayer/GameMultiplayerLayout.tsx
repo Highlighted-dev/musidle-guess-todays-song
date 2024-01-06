@@ -8,11 +8,10 @@ import { useAnswerStore } from '@/stores/AnswerStore';
 import { useSession } from 'next-auth/react';
 import AnswerSelector from '../game-related/AnswerSelector';
 import AudioProgress from '../game-related/AudioProgress';
-import PlayAudioButton from '../buttons/PlayAudioButton';
 import SubmitAnswerButton from '../buttons/SubmitAnswerButton';
-import ChangeStageButton from '../buttons/ChangeStageButton';
 import GameInstructionsHover from '../game-related/GameInstructionsHover';
 import { Button } from '../ui/button';
+
 function GameMultiplayerLayout() {
   const user = useSession().data?.user;
   const { timer } = useTimerStore();
@@ -21,18 +20,18 @@ function GameMultiplayerLayout() {
   const { audio, songId, handlePlay, audioContext, changeStage } = useAudioStore();
 
   return (
-    <>
-      <CardHeader className=" text-center">
+    <Card className="float-left flex flex-col justify-center xl:absolute top-0 left-[16.5%] items-center h-full xl:w-[67%] w-full xl:min-h-0 min-h-screen">
+      <CardHeader className=" text-center w-full">
         <div className="flex justify-between items-center">
           <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-            v0.8.0
+            v{process.env.version}
           </label>
           <CardTitle className="flex justify-center items-center">Musidle - Multiplayer</CardTitle>
           <GameInstructionsHover />
         </div>
       </CardHeader>
-      <CardContent className="h-full">
-        <Card className="flex justify-center items-center h-full p-4">
+      <CardContent className="flex h-full w-full">
+        <Card className="flex justify-center items-center h-full p-4 w-full">
           <CardContent className="h-full flex flex-col">
             <div className="h-1/2">
               <AudioProgress />
@@ -65,7 +64,7 @@ function GameMultiplayerLayout() {
           </CardContent>
         </Card>
       </CardContent>
-      <CardFooter className="flex justify-between text-center">
+      <CardFooter className="flex justify-between text-center w-full">
         <Button
           variant={'outline'}
           onClick={() => changeStage()}
@@ -83,7 +82,7 @@ function GameMultiplayerLayout() {
           disabled={!value || !audio}
         />
       </CardFooter>
-    </>
+    </Card>
   );
 }
 

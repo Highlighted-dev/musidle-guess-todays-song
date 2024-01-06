@@ -156,7 +156,7 @@ io.on('connection', socket => {
   socket.on('changeStage', roomCode => {
     // update stage by 1
     roomModel.updateOne({ roomCode: roomCode }, { $inc: { stage: 1 } }).then(() => {
-      io.to(roomCode).emit('changeStage');
+      socket.broadcast.to(roomCode).emit('changeStage');
     });
   });
   socket.on('searchSong', (songs, roomCode) => {

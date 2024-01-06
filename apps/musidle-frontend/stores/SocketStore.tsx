@@ -45,8 +45,7 @@ useSocketStore.subscribe(async ({ socket }) => {
       useRoomStore.getState().setIsInLobby(false);
     });
     socket.on('changeStage', () => {
-      console.log('changing stage');
-      useRoomStore.setState({ stage: useRoomStore.getState().stage + 1 });
+      useAudioStore.getState().changeStage();
     });
     socket.on('chooseSong', (songId: string, phase: number) => {
       const { setAudio, setSongId } = useAudioStore.getState();

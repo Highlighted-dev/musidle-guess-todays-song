@@ -24,7 +24,7 @@ function GameMultiplayerLayout() {
       <CardHeader className=" text-center w-full">
         <div className="flex justify-between items-center">
           <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-            v{process.env.version}
+            v{process.env.NEXT_PUBLIC_VERSION}
           </label>
           <CardTitle className="flex justify-center items-center">Musidle - Multiplayer</CardTitle>
           <GameInstructionsHover />

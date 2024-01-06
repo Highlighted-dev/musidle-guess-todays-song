@@ -43,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="h-[50px] flex justify-center w-full py-4 relative">
               <div className="flex justify-between ">
                 <Label>Made with ❤️ by Highlighted-dev |</Label>
-                <Label>&nbsp;v{process.env.version}</Label>
+                <Label>&nbsp;v{process.env.NEXT_PUBLIC_VERSION}</Label>
               </div>
             </div>
           </div>

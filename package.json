@@ -1,6 +1,6 @@
 {
   "name": "@musidle-guess-todays-song/source",
-  "version": "0.5.0",
+  "version": "0.10.0",
   "license": "MIT",
   "scripts": {},
   "private": true,
@@ -39,7 +39,7 @@
     "mailgun.js": "^9.3.0",
     "mongodb": "^6.2.0",
     "mongoose": "^6.12.0",
-    "next": "^14.0.3",
+    "next": "^14.0.4",
     "next-auth": "^4.24.4",
     "node-schedule": "^2.1.1",
     "react": "18.2.0",

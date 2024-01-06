@@ -4,6 +4,8 @@ dotenv.config();
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { composePlugins, withNx } = require('@nx/next');
 
+const { version } = require('../../package.json');
+
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
@@ -15,6 +17,9 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  env: {
+    version,
   },
   reactStrictMode: false,
   transpilePackages: ['ui'],

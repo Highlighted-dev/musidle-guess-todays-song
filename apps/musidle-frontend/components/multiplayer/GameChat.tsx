@@ -33,21 +33,23 @@ export default function GameChat() {
   };
 
   return (
-    <div className=" xl:w-[16%] w-full h-full flex flex-col justify-center items-center min-w-[180px] xl:absolute top-0 left-0 xl:p-0 py-6">
+    <div className="xl:w-[16%] w-full h-full flex flex-col justify-center items-center min-w-[180px] xl:absolute top-0 left-0 xl:p-0 py-6 min-h-[300px]">
       <div className=" h-full w-full ">
         <Card className="h-full w-full">
           <CardHeader className="text-center h-[10%]">
             <CardTitle>Chat</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col h-[90%]">
-            <div className="h-[92%] overflow-auto m-1">
+            <div className="xl:h-[90%] h-[75%] overflow-auto m-1">
               {messages.map((message, index) => (
                 <div key={index}>{message}</div>
               ))}
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between h-[10%]">
               <Input value={message} onChange={e => setMessage(e.target.value)} />
-              <Button onClick={sendMessage}>Send</Button>
+              <Button className="" onClick={sendMessage}>
+                Send
+              </Button>
             </div>
           </CardContent>
         </Card>

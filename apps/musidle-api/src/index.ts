@@ -220,6 +220,9 @@ io.on('connection', socket => {
       }
     });
   });
+  socket.on('send-chat-message', (message, roomCode) => {
+    io.to(roomCode).emit('chat-message', message);
+  });
 });
 
 mongoose

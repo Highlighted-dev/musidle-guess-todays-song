@@ -5,6 +5,7 @@ import GameController from '@/components/multiplayer/GameController';
 import { RoomStoreInitializer } from '@/stores/RoomStore';
 import Leaderboard from '@/components/multiplayer/Leaderboard';
 import Redirecter from '@/components/Redirecter';
+import GameChat from '@/components/multiplayer/GameChat';
 
 export default async function Page({ params }: { params: { roomCode: string } }) {
   const session = await getServerSession(authOptions);
@@ -62,6 +63,7 @@ export default async function Page({ params }: { params: { roomCode: string } })
       <>
         <RoomStoreInitializer data={data} buffer={buffer()} />
         <GameController params={params} />
+        <GameChat />
         <Leaderboard />
       </>
     );

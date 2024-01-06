@@ -1,5 +1,4 @@
 import { IGuild } from '@/@types/Guild';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -13,12 +12,16 @@ import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import React from 'react';
 
 async function fetchGuild(name: string) {
-  const response = await fetch(getCurrentUrl() + `/externalApi/guilds/${name}`, {
-    cache: 'no-store',
-  }).then(res => res.json());
-  return response;
+  try {
+    const response = await fetch(getCurrentUrl() + `/externalApi/guilds/${name}`, {
+      cache: 'no-store',
+    }).then(res => res.json());
+    return response;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
-
 export default async function GuildOverview({ params }: { params: { name: string } }) {
   const guild: IGuild = await fetchGuild(params.name);
 
@@ -28,38 +31,49 @@ export default async function GuildOverview({ params }: { params: { name: string
         <CardHeader>
           <CardTitle className="text-center">Guild Overview</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-gray-200">Guild Name</h3>
-            <p>{guild.name}</p>
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-gray-200">Guild Leader</h3>
-            <p>{guild.leader.username}</p>
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-gray-200">Guild Level</h3>
-            <p>{guild.level}</p>
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-gray-200">Members</h3>
-            <p>{guild.members.length}</p>
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-gray-200">Guild Creation Date</h3>
-            <p>
-              {new Date(guild.createdAt).toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })}
-            </p>
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-gray-200">Guild Description</h3>
-            <p>{guild.description}</p>
-          </div>
-        </CardContent>
+
+        {guild ? (
+          <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-gray-200">Guild Name</h3>
+              <p>{guild.name}</p>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-gray-200">Guild Leader</h3>
+              <p>{guild.leader.username}</p>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-gray-200">Guild Level</h3>
+              <p>{guild.level}</p>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-gray-200">Members</h3>
+              <p>{guild.members.length}</p>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-gray-200">Guild Creation Date</h3>
+              <p>
+                {new Date(guild.createdAt).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                })}
+              </p>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-gray-200">Guild Description</h3>
+              <p>{guild.description}</p>
+            </div>
+          </CardContent>
+        ) : (
+          <CardContent className="flex justify-center items-center">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-400">
+                Couldn&apos;t find desired guild 😔
+              </h3>
+            </div>
+          </CardContent>
+        )}
       </Card>
       <Card className="mt-6">
         <CardHeader>
@@ -74,7 +88,7 @@ export default async function GuildOverview({ params }: { params: { name: string
               </TableRow>
             </TableHeader>
             <TableBody>
-              {guild.members.map(member => (
+              {guild?.members.map(member => (
                 <TableRow key={member._id}>
                   <TableCell>{member.username}</TableCell>
                   <TableCell>{member.role}</TableCell>

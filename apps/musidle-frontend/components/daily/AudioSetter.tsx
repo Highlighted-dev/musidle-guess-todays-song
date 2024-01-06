@@ -2,7 +2,13 @@
 import { useAudioStore } from '@/stores/AudioStore';
 import { useEffect } from 'react';
 
-export default function AudioSetter({ buffer, songId }: { buffer: string | null; songId: string }) {
+export default function AudioSetter({
+  buffer,
+  songId,
+}: {
+  buffer: string | null;
+  songId: string | null;
+}) {
   useEffect(() => {
     if (buffer != null && songId != null) {
       try {

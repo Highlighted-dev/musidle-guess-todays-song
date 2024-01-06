@@ -15,29 +15,33 @@ export const metadata = {
 };
 
 async function getSong() {
-  let url;
-  if (process.env.NODE_ENV === 'development') {
-    url = new URL('http://localhost:4200/externalApi/audio/daily');
-  } else {
-    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/audio/daily`);
+  try {
+    const song = await fetch(getCurrentUrl() + `/externalApi/audio/daily`, {
+      cache: 'no-store',
+    }).then(res => res.arrayBuffer());
+    return song;
+  } catch (err) {
+    console.log(err);
+    return null;
   }
-  const song = await fetch(url, {
-    cache: 'no-store',
-  }).then(res => res.arrayBuffer());
-  return song;
 }
 async function getSongId() {
-  const song = await fetch(getCurrentUrl() + '/externalApi/daily', {
-    cache: 'no-store',
-  })
-    .then(res => res.json())
-    .then(res => res.song);
-  return song.songId;
+  try {
+    const song = await fetch(getCurrentUrl() + '/externalApi/daily', {
+      cache: 'no-store',
+    })
+      .then(res => res.json())
+      .then(res => res.song);
+    return song.songId;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
 
 export default async function Page() {
   const song = await getSong();
-  const songId = await getSongId();
+  const songId: string | null = await getSongId();
   const buffer = () => {
     if (song) {
       return Buffer.from(song).toString('base64');

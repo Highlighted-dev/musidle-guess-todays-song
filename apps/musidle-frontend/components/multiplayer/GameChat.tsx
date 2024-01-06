@@ -17,11 +17,7 @@ export default function GameChat() {
     socket?.on('chat-message', message => {
       setMessages(messages => [...messages, message]);
     });
-
-    return () => {
-      socket?.disconnect();
-    };
-  }, []);
+  }, [socket]);
 
   const sendMessage = () => {
     socket?.emit(
@@ -45,9 +41,13 @@ export default function GameChat() {
                 <div key={index}>{message}</div>
               ))}
             </div>
-            <div className="flex justify-between h-[10%]">
-              <Input value={message} onChange={e => setMessage(e.target.value)} />
-              <Button className="" onClick={sendMessage}>
+            <div className="flex justify-between h-[10%] w-full">
+              <Input
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                className="w-[65%]"
+              />
+              <Button className="w-[30%]" onClick={sendMessage}>
                 Send
               </Button>
             </div>

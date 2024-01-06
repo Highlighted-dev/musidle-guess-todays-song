@@ -3,6 +3,8 @@ import { IGuild } from '@/@types/Guild';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import JoinGuildButton from '@/components/buttons/JoinGuildButton';
 
 const fetchGuilds = async () => {
   const response = await fetch(getCurrentUrl() + '/externalApi/guilds', {
@@ -25,10 +27,12 @@ export default async function Guilds() {
               key={guild._id}
               className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6 text-center p-6"
             >
-              <div className="space-y-1">
-                <h3 className="text-lg font-semibold text-gray-200">Guild Name</h3>
-                <p className="text-gray-400">{guild.name}</p>
-              </div>
+              <Link href={`/guilds/${guild.name}`}>
+                <div className="space-y-1">
+                  <h3 className="text-lg font-semibold text-gray-200">Guild Name</h3>
+                  <p className="text-gray-400">{guild.name}</p>
+                </div>
+              </Link>
               <div className="space-y-1">
                 <h3 className="text-lg font-semibold text-gray-200">Guild Leader</h3>
                 <p className="text-gray-400">{guild.leader.username}</p>
@@ -52,9 +56,7 @@ export default async function Guilds() {
                 </p>
               </div>
               <div className="mt-2">
-                <Button className="md:block w-full" variant="outline">
-                  Join
-                </Button>
+                <JoinGuildButton id={guild._id} />
               </div>
             </Card>
           ))}

@@ -50,8 +50,7 @@ function GuildCreation() {
               name: responseData.name,
             },
           });
-
-          router.push('/guilds');
+          router.push(`/guilds/${responseData.name}`);
           setIsOpen(false);
         }
       });

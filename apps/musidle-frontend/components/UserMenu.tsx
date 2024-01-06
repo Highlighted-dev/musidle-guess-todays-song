@@ -41,7 +41,7 @@ export default function UserMenu() {
           <Link href="/guilds">
             <DropdownMenuItem>Guilds</DropdownMenuItem>
           </Link>
-          {data?.user?.guild._id ? (
+          {data?.user?.guild?._id ? (
             <Link href={`/guilds/${data.user.guild.name}`} key={data.user.guild._id}>
               <DropdownMenuItem>{data?.user?.guild.name}</DropdownMenuItem>
             </Link>

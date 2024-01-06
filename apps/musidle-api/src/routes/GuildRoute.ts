@@ -26,6 +26,29 @@ router.post('/', jsonParser, async (req, res, next) => {
   }
 });
 
+// Add a member to a guild
+router.post('/:id', jsonParser, async (req, res, next) => {
+  try {
+    if (!req.body || !req.body.user) return res.status(400).send('Bad request');
+    const user = await userModel.findById(req.body.user._id);
+    if (user && user?.guild._id) return res.status(400).send('User already in a guild');
+    const guild = await GuildModel.findById(req.params.id);
+    if (!guild) return res.status(404).send('Guild not found');
+    await guild.updateOne({ $push: { members: req.body.user } });
+    await userModel.updateOne(
+      {
+        _id: req.body.user._id,
+      },
+      {
+        $set: { guild: { _id: guild._id, name: guild.name } },
+      },
+    );
+    res.status(201).json(guild);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Get all guilds
 router.get('/', async (req, res, next) => {
   try {

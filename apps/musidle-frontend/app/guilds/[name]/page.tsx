@@ -55,10 +55,9 @@ export default async function GuildOverview({ params }: { params: { name: string
               })}
             </p>
           </div>
-          <div className="mt-4">
-            <Button className="md:block" variant="outline">
-              Invite Member
-            </Button>
+          <div className="space-y-1">
+            <h3 className="text-lg font-semibold text-gray-200">Guild Description</h3>
+            <p>{guild.description}</p>
           </div>
         </CardContent>
       </Card>

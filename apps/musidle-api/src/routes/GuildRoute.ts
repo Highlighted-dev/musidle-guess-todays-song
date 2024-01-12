@@ -27,12 +27,12 @@ router.post('/', jsonParser, async (req, res, next) => {
 });
 
 // Add a member to a guild
-router.post('/:id', jsonParser, async (req, res, next) => {
+router.post('/:name', jsonParser, async (req, res, next) => {
   try {
     if (!req.body || !req.body.user) return res.status(400).send('Bad request');
     const user = await userModel.findById(req.body.user._id);
     if (user && user?.guild._id) return res.status(400).send('User already in a guild');
-    const guild = await GuildModel.findById(req.params.id);
+    const guild = await GuildModel.findOne({ name: req.params.name });
     if (!guild) return res.status(404).send('Guild not found');
     await guild.updateOne({ $push: { members: req.body.user } });
     await userModel.updateOne(
@@ -70,21 +70,24 @@ router.get('/:name', async (req, res, next) => {
   }
 });
 
-// Update a guild by id
-router.put('/:id', async (req, res, next) => {
+// Update a guild by name
+router.put('/:name', jsonParser, async (req, res, next) => {
   try {
-    const guild = await GuildModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    console.log(req.body, req.params.name);
+    const guild = await GuildModel.findOneAndUpdate({ name: req.params.name }, req.body, {
+      new: true,
+    });
     if (!guild) return res.status(404).send('Guild not found');
-    res.send(guild);
+    res.status(200).json(guild);
   } catch (err) {
     next(err);
   }
 });
 
 // Delete a guild by id
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:name', jsonParser, async (req, res, next) => {
   try {
-    const guild = await GuildModel.findByIdAndDelete(req.params.id);
+    const guild = await GuildModel.findOneAndDelete({ name: req.params.name });
     if (!guild) return res.status(404).send('Guild not found');
     res.status(204).send();
   } catch (err) {

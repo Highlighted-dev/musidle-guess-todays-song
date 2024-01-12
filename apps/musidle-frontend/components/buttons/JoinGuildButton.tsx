@@ -4,10 +4,10 @@ import { Button } from '../ui/button';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import { useSession } from 'next-auth/react';
 
-export default function JoinGuildButton({ id }: { id: string }) {
+export default function JoinGuildButton({ name }: { name: string }) {
   const { data, update } = useSession();
   const handleJoinGuild = async () => {
-    await fetch(getCurrentUrl() + `/externalApi/guilds/${id}`, {
+    await fetch(getCurrentUrl() + `/externalApi/guilds/${name}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

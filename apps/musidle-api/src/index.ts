@@ -31,7 +31,7 @@ const mongodbUrl =
     : process.env.MONGODB_URL || 'musidle';
 const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
 
-const app = express();
+export const app = express();
 app.get('/externalApi/stream', (req, res) => {
   const filePath = path.resolve(__dirname + `\\assets`, 'artist10.mp3');
   const stat = fs.statSync(filePath);

@@ -61,7 +61,7 @@ export default async function Guilds() {
                   </p>
                 </div>
                 <div className="mt-2">
-                  <JoinGuildButton id={guild._id} />
+                  <JoinGuildButton name={guild.name} />
                 </div>
               </Card>
             ))

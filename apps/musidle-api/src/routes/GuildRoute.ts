@@ -73,7 +73,6 @@ router.get('/:name', async (req, res, next) => {
 // Update a guild by name
 router.put('/:name', jsonParser, async (req, res, next) => {
   try {
-    console.log(req.body, req.params.name);
     const guild = await GuildModel.findOneAndUpdate({ name: req.params.name }, req.body, {
       new: true,
     });

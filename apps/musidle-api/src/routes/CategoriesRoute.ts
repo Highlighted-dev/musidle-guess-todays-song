@@ -66,7 +66,7 @@ router.delete(
   async (req: Request, res: ICustomResponse, next: NextFunction) => {
     try {
       await res.category.remove();
-      res.json({ message: 'Category deleted' });
+      return res.status(204).send();
     } catch (err) {
       next(err);
     }

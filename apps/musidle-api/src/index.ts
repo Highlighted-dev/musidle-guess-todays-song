@@ -20,11 +20,18 @@ import Timer from './utils/Timer';
 import CategoriesRoute from './routes/CategoriesRoute';
 import { scheduleSongUpdate } from './utils/ScheduleDailySongChange';
 import DailyRoute from './routes/DailyRoute';
-import path from 'path';
-import fs from 'fs';
 import AudioRoute from './routes/AudioRoute';
 dotenv.config();
-const port = process.env.PORT ? Number(process.env.PORT) : 5000;
+const port = () => {
+  switch (process.env.NODE_ENV) {
+    case 'production':
+      return process.env.PROD || 5000;
+    case 'development':
+      return process.env.DEV || 5000;
+    default:
+      return 0;
+  }
+};
 const mongodbUrl =
   process.env.NODE_ENV == 'production'
     ? process.env.MONGODB_URL_PROD || 'musidle'
@@ -32,18 +39,6 @@ const mongodbUrl =
 const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
 
 export const app = express();
-app.get('/externalApi/stream', (req, res) => {
-  const filePath = path.resolve(__dirname + `\\assets`, 'artist10.mp3');
-  const stat = fs.statSync(filePath);
-
-  res.writeHead(200, {
-    'Content-Type': 'audio/mpeg',
-    'Content-Length': stat.size,
-  });
-
-  const readStream = fs.createReadStream(filePath);
-  readStream.pipe(res);
-});
 const server =
   process.env.NODE_ENV == 'production'
     ? https.createServer(

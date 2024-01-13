@@ -21,7 +21,7 @@ router.get('/:songId', async (req: Request, res: Response, next: NextFunction) =
     if (!song) {
       return res.status(404).json({ message: 'Answer not found', song: null });
     }
-    return res.json({ message: 'Song found', song });
+    return res.status(200).json({ message: 'Song found', song });
   } catch (error) {
     next(error);
   }
@@ -78,13 +78,8 @@ router.get('/category/:category', async (req: Request, res: Response, next: Next
 router.delete('/:songId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const songId = req.params.songId;
-    const answer = await songModel.findOne({ songId: songId });
-
-    if (!answer) {
-      return res.status(404).json({ message: 'Answer not found' });
-    }
-
-    return res.json({ message: 'Answer deleted', answer });
+    await songModel.findOneAndDelete({ songId: songId });
+    return res.status(204).send();
   } catch (error) {
     next(error);
   }
@@ -119,7 +114,7 @@ router.post(
       shuffle(songsPhaseOne);
       shuffle(songsPhaseTwo);
 
-      return res.json({
+      return res.status(200).json({
         message: 'Songs found',
         songs: songsPhaseOne
           .slice(0, maxRoundsPhaseOne)

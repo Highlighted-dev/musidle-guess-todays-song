@@ -72,3 +72,22 @@ describe('GET /songs/category/:category', () => {
     });
   });
 });
+
+// describe('POST /songs/possibleSongs', () => {
+//   it('gets maxRoundsPhaseOne and maxRoundsPhaseTwo and returns a list of songs', async () => {
+//     const response = await request(app)
+//       .post('/externalApi/songs/possibleSongs')
+//       .send({
+//         maxRoundsPhaseOne: 4,
+//         maxRoundsPhaseTwo: 2,
+//       })
+//       .expect('Content-Type', /json/)
+//       .expect(200);
+
+//     expect(response.body.songs).toBeInstanceOf(Array);
+
+//     response.body.songs.forEach((song: ISong) => {
+//       checkSongStructure(song);
+//     });
+//   });
+// });

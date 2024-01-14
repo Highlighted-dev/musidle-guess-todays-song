@@ -20,8 +20,8 @@ const fetchGuilds = async () => {
 export default async function Guilds() {
   const guilds: IGuild[] | null = await fetchGuilds();
   return (
-    <div className="h-full w-full p-2 flex justify-center items-center">
-      <Card className="h-full w-3/5">
+    <div className="h-full w-[90%] p-2 flex justify-center items-center">
+      <Card className="h-full md:w-4/5 w-full">
         <CardHeader className="text-center">
           <CardTitle>Guilds</CardTitle>
         </CardHeader>

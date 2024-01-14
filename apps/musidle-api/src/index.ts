@@ -27,7 +27,7 @@ const port = () => {
     case 'production':
       return process.env.PROD || 5000;
     case 'development':
-      return process.env.DEV || 5000;
+      return 5000;
     default:
       return 0;
   }
@@ -223,13 +223,11 @@ io.on('connection', socket => {
 mongoose
   .connect(mongodbUrl)
   .then(() => {
-    server.listen(port, () => {
+    server.listen(port(), () => {
       console.log(
-        `Musidle API is listening on ${
-          process.env.NODE_ENV == 'production'
-            ? `https://localhost:${port}`
-            : `http://localhost:${port}`
-        }`,
+        `Musidle API is listening on ${`http://localhost:${port()}`} in ${
+          process.env.NODE_ENV
+        } mode.`,
       );
     });
   })

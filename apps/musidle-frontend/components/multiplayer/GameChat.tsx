@@ -29,8 +29,8 @@ export default function GameChat() {
   };
 
   return (
-    <div className="xl:w-[16%] w-full xl:h-full h-[20%] flex flex-col justify-center items-center min-w-[180px] relative top-0 left-0 xl:p-0 py-6 xl:max-h-[80vh] max-h-[400px]">
-      <Card className="h-full w-full">
+    <div className="xl:w-[16%] w-full xl:h-full h-[20%] flex flex-col justify-center items-center min-w-[180px] relative top-0 left-0 xl:p-0 py-6 max-h-[100vh]">
+      <Card className="h-full w-full ">
         <CardHeader className="text-center h-[10%]">
           <CardTitle>Chat</CardTitle>
         </CardHeader>

@@ -16,6 +16,7 @@ export async function generateRoomCode() {
 }
 
 export function preparePlayer(player: IPlayer, categories: ICategory[]) {
+  player.score = 0;
   player.completedCategories = categories.map((category: ICategory) => ({
     category: category.category,
     completed: false,
@@ -56,7 +57,7 @@ export async function updateRoomAfterTurnChange(
   };
 
   await roomModel.updateOne({ roomCode: roomCode }, update);
-  (req as ICustomRequest).io.in(roomCode).emit('turnChange', currentPlayer);
+  (req as ICustomRequest).io?.in(roomCode).emit('turnChange', currentPlayer);
 }
 
 export function getNewPlayersAndSpectators(players: IPlayer[]) {

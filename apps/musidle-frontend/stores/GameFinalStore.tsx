@@ -61,6 +61,6 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
           changeSongToCompleted(useAudioStore.getState().songId);
         });
     }
-    if (useAudioStore.getState().audio) useAudioStore.getState().audio?.pause();
+    if (useAudioStore.getState().audioContext) useAudioStore.getState().audioContext?.suspend();
   },
 }));

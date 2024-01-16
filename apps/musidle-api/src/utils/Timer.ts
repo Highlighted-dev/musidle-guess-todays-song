@@ -25,7 +25,7 @@ const timer = (roomCode: string, timer = 0, io: Server) => {
           return;
         }
         await roomModel.updateOne({ roomCode: roomCode }, { timer: timer });
-        io.in(roomCode).emit('timerUpdate', timer);
+        io?.in(roomCode).emit('timerUpdate', timer);
       } else {
         stop();
         const room = await roomModel.findOne({ roomCode: roomCode });

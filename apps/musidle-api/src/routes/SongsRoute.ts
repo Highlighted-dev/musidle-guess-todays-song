@@ -5,13 +5,14 @@ import bodyParser from 'body-parser';
 import axios from 'axios';
 import categoryModel from '../models/CategoryModel';
 import { ILastFmSong, ISong } from '../@types/songs';
+import { getCurrentUrl } from '../utils/GetCurrentUrl';
+import roomModel from '../models/RoomModel';
+import { IRoomSongs } from '../@types/room';
 dotenv.config();
 
 const jsonParser = bodyParser.json();
 
 const router: Router = express.Router();
-
-const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
 
 router.get('/:songId', async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,7 +35,7 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
     }
     if (!req.body.key) {
       const possibleLastFmUrls = await axios
-        .get(`${apiUrl}/externalApi/track/search/` + encodeURIComponent(req.body.value))
+        .get(`${getCurrentUrl()}/externalApi/track/search/` + encodeURIComponent(req.body.value))
         .then(res => res.data);
 
       possibleLastFmUrls.map((song: ILastFmSong) => {
@@ -65,16 +66,6 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-router.get('/category/:category', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const category = req.params.category;
-    const songs = await songModel.find({ category: category });
-    return res.json({ message: 'Songs found', songs });
-  } catch (error) {
-    next(error);
-  }
-});
-
 router.delete('/:songId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const songId = req.params.songId;
@@ -92,7 +83,9 @@ router.post(
     try {
       const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
       const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
-      const songs = await axios.get(`${apiUrl}/externalApi/songs`).then(res => res.data.songs);
+      const songs = await axios
+        .get(`${getCurrentUrl()}/externalApi/songs`)
+        .then(res => res.data.songs);
 
       const categories = await categoryModel
         .find()
@@ -132,25 +125,24 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
     const songId = req.body.songId;
     const roomCode = req.body.roomCode;
 
-    const room = await axios.get(`${apiUrl}/externalApi/rooms/${roomCode}`);
+    const room = await roomModel.findOne({ roomCode: roomCode });
 
     if (!room) {
       return res.status(404).json({ message: 'Room not found' });
     }
 
-    const songs = room.data.songs;
+    const songs = room.songs;
 
     //get all songs with category == songId in songs array
     if (songId.includes('final')) {
-      const finalSongs = songs.filter((song: ISong) => song.songId === songId);
+      const finalSongs = songs.filter((song: IRoomSongs) => song.songId === songId);
       return res.json({ message: 'Song found', songId: finalSongs[0].songId });
     } else if (songId.includes('artist')) {
-      const artistSong = songs.filter((song: ISong) => song.songId === songId);
+      const artistSong = songs.filter((song: IRoomSongs) => song.songId === songId);
       return res.json({ message: 'Song found', songId: artistSong[0].songId });
     }
 
-    const songsWithCategory = songs.filter((song: ISong) => song.category === songId);
-
+    const songsWithCategory = songs.filter((song: IRoomSongs) => song.category === songId);
     //Now loop through the songs and choose random song that does not have song.completed === true
     const song = () => {
       for (let i = 0; i < songsWithCategory.length; i++) {
@@ -160,7 +152,7 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
       }
     };
     if (!song()) return res.status(404).json({ message: 'Song not found' });
-    return res.json({ message: 'Song found', songId: song().songId });
+    return res.json({ message: 'Song found', songId: song()?.songId });
   } catch (error) {
     next(error);
   }

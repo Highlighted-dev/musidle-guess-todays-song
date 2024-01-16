@@ -14,6 +14,7 @@ import {
   updateRoomAfterTurnChange,
 } from '../utils/RoomUtils';
 import { ICustomRequest } from '../@types';
+import { getCurrentUrl } from '../utils/GetCurrentUrl';
 
 // Load environment variables
 dotenv.config();
@@ -24,10 +25,7 @@ const jsonParser = bodyParser.json();
 // Create a new router
 const router: Router = express.Router();
 
-// Determine the API URL based on the environment
-const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
-
-router.post('/join', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.body.player) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
@@ -36,13 +34,13 @@ router.post('/join', jsonParser, async (req: Request, res: Response, next: NextF
     const roomCode = req.body.roomCode || (await generateRoomCode());
     let room = await roomModel.findOne({ roomCode });
     const categories = await axios
-      .get(`${apiUrl}/externalApi/categories`)
+      .get(`${getCurrentUrl()}/externalApi/categories`)
       .then(response => response.data);
     const player = preparePlayer(req.body.player, categories);
 
     if (!room) {
       const songs = await axios
-        .post(`${apiUrl}/externalApi/songs/possibleSongs`, {
+        .post(`${getCurrentUrl()}/externalApi/songs/possibleSongs`, {
           maxRoundsPhaseOne: req.body.maxRoundsPhaseOne,
           maxRoundsPhaseTwo: req.body.maxRoundsPhaseTwo,
         })
@@ -159,7 +157,7 @@ router.post('/start', jsonParser, async (req: Request, res: Response, next: Next
     const random = Math.floor(Math.random() * room.players.length);
     const currentPlayer = room.players[random];
 
-    (req as ICustomRequest).io.in(roomCode).emit('togglePhaseOne', currentPlayer);
+    (req as ICustomRequest).io?.in(roomCode).emit('togglePhaseOne', currentPlayer);
 
     await roomModel.findOneAndUpdate(
       { roomCode: roomCode },
@@ -209,7 +207,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
     if (!playerId || !songId || !time)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
 
-    const response = await axios.get(`${apiUrl}/externalApi/songs/${songId}`);
+    const response = await axios.get(`${getCurrentUrl()}/externalApi/songs/${songId}`);
     const correctAnswer = response.data.song;
 
     const score = calculateScore(time, songId);
@@ -249,7 +247,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
       return res.status(404).json({ status: 'error', message: 'Answer not found' });
     }
 
-    await axios.post(`${apiUrl}/externalApi/rooms/updateScore`, {
+    await axios.post(`${getCurrentUrl()}/externalApi/rooms/updateScore`, {
       roomCode,
       playerId,
       score: isAnswerCorrect ? score : 0,
@@ -263,7 +261,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
         );
         if (songs?.length === 6) {
           //If all songs with category 'final' are completed, then add +1 to round
-          await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
+          await axios.post(`${getCurrentUrl()}/externalApi/rooms/turnChange`, {
             roomCode: roomCode,
             songId: songId,
           });

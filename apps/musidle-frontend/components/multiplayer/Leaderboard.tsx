@@ -23,7 +23,7 @@ function Leaderboard() {
                     <Label
                       className={currentPlayer?._id == player._id ? 'text-green-600' : undefined}
                     >
-                      {player.name}
+                      {player.username}
                     </Label>
                     <Label>{player.score}</Label>
                   </div>
@@ -40,7 +40,7 @@ function Leaderboard() {
               <div className="flex flex-col">
                 {spectators?.map((spectator, index) => (
                   <div className="flex justify-between" key={index}>
-                    <Label>{spectator.name}</Label>
+                    <Label>{spectator.username}</Label>
                   </div>
                 ))}
               </div>

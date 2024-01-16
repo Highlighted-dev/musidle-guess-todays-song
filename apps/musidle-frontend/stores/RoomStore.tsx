@@ -71,12 +71,11 @@ export const useRoomStore = create<IRoomStore>(set => ({
     })),
   random: 0,
   joinAsSpectator: async (roomCode: string) => {
-    await axios.post(`/externalApi/rooms/join`, {
+    await axios.post(`/externalApi/rooms/`, {
       roomCode: roomCode,
       player: {
         _id: useNextAuthStore.getState().session?.user?._id,
-        name: useNextAuthStore.getState().session?.user?.username,
-        score: 0,
+        username: useNextAuthStore.getState().session?.user?.username,
       },
       asSpectator: true,
     });

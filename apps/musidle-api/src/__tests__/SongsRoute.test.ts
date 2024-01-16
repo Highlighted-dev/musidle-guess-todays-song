@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../index';
 import { ISong } from '../@types/songs';
 
-const checkSongStructure = (song: ISong) => {
+export const checkSongStructure = (song: ISong) => {
   expect(song).toHaveProperty('_id');
   expect(song).toHaveProperty('category');
   expect(song).toHaveProperty('wasInDaily');
@@ -58,10 +58,14 @@ describe('DELETE /songs/:songId', () => {
   });
 });
 
-describe('GET /songs/category/:category', () => {
-  it('gets a category and returns all songs with that category', async () => {
+describe('POST /songs/possibleSongs', () => {
+  it('gets maxRoundsPhaseOne and maxRoundsPhaseTwo and returns a list of songs', async () => {
     const response = await request(app)
-      .get('/externalApi/songs/category/TestCategory')
+      .post('/externalApi/songs/possibleSongs')
+      .send({
+        maxRoundsPhaseOne: 4,
+        maxRoundsPhaseTwo: 2,
+      })
       .expect('Content-Type', /json/)
       .expect(200);
 
@@ -72,22 +76,3 @@ describe('GET /songs/category/:category', () => {
     });
   });
 });
-
-// describe('POST /songs/possibleSongs', () => {
-//   it('gets maxRoundsPhaseOne and maxRoundsPhaseTwo and returns a list of songs', async () => {
-//     const response = await request(app)
-//       .post('/externalApi/songs/possibleSongs')
-//       .send({
-//         maxRoundsPhaseOne: 4,
-//         maxRoundsPhaseTwo: 2,
-//       })
-//       .expect('Content-Type', /json/)
-//       .expect(200);
-
-//     expect(response.body.songs).toBeInstanceOf(Array);
-
-//     response.body.songs.forEach((song: ISong) => {
-//       checkSongStructure(song);
-//     });
-//   });
-// });

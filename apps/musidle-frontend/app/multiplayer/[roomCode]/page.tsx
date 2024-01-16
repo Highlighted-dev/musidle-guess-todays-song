@@ -11,9 +11,9 @@ export default async function Page({ params }: { params: { roomCode: string } })
   const session = await getServerSession(authOptions);
   let url;
   if (process.env.NODE_ENV === 'development') {
-    url = new URL('http://localhost:4200/externalApi/rooms/join');
+    url = new URL('http://localhost:4200/externalApi/rooms/');
   } else {
-    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/rooms/join`);
+    url = new URL(`${process.env.NEXT_PUBLIC_API_HOST}/externalApi/rooms/`);
   }
   const data = await fetch(url, {
     method: 'POST',
@@ -24,8 +24,7 @@ export default async function Page({ params }: { params: { roomCode: string } })
       roomCode: params.roomCode == 'null' ? null : params.roomCode,
       player: {
         _id: session?.user._id,
-        name: session?.user.username,
-        score: 0,
+        username: session?.user.username,
       },
     }),
   })

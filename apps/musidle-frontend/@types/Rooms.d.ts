@@ -2,7 +2,7 @@ import { Socket } from 'socket.io-client';
 
 export type IPlayer = {
   _id: string;
-  name: string;
+  username: string;
   score: number;
   completedCategories: IPlayerCategories[];
   votedForTurnSkip: boolean;

@@ -1,6 +1,6 @@
 export interface IPlayer {
   _id: string;
-  name: string;
+  username: string;
   score: number;
   completedCategories: IPlayerCategories[];
   votedForTurnSkip: boolean;
@@ -31,11 +31,11 @@ export interface IRoom {
   timer: number;
   maxTimer: number;
   votesForTurnSkip: number;
-  songs: [
-    {
-      songId: string;
-      category: string;
-      completed: boolean;
-    },
-  ];
+  songs: IRoomSongs[];
+}
+
+export interface IRoomSongs {
+  songId: string;
+  category: string;
+  completed: boolean;
 }

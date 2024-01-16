@@ -21,7 +21,9 @@ import CategoriesRoute from './routes/CategoriesRoute';
 import { scheduleSongUpdate } from './utils/ScheduleDailySongChange';
 import DailyRoute from './routes/DailyRoute';
 import AudioRoute from './routes/AudioRoute';
+import { getCurrentUrl } from './utils/GetCurrentUrl';
 dotenv.config();
+
 const port = () => {
   switch (process.env.NODE_ENV) {
     case 'production':
@@ -32,14 +34,14 @@ const port = () => {
       return 0;
   }
 };
+
 const mongodbUrl =
   process.env.NODE_ENV == 'production'
     ? process.env.MONGODB_URL_PROD || 'musidle'
     : process.env.MONGODB_URL || 'musidle';
-const apiUrl = process.env.NODE_ENV == 'production' ? process.env.API_URL : 'http://localhost:5000';
 
 export const app = express();
-const server =
+export const server =
   process.env.NODE_ENV == 'production'
     ? https.createServer(
         {
@@ -66,7 +68,7 @@ function removeUserFromUsersMap(user: IUsers) {
 }
 
 async function removeUserFromRoom(user: IUsers, io: Server) {
-  const response = await axios.post(`${apiUrl}/externalApi/rooms/leave`, {
+  const response = await axios.post(`${getCurrentUrl()}/externalApi/rooms/leave`, {
     roomCode: user.roomCode,
     playerId: user.id,
   });
@@ -129,7 +131,7 @@ io.on('connection', socket => {
   });
   socket.on('chooseSong', async (songId: string, roomCode, phase) => {
     const song: string = await axios
-      .post(`${apiUrl}/externalApi/songs/chooseSong`, {
+      .post(`${getCurrentUrl()}/externalApi/songs/chooseSong`, {
         roomCode: roomCode,
         songId: songId,
       })
@@ -164,7 +166,7 @@ io.on('connection', socket => {
     socket.to(roomCode).emit('answerSubmit', score, player, answer);
   });
   socket.on('turnChange', async (roomCode, songId) => {
-    await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
+    await axios.post(`${getCurrentUrl()}/externalApi/rooms/turnChange`, {
       roomCode: roomCode,
       songId: songId,
     });
@@ -198,7 +200,7 @@ io.on('connection', socket => {
       const players = room.players.filter(player => player.votedForTurnSkip === true);
       //if there is only one player in a room or all players - 1 voted for turn skip, then call turnChange endpoint and set votedForTurnSkip to false for every player
       if (room.players.length === 1 ? 1 : room.players.length - 1 === players.length) {
-        await axios.post(`${apiUrl}/externalApi/rooms/turnChange`, {
+        await axios.post(`${getCurrentUrl()}/externalApi/rooms/turnChange`, {
           roomCode: roomCode,
           songId: songId,
         });
@@ -225,9 +227,7 @@ mongoose
   .then(() => {
     server.listen(port(), () => {
       console.log(
-        `Musidle API is listening on ${`http://localhost:${port()}`} in ${
-          process.env.NODE_ENV
-        } mode.`,
+        `Musidle API is listening on ${getCurrentUrl()} in ${process.env.NODE_ENV} mode.`,
       );
     });
   })

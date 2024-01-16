@@ -5,8 +5,8 @@ import Link from 'next/link';
 export default async function Page() {
   return (
     <div className="xl:h-4/5 h-full w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center relative xl:min-h-0 min-h-screen">
-      <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full xl:min-h-0 min-h-screen">
-        <div className="h-full xl:min-h-0 min-h-screen">
+      <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full xl:min-h-0 min-h-screen relative">
+        <div className="h-full xl:min-h-0 min-h-screen ">
           <CardHeader className="text-center h-1/6">
             <CardTitle>Welcome to Musidle</CardTitle>
             <CardDescription>

@@ -19,8 +19,8 @@ function GamePhase2() {
       {selectMode ? (
         <GameMultiplayerLayout />
       ) : (
-        <Card className="float-left flex flex-col justify-center xl:absolute top-0 left-[16.5%] items-center h-full xl:w-[67%] w-full xl:min-h-0 min-h-screen">
-          <div className=" h-full w-full">
+        <div className=" xl:w-[67%] w-full xl:h-full h-[50%] flex flex-col justify-center items-center min-w-[180px] relative top-0 right-0 xl:p-0 py-6 mx-2">
+          <Card className="h-full w-full">
             <CardHeader className=" text-center">
               <CardTitle className=" font-bold">Choose an artist</CardTitle>
             </CardHeader>
@@ -81,8 +81,8 @@ function GamePhase2() {
                   ))}
               </div>
             </CardContent>
-          </div>
-        </Card>
+          </Card>
+        </div>
       )}
     </>
   );

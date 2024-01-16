@@ -40,7 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </header>
             <main className="flex-grow">
-              <div className="flex justify-center items-center w-full h-full text-white m-0 p-0 xl:min-h-0 min-h-screen">
+              <div className="flex justify-center items-center w-full h-full text-white m-0 p-0">
                 {children}
               </div>
             </main>

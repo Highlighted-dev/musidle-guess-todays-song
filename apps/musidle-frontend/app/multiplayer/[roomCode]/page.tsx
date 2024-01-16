@@ -61,8 +61,8 @@ export default async function Page({ params }: { params: { roomCode: string } })
     return (
       <>
         <RoomStoreInitializer data={data} buffer={buffer()} />
-        <GameController params={params} />
         <GameChat />
+        <GameController params={params} />
         <Leaderboard />
       </>
     );

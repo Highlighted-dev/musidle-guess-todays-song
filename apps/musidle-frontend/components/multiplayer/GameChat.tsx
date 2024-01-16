@@ -29,31 +29,25 @@ export default function GameChat() {
   };
 
   return (
-    <div className="xl:w-[16%] w-full xl:h-full h-[70%] flex flex-col justify-center items-center min-w-[180px] xl:absolute top-0 left-0 xl:p-0 py-6">
-      <div className=" h-full w-full ">
-        <Card className="h-full w-full">
-          <CardHeader className="text-center h-[10%]">
-            <CardTitle>Chat</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col h-[90%]">
-            <div className="xl:h-[90%] h-[90%] overflow-auto m-1">
-              {messages.map((message, index) => (
-                <div key={index}>{message}</div>
-              ))}
-            </div>
-            <div className="flex justify-between h-[10%] w-full">
-              <Input
-                value={message}
-                onChange={e => setMessage(e.target.value)}
-                className="w-[65%]"
-              />
-              <Button className="w-[30%]" onClick={sendMessage}>
-                Send
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+    <div className="xl:w-[16%] w-full xl:h-full h-[20%] flex flex-col justify-center items-center min-w-[180px] relative top-0 left-0 xl:p-0 py-6 xl:max-h-[80vh] max-h-[400px]">
+      <Card className="h-full w-full">
+        <CardHeader className="text-center h-[10%]">
+          <CardTitle>Chat</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col h-[90%]">
+          <div className="xl:h-[90%] h-[50%] overflow-auto m-1">
+            {messages.map((message, index) => (
+              <div key={index}>{message}</div>
+            ))}
+          </div>
+          <div className="flex justify-between xl:h-[10%] h-auto w-full">
+            <Input value={message} onChange={e => setMessage(e.target.value)} className="w-[65%]" />
+            <Button className="w-[30%]" onClick={sendMessage}>
+              Send
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

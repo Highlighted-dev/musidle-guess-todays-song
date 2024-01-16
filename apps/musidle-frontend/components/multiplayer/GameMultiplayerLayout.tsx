@@ -20,7 +20,7 @@ function GameMultiplayerLayout() {
   const { audio, songId, handlePlay, audioContext, changeStage } = useAudioStore();
 
   return (
-    <Card className="float-left flex flex-col justify-center xl:absolute top-0 left-[16.5%] items-center h-full xl:w-[67%] w-full xl:min-h-0 min-h-screen">
+    <Card className="float-left flex flex-col justify-center xl:absolute items-center xl:h-full h-auto xl:w-[67%] w-full flex-grow">
       <CardHeader className=" text-center w-full">
         <div className="flex justify-between items-center">
           <label className=" w-24 font-semibold text-xs flex justify-center items-center">

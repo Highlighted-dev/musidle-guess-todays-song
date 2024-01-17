@@ -7,6 +7,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { useSocketStore } from '@/stores/SocketStore';
 import { useSession } from 'next-auth/react';
+import GameInstructionsHover from '../game-related/GameInstructionsHover';
 
 function GamePhase2() {
   const user = useSession().data?.user;
@@ -21,8 +22,16 @@ function GamePhase2() {
       ) : (
         <div className=" xl:w-[67%] w-full xl:h-full h-[50%] flex flex-col justify-center items-center min-w-[180px] relative top-0 right-0 xl:p-0 py-6 mx-2">
           <Card className="h-full w-full">
-            <CardHeader className=" text-center">
-              <CardTitle className=" font-bold">Choose an artist</CardTitle>
+            <CardHeader className=" text-center h-[12%] w-full">
+              <div className="flex justify-between items-center">
+                <label className=" w-24 font-semibold text-xs flex justify-center items-center">
+                  v{process.env.NEXT_PUBLIC_VERSION}
+                </label>
+                <div>
+                  <CardTitle>Choose an artist</CardTitle>
+                </div>
+                <GameInstructionsHover />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4 w-full">

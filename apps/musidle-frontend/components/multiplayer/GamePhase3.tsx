@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { useGameFinalStore } from '@/stores/GameFinalStore';
 import { useSession } from 'next-auth/react';
+import GameInstructionsHover from '../game-related/GameInstructionsHover';
 function GamePhase3() {
   const user = useSession().data?.user;
   const { currentPlayer, handleChooseCategory } = useRoomStore();
@@ -43,8 +44,16 @@ function GamePhase3() {
     <div className=" xl:w-[67%] w-full xl:h-full h-[60%] flex flex-col justify-center items-center min-w-[180px] relative top-0 right-0 xl:p-0 py-6 mx-2">
       <Card className="h-full w-full">
         <div className="h-3/5 w-full">
-          <CardHeader className="text-center h-1/5">
-            <CardTitle className="font-bold">FINAL ROUND</CardTitle>
+          <CardHeader className=" text-center h-[20%] w-full">
+            <div className="flex justify-between items-center">
+              <label className=" w-24 font-semibold text-xs flex justify-center items-center">
+                v{process.env.NEXT_PUBLIC_VERSION}
+              </label>
+              <div>
+                <CardTitle>Final Round</CardTitle>
+              </div>
+              <GameInstructionsHover />
+            </div>
           </CardHeader>
           <CardContent className="flex flex-col justify-center items-center h-4/5">
             <div className="grid grid-cols-3 gap-2 w-full h-full">

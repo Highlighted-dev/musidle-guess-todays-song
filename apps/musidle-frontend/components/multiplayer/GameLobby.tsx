@@ -8,6 +8,7 @@ import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTimerStore } from '@/stores/TimerStore';
+import GameInstructionsHover from '../game-related/GameInstructionsHover';
 
 export default function GameLobby(params: { roomCode: string }) {
   const { maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame, leaveRoom, roomCode } =
@@ -20,9 +21,17 @@ export default function GameLobby(params: { roomCode: string }) {
   return (
     <div className=" xl:w-[67%] w-full xl:h-full h-[50%] flex flex-col justify-center items-center min-w-[180px] relative top-0 right-0 xl:p-0 py-6 mx-2">
       <Card className="h-full w-full">
-        <CardHeader className=" text-center h-[15%]">
-          <CardTitle>Game lobby</CardTitle>
-          <Label className="text-popover-foreground">{roomCode.toUpperCase()}</Label>
+        <CardHeader className=" text-center h-[15%] w-full">
+          <div className="flex justify-between items-center">
+            <label className=" w-24 font-semibold text-xs flex justify-center items-center">
+              v{process.env.NEXT_PUBLIC_VERSION}
+            </label>
+            <div>
+              <CardTitle>Game lobby</CardTitle>
+              <Label className="text-popover-foreground">{roomCode.toUpperCase()}</Label>
+            </div>
+            <GameInstructionsHover />
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col h-[85%] w-full">
           <div className="h-[90%]">

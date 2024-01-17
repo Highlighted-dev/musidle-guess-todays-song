@@ -7,6 +7,7 @@ import { useRoomStore } from '@/stores/RoomStore';
 import { useSession } from 'next-auth/react';
 import { IPlayerCategories } from '@/@types/Categories';
 import { useAnswerStore } from '@/stores/AnswerStore';
+import GameInstructionsHover from '../game-related/GameInstructionsHover';
 
 export default function GamePhase1() {
   const user = useSession().data?.user;
@@ -28,8 +29,16 @@ export default function GamePhase1() {
       ) : (
         <div className=" xl:w-[67%] w-full xl:h-full h-[50%] flex flex-col justify-center items-center min-w-[180px] relative top-0 right-0 xl:p-0 py-6 mx-2">
           <Card className="h-full w-full">
-            <CardHeader className=" text-center">
-              <CardTitle>Choose category</CardTitle>
+            <CardHeader className=" text-center h-[12%] w-full">
+              <div className="flex justify-between items-center">
+                <label className=" w-24 font-semibold text-xs flex justify-center items-center">
+                  v{process.env.NEXT_PUBLIC_VERSION}
+                </label>
+                <div>
+                  <CardTitle>Choose category</CardTitle>
+                </div>
+                <GameInstructionsHover />
+              </div>
             </CardHeader>
             <CardContent className="h-full w-full">
               <div className="flex flex-col space-y-4 w-full">

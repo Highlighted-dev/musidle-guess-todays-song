@@ -39,7 +39,7 @@ export default async function Page() {
         <CardHeader className=" text-center">
           <CardTitle>Choose Lobby</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col h-full w-full">
+        <CardContent className="flex flex-col h-full w-full overflow-y-auto">
           <div className="h-[92%]">
             {rooms?.length ? (
               rooms.map((room: IRoom, index: number) => (

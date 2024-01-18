@@ -13,7 +13,7 @@ export default async function Page() {
           <Label>
             <label className="font-bold">1. How is it legal</label> - The person that is responsible
             for this website residents in Poland. Here, we have a{' '}
-            <a href="https://pl.wikipedia.org/wiki/Prawo_cytatu" className=" underline">
+            <a href="https://en.wikipedia.org/wiki/Right_to_quote" className=" underline">
               &apos;quotation right&apos;,
             </a>{' '}
             which basically means that we can use a small part of the song (we are using up to 12s,

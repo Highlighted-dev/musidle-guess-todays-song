@@ -25,7 +25,7 @@ export default async function Guilds() {
         <CardHeader className="text-center">
           <CardTitle>Guilds</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-y-auto">
           {guilds ? (
             guilds?.map(guild => (
               <Card

@@ -20,6 +20,35 @@ A step by step series of examples that tell you how to get a development environ
 1. Clone the repository: `git clone https://github.com/Highlighted-dev/musidle-guess-todays-song`
 2. Navigate into the project directory: `cd musidle-guess-todays-song`
 3. Install the dependencies: `npm install`
+4. Add the an .env file in `/apps/musidle-frontend` with:
+
+```
+NEXT_PUBLIC_API_HOST =
+NEXTAUTH_URL=
+NEXTAUTH_URL_PROD=
+NEXTAUTH_SECRET =
+MONGODB_URL =
+MONGODB_URL_PROD =
+JWT_SECRET =
+NEXT_PUBLIC_VERSION=
+```
+
+and an .env file in `/apps/musidle-api` with:
+
+```
+LASTFM_API_KEY =
+MONGODB_URL =
+MONGODB_URL_PROD =
+JWT_SECRET =
+PORT =
+API_URL =
+MAILGUN_API_KEY =
+SERVER_KEY =
+SERVER_CERT =
+SERVER_CA =
+INTERMIDIATE_CA=
+```
+
 4. Start the development server: `nx serve musidle-frontend` and `nx serve musidle-api`
 
 Now, open your browser and navigate to http://localhost:4200/. Happy coding!

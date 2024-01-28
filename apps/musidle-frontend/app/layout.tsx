@@ -1,13 +1,12 @@
 import '../styles/global.css';
 import React from 'react';
-import LoginAndRegister from '@/components/LoginAndRegister';
 import { Toaster } from '@/components/ui/toaster';
-import { Label } from '@/components/ui/label';
-import Navbar from '@/components/Navbar';
 import NextAuthProvider from '@/components/NextAuthProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/route';
 import { TriggerCookieSheet } from '@/components/CookiesSheet';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'Musidle',
@@ -32,26 +31,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <TriggerCookieSheet />
           <div className="flex flex-col w-full h-full xl:min-h-0 min-h-screen">
             <header>
-              <div className="flex w-full h-[50px] p-5 z-10 relative justify-center items-center">
-                <Navbar />
-                <div className="absolute right-0 p-2 z-20">
-                  <LoginAndRegister />
-                </div>
-              </div>
+              <Navbar sectionClassname="fixed top-0 z-50 w-full bg-background p-1" />
             </header>
             <main className="flex-grow">
               <div className="flex justify-center items-center w-full h-full text-white m-0 p-0">
                 {children}
               </div>
             </main>
-            <footer>
-              <div className="h-[50px] flex justify-center w-full py-4 relative bottom-0">
-                <div className="flex justify-between ">
-                  <Label>Made with ❤️ by Highlighted-dev |</Label>
-                  <Label>&nbsp;v{process.env.NEXT_PUBLIC_VERSION}</Label>
-                </div>
-              </div>
-            </footer>
+            <Footer />
           </div>
         </NextAuthProvider>
       </body>

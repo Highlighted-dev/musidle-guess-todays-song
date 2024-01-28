@@ -1,3 +1,4 @@
+import Footer from '@/components/Footer';
 import React from 'react';
 
 export default async function ProfileLayout({ children }: { children: React.ReactNode }) {

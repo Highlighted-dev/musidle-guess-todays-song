@@ -50,13 +50,13 @@ export default async function Page({ params }: { params: { roomCode: string } })
   if (!data) {
     return (
       <Redirecter
-        url={`/multiplayer`}
+        url={`/games/multiplayer`}
         message={`The room you tried to join is full, does not exist or you are already in a different room.`}
         variant={'destructive'}
       />
     );
   } else if (params.roomCode == 'null') {
-    return <Redirecter url={`/multiplayer/${data.roomCode}`} />;
+    return <Redirecter url={`/games/multiplayer/${data.roomCode}`} />;
   } else
     return (
       <>

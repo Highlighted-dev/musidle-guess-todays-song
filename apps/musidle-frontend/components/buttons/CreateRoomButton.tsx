@@ -25,7 +25,7 @@ export default function JoinRoomButton({
       });
       return;
     }
-    router.push(`/multiplayer/${roomCode}`);
+    router.push(`/games/multiplayer/${roomCode}`);
   };
 
   return (

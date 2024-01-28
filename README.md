@@ -2,10 +2,6 @@
 
 This is a music guessing game where players have to guess the song of the day.
 
-## State of the project
-
-The project is currently _abandoned_. I really liked the project, but as I use copyrighted material I may get sued if this gets popular, even when I am not making any money from it. Some things are definetly not ready for production, keep that in mind. Some things may also be a little messy, as the project isn't finished, keep that in mind.
-
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.

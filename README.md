@@ -24,7 +24,8 @@ A step by step series of examples that tell you how to get a development environ
 1. Clone the repository: `git clone https://github.com/Highlighted-dev/musidle-guess-todays-song`
 2. Navigate into the project directory: `cd musidle-guess-todays-song`
 3. Install the dependencies: `npm install`
-4. Add the an .env file in `/apps/musidle-frontend` with these variables (if they are empty you should fill them up):
+4. Make a dev and prod databases (I named them `musidle` for development and `musidle-prod` for production) in mongoDB.
+5. Add the an .env file in `/apps/musidle-frontend` with these variables (if they are empty you should fill them up):
 
 ```
 NEXT_PUBLIC_API_HOST =
@@ -53,9 +54,7 @@ SERVER_CA =
 INTERMIDIATE_CA=
 ```
 
-5. Create an 'assets' folder in `/apps/musidle-api/src/` and put any songs that you would want there. The songs that were used in project were named like that: `pop1.mp3`, `rock8.mp3` etc. for phase one, `artist1.mp3` etc. for phase 2, `final1.mp3` etc. for phase 3.
-
-6. Make a dev and prod databases (I named them `musidle` for development and `musidle-prod` for production) in mongoDB.
+6. Create an 'assets' folder in `/apps/musidle-api/src/` and put any songs that you would want there. The songs that were used in project were named like that: `pop1.mp3`, `rock8.mp3` etc. for phase one, `artist1.mp3` etc. for phase 2, `final1.mp3` etc. for phase 3.
 
 7. Start the development server: `nx serve musidle-frontend` and `nx serve musidle-api`
 
@@ -77,8 +76,6 @@ To run tests use `nx run musidle-api:test`
 
 - Highlighted-dev - Initial work - [Highlighted-dev](https://github.com/Highlighted-dev)
 
-See also the list of [contributors](https://github.com/yourusername/MusidleGuessTodaysSong/contributors) who participated in this project.
-
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License - see the [LICENSE.md](LICENSE.md) file for details

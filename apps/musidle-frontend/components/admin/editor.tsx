@@ -61,15 +61,6 @@ export default function Editor({ post }: { post: { title: string } }) {
           underline: Underline,
         },
       });
-      document.addEventListener('keydown', function (event) {
-        if (event.key === 'Tab') {
-          event.preventDefault(); // Prevent the default "Tab" key action
-
-          // Trigger the "Add" action
-          // Replace this with the actual code to trigger the "Add" action in EditorJS
-          editor.blocks.insert();
-        }
-      });
     }
   }, [post]);
 
@@ -93,10 +84,10 @@ export default function Editor({ post }: { post: { title: string } }) {
             id="title"
             defaultValue={post.title}
             placeholder="Post title"
-            className="w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none"
+            className="w-full resize-none  overflow-hidden bg-transparent text-5xl font-bold p-2 text-foreground"
             {...register('title')}
           />
-          <div id="editor" className="min-h-[500px]" />
+          <div id="editor" className="min-h-[500px] p-2" />
         </div>
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center space-x-10">

@@ -7,7 +7,7 @@
 .ce-toolbar__settings-btn,
 .cdx-button,
 .ce-popover,
-.ce-toolbar__plus:hover {
+.ce-toolbar__plus {
   background: theme('colors.popover.DEFAULT');
   color: inherit;
   border-color: theme('colors.border');
@@ -27,8 +27,7 @@
 .ce-inline-tool,
 .ce-conversion-toolbar__label,
 .ce-toolbox__button,
-.cdx-settings-button,
-.ce-toolbar__plus {
+.cdx-settings-button {
   color: inherit;
 }
 
@@ -65,7 +64,8 @@
 .ce-inline-tool:hover,
 .ce-conversion-tool:hover,
 .ce-popover-item:hover,
-.ce-toolbar__settings-btn:hover {
+.ce-toolbar__settings-btn:hover,
+.ce-toolbar__plus:hover {
   background-color: theme('colors.accent.DEFAULT') !important;
   color: theme('colors.accent.foreground');
 }

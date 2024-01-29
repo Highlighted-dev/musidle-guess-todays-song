@@ -31,7 +31,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <TriggerCookieSheet />
           <div className="flex flex-col w-full h-full xl:min-h-0 min-h-screen">
             <header>
-              <Navbar sectionClassname="fixed top-0 z-50 w-full bg-background p-1" />
+              <Navbar sectionClassname="fixed top-0 z-50 w-full bg-background p-1 border-b" />
             </header>
             <main className="flex-grow">
               <div className="flex justify-center items-center w-full h-full text-white m-0 p-0">

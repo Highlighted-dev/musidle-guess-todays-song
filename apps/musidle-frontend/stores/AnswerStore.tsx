@@ -152,7 +152,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
             key: 'no-song',
           },
         ]);
-        router.push('/daily');
+        useAudioStore.getState().audioContext?.suspend();
         router.refresh();
       }, 4000);
     }

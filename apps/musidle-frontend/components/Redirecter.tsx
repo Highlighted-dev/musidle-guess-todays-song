@@ -3,7 +3,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from './ui/use-toast';
 
-// This component is used to redirect the user to the correct room if they are creating a room
 export default function Redirecter({
   url,
   variant,
@@ -16,17 +15,19 @@ export default function Redirecter({
   message?: string;
 }) {
   const router = useRouter();
-  if (message) {
-    toast({
-      variant: variant || 'default',
-      title: title || 'You have been redirected',
-      description: message,
-      style: { whiteSpace: 'pre-line' },
-    });
-  }
+
   useEffect(() => {
     router.replace(url);
     router.refresh();
-  });
+    if (message) {
+      toast({
+        variant: variant || 'default',
+        title: title || 'You have been redirected',
+        description: message,
+        style: { whiteSpace: 'pre-line' },
+      });
+    }
+  }, [message, router, title, url, variant]);
+
   return null;
 }

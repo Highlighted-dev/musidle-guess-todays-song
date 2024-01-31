@@ -2,10 +2,7 @@ import Link from 'next/link';
 import { CardHeader, CardContent, Card } from '@/components/ui/card';
 import Image from 'next/image';
 import { EmptyPlaceholder } from '@/components/ui/empty-placeholder';
-import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import Navbar from '@/components/Navbar';
 
 export default async function Page() {
   return (

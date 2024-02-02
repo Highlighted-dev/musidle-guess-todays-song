@@ -11,8 +11,8 @@ export interface IArticleModel extends Document {
 
 const articleSchema: Schema = new Schema(
   {
-    title: { type: String, required: true },
-    content: { type: Schema.Types.Mixed, required: true },
+    title: { type: String },
+    content: { type: Schema.Types.Mixed },
     author: { type: Object, required: true },
   },
   { versionKey: false },

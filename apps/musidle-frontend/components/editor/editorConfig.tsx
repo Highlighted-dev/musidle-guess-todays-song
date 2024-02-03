@@ -1,15 +1,15 @@
+'use client';
 import StarterKit from '@tiptap/starter-kit';
-import ListItem from '@tiptap/extension-list-item';
-import OrderedList from '@tiptap/extension-ordered-list';
-import Strike from '@tiptap/extension-strike';
-import Italic from '@tiptap/extension-italic';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
-import { Document } from '@tiptap/extension-document';
-import { Paragraph } from '@tiptap/extension-paragraph';
-import { Text } from '@tiptap/extension-text';
-import { Bold } from '@tiptap/extension-bold';
-import { Heading } from '@tiptap/extension-heading';
+import { Highlight } from '@tiptap/extension-highlight';
+import { Underline } from '@tiptap/extension-underline';
+import { Image } from '@tiptap/extension-image';
+import { Link } from '@tiptap/extension-link';
+import { Table } from '@tiptap/extension-table';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
 import { generateHTML } from '@tiptap/html';
 import { JSONContent } from '@tiptap/react';
 
@@ -36,30 +36,47 @@ export const editorExtensions = [
       },
     },
   }),
-  Document,
-  Paragraph,
-  Bold,
-  Heading,
-  ListItem,
-  OrderedList,
-  Strike,
-  Italic,
+
   Color,
   TextStyle,
+  Highlight.configure({
+    HTMLAttributes: {
+      class: 'bg-[#1d283a] text-[#f8fafc] ',
+    },
+  }),
+  Underline,
+  Image,
+  Link.configure({
+    autolink: true,
+    openOnClick: true,
+    HTMLAttributes: {
+      class: 'text-primary underline hover:no-underline cursor-pointer',
+    },
+  }),
+  Table.configure({
+    resizable: true,
+    HTMLAttributes: {
+      class: 'w-full',
+    },
+  }),
+  TableRow.configure({
+    HTMLAttributes: {
+      class: 'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
+    },
+  }),
+  TableCell.configure({
+    HTMLAttributes: {
+      class:
+        'p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] font-medium border-l border-r border-input',
+    },
+  }),
+  TableHeader.configure({
+    HTMLAttributes: {
+      class: '[&_tr]:border-b bg-muted/50 text-muted-foreground font-medium',
+    },
+  }),
 ];
 
 export const generateHTMLFromJson = (json: JSONContent) => {
-  return generateHTML(json, [
-    Document,
-    Paragraph,
-    Text,
-    Bold,
-    Heading,
-    ListItem,
-    OrderedList,
-    Strike,
-    Italic,
-    Color,
-    TextStyle,
-  ]);
+  return generateHTML(json, editorExtensions);
 };

@@ -94,10 +94,11 @@ function Editor({
             </Button>
           </div>
           <p className="text-sm text-gray-500">
-            Use <kbd className="rounded-md border bg-muted px-1 text-xs uppercase">/</kbd> to open
-            the command menu and{' '}
-            <kbd className="rounded-md border bg-muted px-1 text-xs uppercase">CTRL + /</kbd> to
-            open tune menu.
+            Check{' '}
+            <kbd className="rounded-md border bg-muted px-1 text-xs">
+              <Link href={'https://tiptap.dev/docs/editor/introduction'}>TipTap docs</Link>
+            </kbd>{' '}
+            for useful hotkeys
           </p>
           <Button type="submit">
             {isSaving && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}

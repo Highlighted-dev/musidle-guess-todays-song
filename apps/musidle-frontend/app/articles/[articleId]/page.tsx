@@ -1,0 +1,41 @@
+import Redirecter from '@/components/Redirecter';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import '../../../styles/editor.css';
+import React from 'react';
+import { Separator } from '@/components/ui/separator';
+import DOMPurify from 'isomorphic-dompurify';
+
+async function getArticle(articleId: string) {
+  try {
+    const post = await fetch(getCurrentUrl() + `/externalApi/articles/${articleId}`, {
+      cache: 'no-store',
+    }).then(res => res.json());
+    return post;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export default async function Articles({ params }: { params: { articleId: string } }) {
+  const articleData = await getArticle(params.articleId);
+  if (!articleData) {
+    <Redirecter
+      url={`/`}
+      message={`The article you tried to open does not exist.`}
+      variant={'default'}
+    />;
+  }
+  const sanitizedHTML = () => {
+    return { __html: DOMPurify.sanitize(articleData.content) };
+  };
+  return (
+    <div className="h-full w-full py-12">
+      <div className="container px-4 md:px-6">
+        <h1 className="text-5xl font-bold">{articleData.title}</h1>
+        <Separator className="my-4" />
+        <div dangerouslySetInnerHTML={sanitizedHTML()} id={'editor'} />
+      </div>
+    </div>
+  );
+}

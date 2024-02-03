@@ -47,7 +47,7 @@ export default async function Page() {
               </p>
               <Link
                 className="inline-flex h-10 items-center justify-center rounded-md bg-gray-300 px-8 text-sm font-medium text-gray-900 shadow transition-colors hover:bg-gray-300/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-300 disabled:pointer-events-none disabled:opacity-50"
-                href="#"
+                href="/articles/65be98854c2ef87123c1f37e"
               >
                 Read More
               </Link>

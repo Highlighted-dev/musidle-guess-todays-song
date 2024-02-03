@@ -45,7 +45,12 @@ export const editorExtensions = [
     },
   }),
   Underline,
-  Image,
+  Image.configure({
+    //center image
+    HTMLAttributes: {
+      class: 'mx-auto',
+    },
+  }),
   Link.configure({
     autolink: true,
     openOnClick: true,
@@ -76,7 +81,3 @@ export const editorExtensions = [
     },
   }),
 ];
-
-export const generateHTMLFromJson = (json: JSONContent) => {
-  return generateHTML(json, editorExtensions);
-};

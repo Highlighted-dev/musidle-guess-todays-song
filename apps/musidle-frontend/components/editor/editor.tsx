@@ -12,7 +12,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import Link from 'next/link';
 import { ImSpinner2 } from 'react-icons/im';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
-import { editorExtensions, editorProps, generateHTMLFromJson } from './editorConfig';
+import { editorExtensions, editorProps } from './editorConfig';
 import { EditorBubbleMenu } from './bubble-menu';
 
 interface IFormData {
@@ -30,7 +30,7 @@ function Editor({
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const onSubmit = async (data: { title: string; content: any }) => {
     setIsSaving(true);
-    const content = editor?.getJSON();
+    const content = editor?.getHTML();
 
     const response = await fetch(getCurrentUrl() + `/externalApi/articles/${post._id}`, {
       method: 'PATCH',
@@ -55,7 +55,7 @@ function Editor({
   const editor = useEditor({
     editorProps: editorProps,
     extensions: editorExtensions,
-    content: generateHTMLFromJson(post.content) || '',
+    content: post.content || '',
   });
 
   if (!editor) {

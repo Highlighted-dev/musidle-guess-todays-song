@@ -15,10 +15,10 @@ import { MdOutlineFormatListNumbered } from 'react-icons/md';
 import { Input } from '../ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Separator } from '../ui/separator';
+import { HeaderPopover } from './toolbar-elements/HeaderPopover';
+import { TablePopover } from './toolbar-elements/TablePopover';
+import { TextAlignPopover } from './toolbar-elements/TextAlignPopover';
 import { GroupedBasicFormatters } from './toolbar-elements/GroupedBasicFormatters';
-import { HeaderPopover } from './toolbar-elements/headerPopover';
-import { TablePopover } from './toolbar-elements/tablePopover';
-import { TextAlignPopover } from './toolbar-elements/textAlignPopover';
 
 export function EditorToolbar({ editor }: { editor: Editor }) {
   return (

@@ -10,8 +10,7 @@ import { Table } from '@tiptap/extension-table';
 import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
-import { generateHTML } from '@tiptap/html';
-import { JSONContent } from '@tiptap/react';
+import { TextAlign } from '@tiptap/extension-text-align';
 
 export const editorProps = {
   attributes: {
@@ -79,5 +78,8 @@ export const editorExtensions = [
     HTMLAttributes: {
       class: '[&_tr]:border-b bg-muted/50 text-muted-foreground font-medium',
     },
+  }),
+  TextAlign.configure({
+    types: ['heading', 'paragraph'],
   }),
 ];

@@ -9,7 +9,6 @@ import {
   LuUnderline,
   LuHighlighter,
   LuImage,
-  LuType,
 } from 'react-icons/lu';
 import { MdOutlineFormatListNumbered } from 'react-icons/md';
 import { Input } from '../ui/input';

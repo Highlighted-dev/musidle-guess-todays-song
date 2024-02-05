@@ -71,7 +71,7 @@ export default async function Page() {
                 </AspectRatio>
                 <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
                   By&nbsp;
-                  <Link href="commons.wikimedia.org/w/index.php?title=User:MCK-photography&amp;action=edit&amp;redlink=1">
+                  <Link href="https://commons.wikimedia.org/w/index.php?title=User:MCK-photography&amp;action=edit&amp;redlink=1">
                     MCK-photography |
                   </Link>
                   <Link href="https://commons.wikimedia.org/w/index.php?curid=12738485">
@@ -123,7 +123,7 @@ export default async function Page() {
                   />
                 </AspectRatio>
                 <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
-                  By <Link href='"https://www.flickr.com/photos/lexwescudi/'>Lexiou WesCudi</Link>
+                  By <Link href="https://www.flickr.com/photos/lexwescudi/">Lexiou WesCudi</Link>
                   &nbsp;|
                   <Link href="https://commons.wikimedia.org/w/index.php?curid=112727082">
                     &nbsp;Wikimedia Commons

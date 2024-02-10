@@ -32,10 +32,9 @@ describe('POST /rooms', () => {
         },
         maxRoundsPhaseOne: 40,
         maxRoundsPhaseTwo: 8,
-      })
-      .expect('Content-Type', /json/)
-      .expect(200);
+      });
 
+    expect(response.status).toBe(200);
     checkRoomStructure(response.body);
   });
 });

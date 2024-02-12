@@ -24,6 +24,7 @@ import AudioRoute from './routes/AudioRoute';
 import { getCurrentUrl } from './utils/GetCurrentUrl';
 import ArticlesRoute from './routes/ArticlesRoute';
 import ImagesRoute from './routes/ImagesRoute';
+import WikisRoute from './routes/WikisRoute';
 dotenv.config();
 
 const port = () => {
@@ -256,5 +257,6 @@ app.use('/externalApi/audio/', AudioRoute);
 app.use('/externalApi/guilds', guildRouter);
 app.use('/externalApi/articles', ArticlesRoute);
 app.use('/externalApi/images', ImagesRoute);
+app.use('/externalApi/wikis', WikisRoute);
 app.use(() => scheduleSongUpdate);
 app.use(errorHandler);

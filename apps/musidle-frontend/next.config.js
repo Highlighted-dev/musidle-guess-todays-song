@@ -38,6 +38,12 @@ const nextConfig = {
         port: '',
         pathname: '/externalApi/images/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lastfm.freetls.fastly.net',
+        port: '',
+        pathname: '/i/u/**',
+      },
     ],
   },
 };

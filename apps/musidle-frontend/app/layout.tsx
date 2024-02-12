@@ -10,6 +10,10 @@ import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'Musidle',
+  description:
+    'Welcome to Musidle, your one-stop destination for all things music. Here you can play music daily games and quizzes with friends, read articles, explore artist wikis and more.',
+  keywords:
+    'music, games, quizzes, articles, artist wikis, wordle, music quizzes, music games, music articles, music wiki',
 };
 
 export async function getNextSession() {

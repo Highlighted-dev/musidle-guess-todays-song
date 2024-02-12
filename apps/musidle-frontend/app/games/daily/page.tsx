@@ -9,9 +9,15 @@ import { AlreadyPlayed } from '@/components/daily/AlreadyPlayed';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
+import Redirecter from '@/components/Redirecter';
 
 export const metadata = {
   title: 'Musidle Daily',
+  description: "Guess today's music and challenge your knowledge!",
+  keywords:
+    'music, games, quizzes, articles, artist wikis, wordle, music quizzes, music games, music articles, music wiki',
 };
 
 async function getSong() {
@@ -42,6 +48,15 @@ async function getSongId() {
 export default async function Page() {
   const song = await getSong();
   const songId: string | null = await getSongId();
+  const session = await getServerSession(authOptions);
+  if (!session)
+    return (
+      <Redirecter
+        url={`/`}
+        message={`You are not authorized to play the daily game. Please log in to play.`}
+        variant={'destructive'}
+      />
+    );
   const buffer = () => {
     if (song) {
       return Buffer.from(song).toString('base64');

@@ -18,8 +18,8 @@ export default async function Page() {
               <p className="mt-4 text-lg">Your one-stop destination for all things music.</p>
             </div>
             <Image
-              src="/images/concert.jpg"
-              alt="Photo by Drew Beamer"
+              src="https://musidle.live/externalApi/images/concert.jpg"
+              alt="Concert photo by Drew Beamer"
               fill
               className="rounded-md object-cover opacity-10 bg-inherit"
             />
@@ -32,7 +32,7 @@ export default async function Page() {
           <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px] mt-6">
             <AspectRatio ratio={16 / 9}>
               <Image
-                src="/images/indie-music.jpg"
+                src="https://musidle.live/externalApi/images/indie-music.jpg"
                 alt="Indie music"
                 layout="fill"
                 className="object-cover rounded-md"
@@ -87,7 +87,7 @@ export default async function Page() {
               <CardHeader>
                 <AspectRatio ratio={4 / 3}>
                   <Image
-                    src="/images/taylor-swift.png"
+                    src="https://musidle.live/externalApi/images/taylor-swift.png"
                     alt="Taylor swift"
                     layout="fill"
                     className="object-cover rounded-md"
@@ -112,7 +112,7 @@ export default async function Page() {
               <CardHeader>
                 <AspectRatio ratio={4 / 3}>
                   <Image
-                    src="/images/juice-wrld.jpg"
+                    src="https://musidle.live/externalApi/images/juice-wrld.jpg"
                     alt="Juice WRLD"
                     layout="fill"
                     className="object-cover rounded-md"

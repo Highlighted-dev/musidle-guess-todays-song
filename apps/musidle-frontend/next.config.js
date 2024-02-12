@@ -29,6 +29,16 @@ const nextConfig = {
         }/externalApi/:path*`, // Proxy to Backend
       },
     ];
+  }, //https://musidle.live/externalApi/images/concert.jpg
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'musidle.live',
+        port: '',
+        pathname: '/externalApi/images/**',
+      },
+    ],
   },
 };
 

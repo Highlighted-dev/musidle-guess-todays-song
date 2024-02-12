@@ -20,6 +20,11 @@
             "input": "apps/musidle-api/src/assets",
             "glob": "*.mp3",
             "output": "apps/musidle-api/src/assets"
+          },
+          {
+            "input": "apps/musidle-api/src/assets/images",
+            "glob": "*",
+            "output": "apps/musidle-api/src/assets/images"
           }
         ],
         "generatePackageJson": true,

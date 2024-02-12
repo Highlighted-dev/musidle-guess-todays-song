@@ -3,6 +3,7 @@ import { CardHeader, CardContent, Card } from '@/components/ui/card';
 import Image from 'next/image';
 import { EmptyPlaceholder } from '@/components/ui/empty-placeholder';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Button } from '@/components/ui/button';
 
 export default async function Page() {
   return (
@@ -11,12 +12,10 @@ export default async function Page() {
         <div className="container space-y-10 xl:space-y-16">
           <div className="grid gap-4 px-10 md:grid-cols-2 md:gap-16">
             <div>
-              <h1 className="text-4xl font-bold text-white tracking-tighter sm:text-5xl md:text-6xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
                 Welcome to Musidle
               </h1>
-              <p className="mt-4 text-lg text-gray-300">
-                Your one-stop destination for all things music.
-              </p>
+              <p className="mt-4 text-lg">Your one-stop destination for all things music.</p>
             </div>
             <Image
               src="/images/concert.jpg"
@@ -29,7 +28,7 @@ export default async function Page() {
       </section>
       <section className="w-full py-12">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-white">Featured Article</h2>
+          <h2 className="text-3xl font-bold">Featured Article</h2>
           <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px] mt-6">
             <AspectRatio ratio={16 / 9}>
               <Image
@@ -40,16 +39,13 @@ export default async function Page() {
               />
             </AspectRatio>
             <div className="flex flex-col justify-center space-y-4">
-              <h3 className="text-2xl font-bold text-white">The Rise of Indie Music</h3>
-              <p className="max-w-[600px] text-gray-300 md:text-xl">
+              <h3 className="text-2xl font-bold">The Rise of Indie Music</h3>
+              <p className="max-w-[600px] md:text-xl">
                 Discover the rise of indie music in the modern music scene. Explore its roots, its
                 growing popularity, and its future.
               </p>
-              <Link
-                className="inline-flex h-10 items-center justify-center rounded-md bg-gray-300 px-8 text-sm font-medium text-gray-900 shadow transition-colors hover:bg-gray-300/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-300 disabled:pointer-events-none disabled:opacity-50"
-                href="/articles/65be98854c2ef87123c1f37e"
-              >
-                Read More
+              <Link className="inline-flex w-full" href="/articles/65be98854c2ef87123c1f37e">
+                <Button className="w-full"> Read More</Button>
               </Link>
             </div>
           </div>
@@ -57,7 +53,7 @@ export default async function Page() {
       </section>
       <section className="w-full py-12">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-white">Popular Band & Artists Wikis</h2>
+          <h2 className="text-3xl font-bold">Popular Band & Artists Wikis</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             <Card>
               <CardHeader>
@@ -80,8 +76,8 @@ export default async function Page() {
                 </p>
               </CardHeader>
               <CardContent>
-                <h3 className="mt-4 text-xl font-bold text-white">Bring me the horizon</h3>
-                <p className="mt-2 text-gray-300">
+                <h3 className="mt-4 text-xl font-bold">Bring me the horizon</h3>
+                <p className="mt-2">
                   Bring Me The Horizon, a boundary-pushing rock band, seamlessly blends elements of
                   metalcore, electronica, and pop to create a dynamic and genre-defying sound.
                 </p>
@@ -105,8 +101,8 @@ export default async function Page() {
                 </p>
               </CardHeader>
               <CardContent>
-                <h3 className="mt-4 text-xl font-bold text-white">Taylor Swift</h3>
-                <p className="mt-2 text-gray-300">
+                <h3 className="mt-4 text-xl font-bold">Taylor Swift</h3>
+                <p className="mt-2">
                   Multi-talented singer-songwriter, captivates audiences with her heartfelt lyrics
                   and infectious melodies.
                 </p>
@@ -131,8 +127,8 @@ export default async function Page() {
                 </p>
               </CardHeader>
               <CardContent>
-                <h3 className="mt-4 text-xl font-bold text-white">Juice WRLD</h3>
-                <p className="mt-2 text-gray-300">
+                <h3 className="mt-4 text-xl font-bold">Juice WRLD</h3>
+                <p className="mt-2">
                   Influential rapper and lyricist, showcased raw emotion and introspective
                   storytelling through his music, leaving a lasting impact on the hip-hop industry.
                 </p>
@@ -143,7 +139,7 @@ export default async function Page() {
       </section>
       <section className="w-full py-12">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-white">Tutorials</h2>
+          <h2 className="text-3xl font-bold">Tutorials</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             <Card className="flex flex-col">
               <CardHeader>
@@ -155,8 +151,8 @@ export default async function Page() {
                 </EmptyPlaceholder>
               </CardHeader>
               <CardContent>
-                <h3 className="mt-4 text-xl font-bold text-white">Guitar Basics</h3>
-                <p className="mt-2 text-gray-300">
+                <h3 className="mt-4 text-xl font-bold">Guitar Basics</h3>
+                <p className="mt-2">
                   Learn the basics of playing the guitar in this comprehensive guide.
                 </p>
               </CardContent>
@@ -171,8 +167,8 @@ export default async function Page() {
                 </EmptyPlaceholder>
               </CardHeader>
               <CardContent>
-                <h3 className="mt-4 text-xl font-bold text-white">Music Theory 101</h3>
-                <p className="mt-2 text-gray-300">
+                <h3 className="mt-4 text-xl font-bold">Music Theory 101</h3>
+                <p className="mt-2">
                   Understand the fundamentals of music theory with this tutorial.
                 </p>
               </CardContent>
@@ -187,8 +183,8 @@ export default async function Page() {
                 </EmptyPlaceholder>
               </CardHeader>
               <CardContent>
-                <h3 className="mt-4 text-xl font-bold text-white">Songwriting for Beginners</h3>
-                <p className="mt-2 text-gray-300">
+                <h3 className="mt-4 text-xl font-bold">Songwriting for Beginners</h3>
+                <p className="mt-2">
                   Get started with songwriting with this beginner-friendly guide.
                 </p>
               </CardContent>

@@ -23,6 +23,7 @@ import DailyRoute from './routes/DailyRoute';
 import AudioRoute from './routes/AudioRoute';
 import { getCurrentUrl } from './utils/GetCurrentUrl';
 import ArticlesRoute from './routes/ArticlesRoute';
+import ImagesRoute from './routes/ImagesRoute';
 dotenv.config();
 
 const port = () => {
@@ -254,5 +255,6 @@ app.use('/externalApi/daily/', DailyRoute);
 app.use('/externalApi/audio/', AudioRoute);
 app.use('/externalApi/guilds', guildRouter);
 app.use('/externalApi/articles', ArticlesRoute);
+app.use('/externalApi/images', ImagesRoute);
 app.use(() => scheduleSongUpdate);
 app.use(errorHandler);

@@ -56,83 +56,90 @@ export default async function Page() {
           <h2 className="text-3xl font-bold">Popular Band & Artists Wikis</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             <Card>
-              <CardHeader>
-                <AspectRatio ratio={4 / 3}>
-                  <Image
-                    src="/images/bring-me-the-horizon.jpg"
-                    alt="Bring me the Horizon"
-                    layout="fill"
-                    className="object-cover rounded-md"
-                  />
-                </AspectRatio>
-                <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
-                  By&nbsp;
-                  <Link href="https://commons.wikimedia.org/w/index.php?title=User:MCK-photography&amp;action=edit&amp;redlink=1">
-                    MCK-photography |
-                  </Link>
-                  <Link href="https://commons.wikimedia.org/w/index.php?curid=12738485">
-                    &nbsp;Wikimedia Commons
-                  </Link>
-                </p>
-              </CardHeader>
-              <CardContent>
-                <h3 className="mt-4 text-xl font-bold">Bring me the horizon</h3>
-                <p className="mt-2">
-                  Bring Me The Horizon, a boundary-pushing rock band, seamlessly blends elements of
-                  metalcore, electronica, and pop to create a dynamic and genre-defying sound.
-                </p>
-              </CardContent>
+              <Link href="/wiki/65caa151e11e509fa368d32a">
+                <CardHeader>
+                  <AspectRatio ratio={4 / 3}>
+                    <Image
+                      src="https://musidle.live/externalApi/images/bring-me-the-horizon.jpg"
+                      alt="Bring me the Horizon"
+                      layout="fill"
+                      className="object-cover rounded-md"
+                    />
+                  </AspectRatio>
+                  <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
+                    By&nbsp;
+                    <Link href="https://commons.wikimedia.org/w/index.php?title=User:MCK-photography&amp;action=edit&amp;redlink=1">
+                      MCK-photography |
+                    </Link>
+                    <Link href="https://commons.wikimedia.org/w/index.php?curid=12738485">
+                      &nbsp;Wikimedia Commons
+                    </Link>
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <h3 className="mt-4 text-xl font-bold">Bring me the horizon</h3>
+                  <p className="mt-2">
+                    Bring Me The Horizon, a boundary-pushing rock band, seamlessly blends elements
+                    of metalcore, electronica, and pop to create a dynamic and genre-defying sound.
+                  </p>
+                </CardContent>
+              </Link>
             </Card>
             <Card>
-              <CardHeader>
-                <AspectRatio ratio={4 / 3}>
-                  <Image
-                    src="https://musidle.live/externalApi/images/taylor-swift.png"
-                    alt="Taylor swift"
-                    layout="fill"
-                    className="object-cover rounded-md"
-                  />
-                </AspectRatio>
-                <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
-                  By iHeartRadioCA |
-                  <Link href="https://commons.wikimedia.org/w/index.php?curid=137551448">
-                    &nbsp;Wikimedia Commons
-                  </Link>
-                </p>
-              </CardHeader>
-              <CardContent>
-                <h3 className="mt-4 text-xl font-bold">Taylor Swift</h3>
-                <p className="mt-2">
-                  Multi-talented singer-songwriter, captivates audiences with her heartfelt lyrics
-                  and infectious melodies.
-                </p>
-              </CardContent>
+              <Link href="/wiki/65caa077e11e509fa368d325">
+                <CardHeader>
+                  <AspectRatio ratio={4 / 3}>
+                    <Image
+                      src="https://musidle.live/externalApi/images/taylor-swift.png"
+                      alt="Taylor swift"
+                      layout="fill"
+                      className="object-cover rounded-md"
+                    />
+                  </AspectRatio>
+                  <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
+                    By iHeartRadioCA |
+                    <Link href="https://commons.wikimedia.org/w/index.php?curid=137551448">
+                      &nbsp;Wikimedia Commons
+                    </Link>
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <h3 className="mt-4 text-xl font-bold">Taylor Swift</h3>
+                  <p className="mt-2">
+                    Multi-talented singer-songwriter, captivates audiences with her heartfelt lyrics
+                    and infectious melodies.
+                  </p>
+                </CardContent>
+              </Link>
             </Card>
             <Card>
-              <CardHeader>
-                <AspectRatio ratio={4 / 3}>
-                  <Image
-                    src="https://musidle.live/externalApi/images/juice-wrld.jpg"
-                    alt="Juice WRLD"
-                    layout="fill"
-                    className="object-cover rounded-md"
-                  />
-                </AspectRatio>
-                <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
-                  By <Link href="https://www.flickr.com/photos/lexwescudi/">Lexiou WesCudi</Link>
-                  &nbsp;|
-                  <Link href="https://commons.wikimedia.org/w/index.php?curid=112727082">
-                    &nbsp;Wikimedia Commons
-                  </Link>
-                </p>
-              </CardHeader>
-              <CardContent>
-                <h3 className="mt-4 text-xl font-bold">Juice WRLD</h3>
-                <p className="mt-2">
-                  Influential rapper and lyricist, showcased raw emotion and introspective
-                  storytelling through his music, leaving a lasting impact on the hip-hop industry.
-                </p>
-              </CardContent>
+              <Link href="/wiki/65ca95d0eb987378f2ff55b6">
+                <CardHeader>
+                  <AspectRatio ratio={4 / 3}>
+                    <Image
+                      src="https://musidle.live/externalApi/images/juice-wrld.jpg"
+                      alt="Juice WRLD"
+                      layout="fill"
+                      className="object-cover rounded-md"
+                    />
+                  </AspectRatio>
+                  <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
+                    By <Link href="https://www.flickr.com/photos/lexwescudi/">Lexiou WesCudi</Link>
+                    &nbsp;|
+                    <Link href="https://commons.wikimedia.org/w/index.php?curid=112727082">
+                      &nbsp;Wikimedia Commons
+                    </Link>
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <h3 className="mt-4 text-xl font-bold">Juice WRLD</h3>
+                  <p className="mt-2">
+                    Influential rapper and lyricist, showcased raw emotion and introspective
+                    storytelling through his music, leaving a lasting impact on the hip-hop
+                    industry.
+                  </p>
+                </CardContent>
+              </Link>
             </Card>
           </div>
         </div>

@@ -16,6 +16,7 @@ function ImageUpload() {
 
   const onUpload = async (file: File, data: IImageData) => {
     const formData = new FormData();
+    formData.append('description', data.description);
     formData.append('file', file);
 
     try {
@@ -67,7 +68,7 @@ function ImageUpload() {
             type="text"
             name="description"
             value={data.description}
-            onChange={handleDataChange}
+            onChange={e => handleDataChange(e)}
             placeholder="Description"
           />
           <Button type="submit" className="w-full">

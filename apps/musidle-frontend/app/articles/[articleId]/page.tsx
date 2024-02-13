@@ -4,6 +4,10 @@ import '../../../styles/editor.css';
 import React from 'react';
 import { Separator } from '@/components/ui/separator';
 import DOMPurify from 'isomorphic-dompurify';
+import { FaPen } from 'react-icons/fa';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import EditButton from '@/components/buttons/EditButton';
 
 async function getArticle(articleId: string) {
   try {
@@ -19,6 +23,7 @@ async function getArticle(articleId: string) {
 
 export default async function Articles({ params }: { params: { articleId: string } }) {
   const articleData = await getArticle(params.articleId);
+  const session = await getServerSession(authOptions);
   if (!articleData) {
     <Redirecter
       url={`/`}
@@ -32,7 +37,10 @@ export default async function Articles({ params }: { params: { articleId: string
   return (
     <div className="h-full w-full py-12">
       <div className="container px-4 md:px-6">
-        <h1 className="text-5xl font-bold">{articleData.title}</h1>
+        <div className="flex">
+          <h1 className="text-5xl font-bold">{articleData.title}</h1>
+          {session?.user.role == 'admin' ? <EditButton id={articleData._id} /> : null}
+        </div>
         <Separator className="my-4" />
         <div dangerouslySetInnerHTML={sanitizedHTML()} id={'editor'} />
       </div>

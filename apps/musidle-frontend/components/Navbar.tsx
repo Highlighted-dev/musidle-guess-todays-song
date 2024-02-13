@@ -9,7 +9,7 @@ import {
 } from './ui/navigation-menu';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { Label } from '@/components/ui/label';
+import Image from 'next/image';
 import LoginAndRegister from './LoginAndRegister';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -59,10 +59,10 @@ function Navbar({ sectionClassname }: { sectionClassname?: string }) {
           sectionClassname ? sectionClassname : 'fixed top-0 z-50 w-full bg-background p-1'
         }
       >
-        <div className="absolute left-0 z-20 p-2">
+        <div className="absolute left-0 z-20 py-1 px-2">
           <div className="flex w-full h-full justify-center items-center">
             <Link href="/" className="text-accent-foreground p-1">
-              <Label>Musidle</Label>
+              <Image src="/favicon.ico" alt="Musidle Logo" width={35} height={35} />
             </Link>
           </div>
         </div>

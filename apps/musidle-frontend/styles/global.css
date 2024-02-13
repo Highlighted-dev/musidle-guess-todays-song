@@ -25,6 +25,9 @@
     --secondary: 222.2 47.4% 11.2%; /* #0f1729 */
     --secondary-foreground: 210 40% 98%; /* #f8fafc */
 
+    --tertiary: 61 100% 53%; /* #FAFF0D */
+    --tertiary-foreground: 0 0 0; /* #000000 */
+
     --accent: 216 34% 17%; /* #1d283a */
     --accent-foreground: 210 40% 98%; /* #f8fafc */
 

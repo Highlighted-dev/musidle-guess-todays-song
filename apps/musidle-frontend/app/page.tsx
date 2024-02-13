@@ -56,8 +56,8 @@ export default async function Page() {
           <h2 className="text-3xl font-bold">Popular Band & Artists Wikis</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             <Card>
-              <Link href="/wiki/65caa151e11e509fa368d32a">
-                <CardHeader>
+              <CardHeader>
+                <Link href="/wiki/65caa151e11e509fa368d32a">
                   <AspectRatio ratio={4 / 3}>
                     <Image
                       src="https://musidle.live/externalApi/images/bring-me-the-horizon.jpg"
@@ -66,16 +66,18 @@ export default async function Page() {
                       className="object-cover rounded-md"
                     />
                   </AspectRatio>
-                  <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
-                    By&nbsp;
-                    <Link href="https://commons.wikimedia.org/w/index.php?title=User:MCK-photography&amp;action=edit&amp;redlink=1">
-                      MCK-photography |
-                    </Link>
-                    <Link href="https://commons.wikimedia.org/w/index.php?curid=12738485">
-                      &nbsp;Wikimedia Commons
-                    </Link>
-                  </p>
-                </CardHeader>
+                </Link>
+                <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
+                  By&nbsp;
+                  <Link href="https://commons.wikimedia.org/w/index.php?title=User:MCK-photography&amp;action=edit&amp;redlink=1">
+                    MCK-photography |
+                  </Link>
+                  <Link href="https://commons.wikimedia.org/w/index.php?curid=12738485">
+                    &nbsp;Wikimedia Commons
+                  </Link>
+                </p>
+              </CardHeader>
+              <Link href="/wiki/65caa151e11e509fa368d32a">
                 <CardContent>
                   <h3 className="mt-4 text-xl font-bold">Bring me the horizon</h3>
                   <p className="mt-2">
@@ -86,8 +88,8 @@ export default async function Page() {
               </Link>
             </Card>
             <Card>
-              <Link href="/wiki/65caa077e11e509fa368d325">
-                <CardHeader>
+              <CardHeader>
+                <Link href="/wiki/65caa077e11e509fa368d325">
                   <AspectRatio ratio={4 / 3}>
                     <Image
                       src="https://musidle.live/externalApi/images/taylor-swift.png"
@@ -96,13 +98,15 @@ export default async function Page() {
                       className="object-cover rounded-md"
                     />
                   </AspectRatio>
-                  <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
-                    By iHeartRadioCA |
-                    <Link href="https://commons.wikimedia.org/w/index.php?curid=137551448">
-                      &nbsp;Wikimedia Commons
-                    </Link>
-                  </p>
-                </CardHeader>
+                </Link>
+                <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
+                  By iHeartRadioCA |
+                  <Link href="https://commons.wikimedia.org/w/index.php?curid=137551448">
+                    &nbsp;Wikimedia Commons
+                  </Link>
+                </p>
+              </CardHeader>
+              <Link href="/wiki/65caa077e11e509fa368d325">
                 <CardContent>
                   <h3 className="mt-4 text-xl font-bold">Taylor Swift</h3>
                   <p className="mt-2">
@@ -113,8 +117,8 @@ export default async function Page() {
               </Link>
             </Card>
             <Card>
-              <Link href="/wiki/65ca95d0eb987378f2ff55b6">
-                <CardHeader>
+              <CardHeader>
+                <Link href="/wiki/65ca95d0eb987378f2ff55b6">
                   <AspectRatio ratio={4 / 3}>
                     <Image
                       src="https://musidle.live/externalApi/images/juice-wrld.jpg"
@@ -123,14 +127,16 @@ export default async function Page() {
                       className="object-cover rounded-md"
                     />
                   </AspectRatio>
-                  <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
-                    By <Link href="https://www.flickr.com/photos/lexwescudi/">Lexiou WesCudi</Link>
-                    &nbsp;|
-                    <Link href="https://commons.wikimedia.org/w/index.php?curid=112727082">
-                      &nbsp;Wikimedia Commons
-                    </Link>
-                  </p>
-                </CardHeader>
+                </Link>
+                <p className="mb-8 mt-2 text-center text-xs font-normal leading-6 text-muted-foreground">
+                  By <Link href="https://www.flickr.com/photos/lexwescudi/">Lexiou WesCudi</Link>
+                  &nbsp;|
+                  <Link href="https://commons.wikimedia.org/w/index.php?curid=112727082">
+                    &nbsp;Wikimedia Commons
+                  </Link>
+                </p>
+              </CardHeader>
+              <Link href="/wiki/65ca95d0eb987378f2ff55b6">
                 <CardContent>
                   <h3 className="mt-4 text-xl font-bold">Juice WRLD</h3>
                   <p className="mt-2">

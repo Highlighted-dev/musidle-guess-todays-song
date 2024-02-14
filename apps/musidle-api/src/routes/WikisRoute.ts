@@ -52,7 +52,23 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
         `https://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=${req.body.name}&api_key=${process.env.LASTFM_API_KEY}&format=json`,
       )
       .then(res => res.data)
-      .then(res => (req.body.popularSongs = res.toptracks.track));
+      .then(res => {
+        // remove playcount, listeners and streamable from toptracks
+        res.toptracks.track.forEach(
+          (track: {
+            playcount?: string;
+            listeners?: string;
+            streamable?: string;
+            url?: string;
+          }) => {
+            delete track.playcount;
+            delete track.listeners;
+            delete track.streamable;
+            delete track.url;
+          },
+        );
+        req.body.popularSongs = res.toptracks.track;
+      });
     await axios(
       `https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist=${req.body.name}&api_key=${process.env.LASTFM_API_KEY}&format=json`,
     )

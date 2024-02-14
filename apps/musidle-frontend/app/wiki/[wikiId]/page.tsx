@@ -107,11 +107,21 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
             </div>
           )}
         </div>
-        <div className="flex justify-center items-center mt-10">
-          <Button size="lg" variant={'default'}>
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold mb-4">Tags</h2>
+          <div className="flex space-x-4">
+            {wiki.tags.map((tag: string) => (
+              <Button key={tag} className="px-2 py-1 text-sm font-bold">
+                {tag}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col justify-center items-center mt-10">
+          <Button size="lg" variant={'tertiary'}>
             View Upcoming Tours
           </Button>
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 p-2">
             <Button size="icon" variant="ghost">
               <FacebookIcon size={24} />
             </Button>

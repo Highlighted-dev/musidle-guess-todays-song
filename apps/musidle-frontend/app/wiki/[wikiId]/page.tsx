@@ -1,11 +1,13 @@
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import PlaySong from '@/components/wiki/PlayEmbed';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
-import { FacebookIcon, InstagramIcon, PlayIcon, TwitterIcon } from 'lucide-react';
+import { FacebookIcon, InstagramIcon, TwitterIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { RxCross1 } from 'react-icons/rx';
 
 async function getWiki(wikiId: string) {
   try {
@@ -70,9 +72,15 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
                   className="flex items-center justify-between p-4 rounded-lg shadow"
                 >
                   <h3 className="font-bold">{song.name}</h3>
-                  <Button size="icon" variant="ghost">
-                    <PlayIcon className="h-6 w-6" />
-                  </Button>
+                  {song.youtubeUrl ? (
+                    <PlaySong
+                      url={'https://www.youtube.com/embed/mzB1VGEGcSU?si=ge1mcpn4pOXzBGzT'}
+                    />
+                  ) : (
+                    <Button size="icon" variant="ghost">
+                      <RxCross1 className="h-6 w-6 text-destructive" />
+                    </Button>
+                  )}
                 </Card>
               ))
             ) : (

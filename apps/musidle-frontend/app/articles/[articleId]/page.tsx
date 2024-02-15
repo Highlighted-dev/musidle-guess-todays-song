@@ -4,7 +4,6 @@ import '../../../styles/editor.css';
 import React from 'react';
 import { Separator } from '@/components/ui/separator';
 import DOMPurify from 'isomorphic-dompurify';
-import { FaPen } from 'react-icons/fa';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import EditButton from '@/components/buttons/EditButton';

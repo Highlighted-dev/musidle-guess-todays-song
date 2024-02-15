@@ -1,6 +1,6 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Redirecter from '@/components/Redirecter';
-import Editor from '@/components/editor/editor';
+import { ArticleEditor } from '@/components/editor/ArticleEditor';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import { getServerSession } from 'next-auth';
 import React from 'react';
@@ -62,6 +62,12 @@ export default async function Page({ params }: { params: { articleId: string } }
       />
     );
   } else {
-    return <Editor post={article} />;
+    return (
+      <ArticleEditor
+        url={getCurrentUrl() + `/externalApi/articles/${article._id}`}
+        name={article.title}
+        content={article.content}
+      />
+    );
   }
 }

@@ -7,6 +7,7 @@ import { FacebookIcon, InstagramIcon, TwitterIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { FaSpotify } from 'react-icons/fa';
 import { RxCross1 } from 'react-icons/rx';
 
 async function getWiki(wikiId: string) {
@@ -141,7 +142,7 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
           </Button>
           <div className="flex space-x-4 p-2">
             <Button size="icon" variant="ghost">
-              <FacebookIcon size={24} />
+              <FaSpotify size={24} />
             </Button>
             <Button size="icon" variant="ghost">
               <TwitterIcon size={24} />

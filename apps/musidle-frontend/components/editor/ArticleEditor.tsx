@@ -1,61 +1,53 @@
 'use client';
-import { useEditor, EditorContent } from '@tiptap/react';
-import { EditorToolbar } from './toolbar';
+import { useEditor } from '@tiptap/react';
 import '../../styles/editor.css';
 import { toast } from '../ui/use-toast';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FaChevronLeft } from 'react-icons/fa';
 import { Button } from '../ui/button';
-import TextareaAutosize from 'react-textarea-autosize';
 import Link from 'next/link';
 import { ImSpinner2 } from 'react-icons/im';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import { editorExtensions, editorProps } from './editorConfig';
-import { EditorBubbleMenu } from './bubble-menu';
+import EditorBase from './EditorBase';
 
 interface IFormData {
-  title: string;
+  name: string;
   content: any;
 }
 
-function Editor({
-  post,
-}: {
-  post: { _id: string; title: string; content: any; author: { _id: string; username: string } };
-}) {
+export function ArticleEditor({ url, name, content }: { name: string; content: any; url: string }) {
   const { register, handleSubmit } = useForm<IFormData>();
-  const router = useRouter();
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const onSubmit = async (data: { title: string; content: any }) => {
+  const onSubmit = async (data: { name: string; content: any }) => {
     setIsSaving(true);
     const content = editor?.getHTML();
 
-    const response = await fetch(getCurrentUrl() + `/externalApi/articles/${post._id}`, {
+    const response = await fetch(url, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        title: data.title,
+        title: data.name,
         content: content,
       }),
     });
 
     setIsSaving(false);
+    if (!response.ok)
+      return toast({ title: 'Error', description: 'Failed to save post', variant: 'destructive' });
 
     return toast({
       title: 'Post saved',
       description: 'Your post has been saved',
-      duration: 5000,
     });
   };
 
   const editor = useEditor({
     editorProps: editorProps,
     extensions: editorExtensions,
-    content: post.content || '',
+    content: content || '',
   });
 
   if (!editor) {
@@ -69,19 +61,7 @@ function Editor({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid w-full">
-        <div className="mx-auto">
-          <TextareaAutosize
-            autoFocus
-            id="title"
-            defaultValue={post.title}
-            placeholder="Post title"
-            className="w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none p-2"
-            {...register('title')}
-          />
-          {editor ? <EditorToolbar editor={editor} /> : null}
-          <EditorContent editor={editor} className=" max-w-[800px] min-h-[600px]" id={'editor'} />
-          <EditorBubbleMenu editor={editor} />
-        </div>
+        <EditorBase editor={editor} name={name} register={register} />
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center space-x-10">
             <Button variant={'ghost'}>
@@ -109,5 +89,3 @@ function Editor({
     </form>
   );
 }
-
-export default Editor;

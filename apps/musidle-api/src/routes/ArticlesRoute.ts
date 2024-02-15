@@ -58,7 +58,7 @@ router.patch('/:id', jsonParser, async (req: Request, res: Response, next: NextF
       },
       { new: true },
     );
-    return res.json(article);
+    return res.status(200).json(article);
   } catch (error) {
     next(error);
   }

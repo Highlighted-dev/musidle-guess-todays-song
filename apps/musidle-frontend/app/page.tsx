@@ -57,7 +57,7 @@ export default async function Page() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             <Card>
               <CardHeader>
-                <Link href="/wiki/65caa151e11e509fa368d32a">
+                <Link href="/wiki/65cd50678d13798af43f7027">
                   <AspectRatio ratio={4 / 3}>
                     <Image
                       src="https://musidle.live/externalApi/images/bring-me-the-horizon.jpg"
@@ -89,7 +89,7 @@ export default async function Page() {
             </Card>
             <Card>
               <CardHeader>
-                <Link href="/wiki/65caa077e11e509fa368d325">
+                <Link href="/wiki/65cd507f8d13798af43f7029">
                   <AspectRatio ratio={4 / 3}>
                     <Image
                       src="https://musidle.live/externalApi/images/taylor-swift.png"
@@ -118,7 +118,7 @@ export default async function Page() {
             </Card>
             <Card>
               <CardHeader>
-                <Link href="/wiki/65ca95d0eb987378f2ff55b6">
+                <Link href="/wiki/65cd4edb286b1e75e5bb4ced">
                   <AspectRatio ratio={4 / 3}>
                     <Image
                       src="https://musidle.live/externalApi/images/juice-wrld.jpg"

@@ -1,0 +1,189 @@
+'use client';
+import { useEditor } from '@tiptap/react';
+import '../../styles/editor.css';
+import { toast } from '../ui/use-toast';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { FaChevronLeft } from 'react-icons/fa';
+import { Button } from '../ui/button';
+import Link from 'next/link';
+import { ImSpinner2 } from 'react-icons/im';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { editorExtensions, editorProps } from './editorConfig';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
+import Image from 'next/image';
+import { Input } from '../ui/input';
+import EditorBase from './EditorBase';
+interface IFormData {
+  name: string;
+  content: any;
+}
+
+export function WikiEditor({
+  wiki,
+}: {
+  wiki: {
+    _id: string;
+    name: string;
+    description: string;
+    notableAlbums: any[];
+    popularSongs: any[];
+    relatedArtists: any[];
+    tags: any[];
+  };
+}) {
+  const { register, handleSubmit } = useForm<IFormData>();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const onSubmit = async (data: { name: string; content: any }) => {
+    setIsSaving(true);
+    const content = editor?.getHTML();
+
+    const response = await fetch(getCurrentUrl() + `/externalApi/wikis/${wiki._id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: data.name,
+        content: content,
+      }),
+    });
+
+    if (!response.ok)
+      return toast({ title: 'Error', description: 'Failed to save post', variant: 'destructive' });
+
+    setIsSaving(false);
+
+    return toast({
+      title: 'Post saved',
+      description: 'Your post has been saved',
+      duration: 5000,
+    });
+  };
+
+  const editor = useEditor({
+    editorProps: editorProps,
+    extensions: editorExtensions,
+    content: wiki.description || '',
+  });
+
+  if (!editor) {
+    return (
+      <div className="h-full w-full flex justify-center items-center">
+        <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid w-full">
+        <EditorBase editor={editor} name={wiki.name} register={register} />
+        <div className="flex justify-center my-8 h-full  w-full">
+          <Table>
+            <TableCaption>Notable albums of an artist</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Image</TableHead>
+                <TableHead className="text-right">Image url</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {wiki.notableAlbums.slice(0, 4).map(album => (
+                <TableRow key={album.name}>
+                  <TableCell>
+                    <Input defaultValue={album.name} />
+                  </TableCell>
+                  <TableCell>
+                    <Image src={album.image[3]['#text']} width={64} height={64} alt="album image" />
+                  </TableCell>
+                  <TableCell>
+                    <Input defaultValue={album.image[3]['#text']} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="flex justify-center my-8 h-full  w-full">
+          <Table>
+            <TableCaption>Popular songs albums of an artist</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Youtube Url</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {wiki.popularSongs.slice(0, 8).map(song => (
+                <TableRow key={song.name}>
+                  <TableCell>
+                    <Input defaultValue={song.name} />
+                  </TableCell>
+                  <TableCell>
+                    <Input defaultValue={song.youtubeUrl} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="flex justify-center my-8 h-full  w-full">
+          <Table>
+            <TableCaption>Related artist</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Wiki Url</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {wiki.relatedArtists.map(artist => (
+                <TableRow key={artist.name}>
+                  <TableCell>
+                    <Input defaultValue={artist.name} />
+                  </TableCell>
+                  <TableCell>
+                    <Input defaultValue={artist.wikiUrl} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center space-x-10">
+            <Button variant={'ghost'}>
+              <Link href="/">
+                <div className="flex items-center">
+                  <FaChevronLeft className="mr-2 h-4 w-4" />
+                  Go Back
+                </div>
+              </Link>
+            </Button>
+          </div>
+          <p className="text-sm text-gray-500">
+            Check{' '}
+            <kbd className="rounded-md border bg-muted px-1 text-xs">
+              <Link href={'https://tiptap.dev/docs/editor/introduction'}>TipTap docs</Link>
+            </kbd>{' '}
+            for useful hotkeys
+          </p>
+          <Button type="submit">
+            {isSaving && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
+            <span>Save</span>
+          </Button>
+        </div>
+      </div>
+    </form>
+  );
+}

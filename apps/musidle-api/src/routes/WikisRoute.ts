@@ -42,9 +42,13 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
       )
       .then(res => res.data)
       .then(res => {
+        res.artist.similar.artist.forEach((artist: { url?: string; image?: [] }) => {
+          delete artist.url;
+          delete artist.image;
+        });
         req.body.relatedArtists = res.artist.similar.artist;
         req.body.tags = res.artist.tags.tag;
-        // remvoe "url" from tags
+        // remove "url" from tags
         req.body.tags = req.body.tags.map((tag: { name: string }) => tag.name);
       });
     await axios
@@ -53,18 +57,27 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
       )
       .then(res => res.data)
       .then(res => {
-        // remove playcount, listeners and streamable from toptracks
+        // remove useless fields from toptracks
         res.toptracks.track.forEach(
           (track: {
             playcount?: string;
             listeners?: string;
             streamable?: string;
             url?: string;
+            mbid?: string;
+            image?: [];
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            '@attr'?: string;
+            youtubeUrl: string | null;
           }) => {
             delete track.playcount;
             delete track.listeners;
             delete track.streamable;
             delete track.url;
+            delete track.mbid;
+            delete track.image;
+            delete track['@attr'];
+            track.youtubeUrl = '';
           },
         );
         req.body.popularSongs = res.toptracks.track;
@@ -73,7 +86,16 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
       `https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist=${req.body.name}&api_key=${process.env.LASTFM_API_KEY}&format=json`,
     )
       .then(res => res.data)
-      .then(res => (req.body.notableAlbums = res.topalbums.album));
+      .then(res => {
+        res.topalbums.album.forEach((album: { playcount?: string; url?: string; image: any[] }) => {
+          delete album.playcount;
+          delete album.url;
+          if (album.image.length < 3) {
+            throw new Error('Couldnt find album image with high enough resolution');
+          }
+        }),
+          (req.body.notableAlbums = res.topalbums.album);
+      });
 
     const result = await wikiModel.create(req.body);
     return res.status(201).json(result);

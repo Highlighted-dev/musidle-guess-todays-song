@@ -3,21 +3,13 @@ import TurnChangeDialog from '@/components/game-related/TurnChangeDialog';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import React from 'react';
-
+import GameHeader from '@/components/multiplayer/GameHeader';
 export default async function SingleplayerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center relative xl:min-h-0 min-h-screen">
+    <div className="flex lg:flex-row flex-col justify-center items-center my-2">
       <TurnChangeDialog displayPlayerName={false} />
-      <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full">
-        <CardHeader className=" text-center">
-          <div className="flex justify-between items-center">
-            <Label className=" w-24 font-semibold text-xs flex justify-center items-center">
-              v{process.env.NEXT_PUBLIC_VERSION}
-            </Label>
-            <CardTitle className="flex justify-center items-center">Musidle Daily</CardTitle>
-            <GameInstructionsHover />
-          </div>
-        </CardHeader>
+      <Card className="w-full flex flex-col  min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
+        <GameHeader title="Guess the song" />
         {children}
       </Card>
     </div>

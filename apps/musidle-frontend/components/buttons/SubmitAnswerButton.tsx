@@ -20,6 +20,7 @@ export default function SubmitAnswerButton({
       className={className}
       disabled={disabled || !value}
       onClick={() => handleAnswerSubmit(router)}
+      variant={'tertiary'}
     >
       Submit
     </Button>

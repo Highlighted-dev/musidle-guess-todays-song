@@ -35,30 +35,26 @@ export default async function Page() {
   return (
     <>
       <RefreshRooms />
-      <Card className="float-left xl:w-4/6 flex flex-col justify-center align-center h-full">
+      <Card className="w-full flex flex-col justify-center h-full p-1">
         <CardHeader className=" text-center">
           <CardTitle>Choose Lobby</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col h-full w-full overflow-y-auto">
-          <div className="h-[92%]">
-            {rooms?.length ? (
-              rooms.map((room: IRoom, index: number) => (
-                <div key={index}>
-                  <div className=" w-full h-[15%] flex justify-between p-4">
-                    <Label className="text-center flex justify-center items-center">
-                      {room.roomCode.toUpperCase()}
-                    </Label>
-                    <div>
-                      <Label className="text-center pr-4">Players: {room.players.length}/8</Label>
-                      <JoinRoomButton roomCode={room.roomCode} />
-                    </div>
+          {rooms?.length ? (
+            <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 grid-rows-4 gap-4">
+              {rooms.map((room: IRoom, index: number) => (
+                <Card className="flex flex-col justify-center w-full p-4 text-center" key={index}>
+                  <Label className="font-bold text-lg w-full">{room.roomCode.toUpperCase()}</Label>
+                  <div>
+                    <Label className="text-center pr-2">Players: {room.players.length}/8</Label>
+                    <JoinRoomButton roomCode={room.roomCode} />
                   </div>
-                </div>
-              ))
-            ) : (
-              <NoRooms />
-            )}
-          </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <NoRooms />
+          )}
           {rooms?.length ? (
             <div className="flex justify-end items-center p-3 h-[8%]">
               <JoinRoomButton />

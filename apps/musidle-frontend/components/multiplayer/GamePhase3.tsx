@@ -1,5 +1,5 @@
 'use client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import React, { useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { LuChevronsUpDown } from 'react-icons/lu';
@@ -15,11 +15,11 @@ import { cn } from '@/lib/utils';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { useGameFinalStore } from '@/stores/GameFinalStore';
 import { useSession } from 'next-auth/react';
-import GameInstructionsHover from '../game-related/GameInstructionsHover';
+import GameHeader from './GameHeader';
 function GamePhase3() {
   const user = useSession().data?.user;
   const { currentPlayer, handleChooseCategory } = useRoomStore();
-  const { handlePlay } = useAudioStore();
+  const { handlePlay, audioContext } = useAudioStore();
   const { timer } = useTimerStore();
   const { value, handleValueChange, possibleAnswers, getPossibleSongAnswers, possibleSongs } =
     useAnswerStore();
@@ -41,128 +41,114 @@ function GamePhase3() {
     }
   };
   return (
-    <div className=" xl:w-[67%] w-full xl:h-full h-[60%] flex flex-col justify-center items-center min-w-[180px] relative top-0 right-0 xl:p-0 py-6 mx-2">
-      <Card className="h-full w-full">
-        <div className="h-3/5 w-full">
-          <CardHeader className=" text-center h-[20%] w-full">
-            <div className="flex justify-between items-center">
-              <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-                v{process.env.NEXT_PUBLIC_VERSION}
-              </label>
-              <div>
-                <CardTitle>Final Round</CardTitle>
-              </div>
-              <GameInstructionsHover />
-            </div>
-          </CardHeader>
-          <CardContent className="flex flex-col justify-center items-center h-4/5">
-            <div className="grid grid-cols-3 gap-2 w-full h-full">
-              {possibleSongs
-                .filter(song => song.songId.includes('final'))
-                .map((song, index) => (
-                  <div className="w-full h-full" key={index}>
-                    <Toggle
-                      className="col-span-1 p-2 w-full h-full"
-                      disabled={currentPlayer?._id != user?._id || song.completed}
-                      id={song.songId}
-                      key={`toggle${index}`}
-                      defaultPressed={index + 1 == 1 ? true : false}
-                      onPressedChange={() => {
-                        handleTogglePress(song.songId);
-                      }}
-                      variant={'outline'}
-                    >
-                      <Label className="cursor-pointer">
-                        {song.completed ? song.artist : index + 1}
-                      </Label>
-                    </Toggle>
-                  </div>
-                ))}
-            </div>
-          </CardContent>
-        </div>
-        <div className="flex flex-col w-full justify-center items-center h-2/5">
-          <div className="flex flex-col h-3/5 w-full justify-center items-center p-0">
-            <Label className="py-2">Time left: {timer}s</Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-[250px] justify-between"
-                  disabled={currentPlayer?._id != user?._id}
+    <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
+      <GameHeader title="Phase 3" />
+      <CardContent className="w-full p-4 min-h-[470px]">
+        <div className="grid grid-cols-3 gap-2 w-full ">
+          {possibleSongs
+            .filter(song => song.songId.includes('final'))
+            .map((song, index) => (
+              <div className="w-full" key={index}>
+                <Toggle
+                  className="col-span-1 p-2 w-full min-h-[120px]"
+                  disabled={currentPlayer?._id != user?._id || song.completed}
+                  id={song.songId}
+                  key={`toggle${index}`}
+                  defaultPressed={index + 1 == 1 ? true : false}
+                  onPressedChange={() => {
+                    handleTogglePress(song.songId);
+                  }}
+                  variant={'outline'}
                 >
-                  {value
-                    ? possibleAnswers.find(song => song.value.toLowerCase() === value.toLowerCase())
-                        ?.value
-                    : 'Select song...'}
-                  <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[300px] p-0">
-                <Command shouldFilter={false}>
-                  <CommandInput
-                    placeholder="Search song..."
-                    onValueChange={value => {
-                      getPossibleSongAnswers(value);
-                      handleValueChange(value);
-                    }}
-                    value={value}
-                  />
-
-                  <CommandGroup>
-                    {possibleAnswers.map(song => (
-                      <CommandItem
-                        key={song.key}
-                        onSelect={currentValue => {
-                          handleValueChange(currentValue === value ? '' : currentValue);
-                          setOpen(false);
-                        }}
-                      >
-                        <AiOutlineCheck
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            value.toLowerCase() == song.value.toLowerCase()
-                              ? 'opacity-100'
-                              : 'opacity-0',
-                          )}
-                        />
-                        {song.value}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
-            <div className="py-2">
+                  <Label className="cursor-pointer">
+                    {song.completed ? song.artist : index + 1}
+                  </Label>
+                </Toggle>
+              </div>
+            ))}
+        </div>
+        <div className="flex justify-center items-center mt-2">
+          <Button
+            onClick={() => handlePlay()}
+            className="min-w-[100px]"
+            disabled={currentPlayer?._id != user?._id}
+          >
+            {audioContext?.state == 'running' ? 'Pause' : 'Play'}
+          </Button>
+        </div>
+      </CardContent>
+      <div className="flex flex-col w-full justify-center items-center">
+        <div className="flex flex-col w-full justify-center items-center p-0">
+          <Label className="py-2">Time left: {timer}s</Label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
               <Button
-                variant={'default'}
-                onClick={() => {
-                  handleFinalAnswerSubmit();
-                }}
-                className={
-                  currentPlayer?._id != user?._id || value === ''
-                    ? 'pointer-events-none w-[100%] opacity-50 min-w-[100px]'
-                    : 'w-[100%] min-w-[100px]'
-                }
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-[250px] justify-between"
+                disabled={currentPlayer?._id != user?._id}
               >
-                Submit
+                {value
+                  ? possibleAnswers.find(song => song.value.toLowerCase() === value.toLowerCase())
+                      ?.value
+                  : 'Select song...'}
+                <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
-            </div>
-          </div>
-          <div className="h-[40%] flex justify-center items-center px-2">
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] p-0">
+              <Command shouldFilter={false}>
+                <CommandInput
+                  placeholder="Search song..."
+                  onValueChange={value => {
+                    getPossibleSongAnswers(value);
+                    handleValueChange(value);
+                  }}
+                  value={value}
+                />
+
+                <CommandGroup>
+                  {possibleAnswers.map(song => (
+                    <CommandItem
+                      key={song.key}
+                      onSelect={currentValue => {
+                        handleValueChange(currentValue === value ? '' : currentValue);
+                        setOpen(false);
+                      }}
+                    >
+                      <AiOutlineCheck
+                        className={cn(
+                          'mr-2 h-4 w-4',
+                          value.toLowerCase() == song.value.toLowerCase()
+                            ? 'opacity-100'
+                            : 'opacity-0',
+                        )}
+                      />
+                      {song.value}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <div className="py-2">
             <Button
-              onClick={() => handlePlay()}
-              className="w-[100%] min-w-[100px]"
-              disabled={currentPlayer?._id != user?._id}
+              variant={'default'}
+              onClick={() => {
+                handleFinalAnswerSubmit();
+              }}
+              className={
+                currentPlayer?._id != user?._id || value === ''
+                  ? 'pointer-events-none w-[100%] opacity-50 min-w-[100px]'
+                  : 'w-[100%] min-w-[100px]'
+              }
             >
-              Play / Pause
+              Submit
             </Button>
           </div>
         </div>
-      </Card>
-    </div>
+      </div>
+    </Card>
   );
 }
 

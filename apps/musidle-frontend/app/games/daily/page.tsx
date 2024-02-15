@@ -65,21 +65,21 @@ export default async function Page() {
 
   return (
     <>
-      <CardContent className="h-full ">
-        <Card className="flex justify-center items-center h-full p-4">
+      <CardContent className="flex w-full">
+        <Card className="flex justify-center items-center p-4 w-full min-h-[540px] mt-2">
           {getCookie('playedDaily', { cookies }) === 'true' ? (
             <AlreadyPlayed />
           ) : (
             <>
               <AudioSetter buffer={buffer()} songId={songId} />
               <CardContent className="h-full flex flex-col">
-                <div className="h-1/2">
+                <div className="min-h-[200px]">
                   <AudioProgress />
                   <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
                     <PlayAudioButton className="min-w-[80px]" />
                   </div>
                 </div>
-                <div className="h-1/2 flex flex-col justify-center items-center relative">
+                <div className=" flex flex-col justify-center items-center">
                   <AnswerSelector />
                 </div>
               </CardContent>

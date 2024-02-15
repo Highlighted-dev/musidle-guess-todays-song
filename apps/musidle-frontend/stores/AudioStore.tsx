@@ -111,7 +111,6 @@ export const useAudioStore = create<IAudioStore>(set => ({
           useTimerStore.getState().timer,
         );
     }
-    console.log(audioContext.currentTime);
 
     const getCurrentTime = () => {
       return audioContext.currentTime;

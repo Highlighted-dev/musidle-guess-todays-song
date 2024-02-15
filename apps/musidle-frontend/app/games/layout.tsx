@@ -1,13 +1,9 @@
 import React from 'react';
-import LoginAndRegister from '@/components/LoginAndRegister';
-import { Label } from '@/components/ui/label';
-import Navbar from '@/components/Navbar';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/route';
-import Footer from '@/components/Footer';
 
 export const metadata = {
-  title: 'Musidle',
+  title: 'Musidle Games',
 };
 
 export async function getNextSession() {
@@ -16,9 +12,5 @@ export async function getNextSession() {
 }
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex justify-center items-center w-full h-full text-white m-0 p-0">
-      {children}
-    </div>
-  );
+  return <div className="container py-6">{children}</div>;
 }

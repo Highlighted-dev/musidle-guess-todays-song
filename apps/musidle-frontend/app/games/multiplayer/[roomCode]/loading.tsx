@@ -1,78 +1,67 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Input } from '@/components/ui/input';
 import React from 'react';
 
 export default async function Loading() {
   return (
     <>
-      <div className="xl:w-[16%] w-full xl:h-full h-[20%] flex flex-col justify-center items-center min-w-[180px]  xl:p-0 py-6 flex-grow-0">
-        <Card className="h-full w-full">
-          <CardHeader className="text-center h-[10%]">
-            <CardTitle>Chat</CardTitle>
+      <div className="flex lg:flex-row flex-col justify-center items-center my-2 min-h-[450px]">
+        <Card className="min-w-[220px] lg:w-auto w-full lg:min-h-[700px] min-h-[500px] h-full relative lg:mt-2 mb-2">
+          <CardHeader className="border-b p-4 flex items-center justify-center">
+            <Skeleton className="w-12 h-5" />
           </CardHeader>
-          <CardContent className="flex flex-col h-[90%]">
-            <Card className="h-[50%] xl:h-[90%] m-1 flex flex-col overflow-y-auto overflow-x-hidden">
-              <Skeleton className="w-full h-4 my-[3px]" />
-              <Skeleton className="w-full h-4 my-[3px]" />
-              <Skeleton className="w-full h-4 my-[3px]" />
-              <Skeleton className="w-full h-4 my-[3px]" />
-              <Skeleton className="w-full h-4 my-[3px]" />
-              <Skeleton className="w-full h-4 my-[3px]" />
-            </Card>
-            <div className="flex justify-between xl:h-[10%] h-auto w-full">
-              <Input className="w-[65%]" disabled />
-              <Button className="w-[30%]" disabled>
-                Send
-              </Button>
-            </div>
-          </CardContent>
+          <CardContent className="overflow-y-auto overflow-x-hidden w-full p-4 break-words relative lg:h-[450px] h-[300px]" />
+          <CardFooter className="border-t p-4">
+            <form className="flex flex-col w-full space-y-2">
+              <Skeleton className="w-full h-7" />
+              <Skeleton className="w-full h-7" />
+            </form>
+          </CardFooter>
         </Card>
-      </div>
-      <Card className="float-left flex flex-col justify-center relative items-center xl:h-full h-[45%] xl:w-[67%] w-full flex-grow xl:mx-2">
-        <CardHeader className=" text-center w-full">
-          <div className="flex justify-between items-center">
-            <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-              v{process.env.NEXT_PUBLIC_VERSION}
-            </label>
-            <CardTitle className="flex justify-center items-center">
-              <Skeleton className="w-32 h-6" />
-            </CardTitle>
-            <div className="w-24">
-              <Button variant="link" disabled>
-                Instructions
-              </Button>
+        <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
+          <CardHeader className="flex flex-row justify-between border-b  w-full h-14 p-2">
+            <div className="w-1/3 flex justify-start p-4">
+              <Skeleton className="w-14 h-8" />
             </div>
-          </div>
-        </CardHeader>
-        <CardContent className="flex h-full w-full"></CardContent>
-      </Card>
-      <div className=" xl:w-[16%] w-full xl:h-full h-[33%] flex flex-col justify-center items-center min-w-[180px] relative xl:p-0 py-6">
-        <Card className="h-full w-full">
-          <CardHeader className=" text-center">
-            <CardTitle>Leaderboard</CardTitle>
+            <div className="w-1/3 flex justify-center">
+              <Skeleton className="w-1/3 h-8" />
+            </div>
+            <div className="w-1/3 flex justify-end">
+              <Skeleton className="w-24 h-8" />
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col w-full min-h-[570px]" />
+        </Card>
+        <Card className="min-w-[220px] lg:w-auto w-full lg:min-h-[700px] min-h-[500px] h-full relative lg:mt-0 mt-2">
+          <CardHeader className="border-b p-4 flex items-center">
+            <Skeleton className="w-2/3 h-5" />
+          </CardHeader>
+          <CardContent className="mt-2">
             <Card className=" min-h-[100px] p-2">
-              <CardTitle className="text-center pb-1 text-xs">Players</CardTitle>
-              <div className="grid gap-1">
-                <Skeleton className="w-full h-4" />
-                <Skeleton className="w-full h-4" />
-                <Skeleton className="w-full h-4" />
+              <CardTitle className="flex justify-center text-center pb-1 text-xs">
+                <Skeleton className="w-1/3 h-5" />
+              </CardTitle>
+              <div className="flex flex-col">
+                {[...Array(4)].map((_, i) => (
+                  <div className="flex justify-between mb-1" key={i}>
+                    <Skeleton className="w-2/3 h-5" />
+                    <Skeleton className="w-1/6 h-5" />
+                  </div>
+                ))}
               </div>
             </Card>
-            <Card className=" min-h-[100px] p-2 mt-2">
-              <CardTitle className="text-center pb-1 text-xs">Spectators</CardTitle>
-              <div className="grid gap-1">
-                <Skeleton className="w-full h-4" />
-                <Skeleton className="w-full h-4" />
-                <Skeleton className="w-full h-4" />
+            <Card className=" min-h-[100px] p-2 mt-2 cursor-pointer">
+              <CardTitle className="flex justify-center text-center pb-1 text-xs hr">
+                <Skeleton className="w-1/3 h-5" />
+              </CardTitle>
+              <div className="flex flex-col">
+                {[...Array(4)].map((_, i) => (
+                  <div className="flex mb-1" key={i}>
+                    <Skeleton className="w-2/3 h-5" />
+                  </div>
+                ))}
               </div>
             </Card>
-            <Button className="w-full my-2" variant={'outline'} disabled>
-              Vote for turn skip (<Skeleton className="w-6 h-4" />)
-            </Button>
           </CardContent>
         </Card>
       </div>

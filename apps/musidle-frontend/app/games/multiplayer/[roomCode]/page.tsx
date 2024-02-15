@@ -61,9 +61,11 @@ export default async function Page({ params }: { params: { roomCode: string } })
     return (
       <>
         <RoomStoreInitializer data={data} buffer={buffer()} />
-        <GameChat />
-        <GameController params={params} />
-        <Leaderboard />
+        <div className="flex lg:flex-row flex-col justify-center items-center my-2">
+          <GameChat />
+          <GameController params={params} />
+          <Leaderboard />
+        </div>
       </>
     );
 }

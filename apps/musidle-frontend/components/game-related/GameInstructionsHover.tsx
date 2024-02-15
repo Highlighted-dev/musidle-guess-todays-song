@@ -4,15 +4,17 @@ import { Button } from '../ui/button';
 
 export default function GameInstructionsHover() {
   return (
-    <div className="w-24">
+    <div className="flex justify-end items-center">
       <HoverCard>
-        <HoverCardTrigger asChild>
+        <HoverCardTrigger asChild className="w-28">
           <Button variant="link">Instructions</Button>
         </HoverCardTrigger>
         <HoverCardContent className="w-96">
           <div className="flex space-x-4">
             <div className="space-y-1">
-              <h4 className="text-base font-semibold">Musidle Multiplayer Instructions</h4>
+              <h4 className="text-base font-semibold text-center">
+                Musidle Multiplayer Instructions
+              </h4>
               <p className="text-sm">
                 There are <label className="font-bold"> 4 stages</label>, each with longer song time{' '}
                 <label className="font-bold">(1 | 3 | 6 | 12 seconds)</label>. You can change the

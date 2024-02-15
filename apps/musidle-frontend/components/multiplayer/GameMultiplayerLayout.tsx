@@ -1,5 +1,5 @@
 'use client';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useTimerStore } from '@/stores/TimerStore';
 import { useRoomStore } from '@/stores/RoomStore';
@@ -9,8 +9,8 @@ import { useSession } from 'next-auth/react';
 import AnswerSelector from '../game-related/AnswerSelector';
 import AudioProgress from '../game-related/AudioProgress';
 import SubmitAnswerButton from '../buttons/SubmitAnswerButton';
-import GameInstructionsHover from '../game-related/GameInstructionsHover';
 import { Button } from '../ui/button';
+import GameHeader from './GameHeader';
 
 function GameMultiplayerLayout() {
   const user = useSession().data?.user;
@@ -20,24 +20,16 @@ function GameMultiplayerLayout() {
   const { audio, songId, handlePlay, audioContext, changeStage } = useAudioStore();
 
   return (
-    <Card className="float-left flex flex-col justify-center relative items-center xl:h-full h-[45%] xl:w-[67%] w-full flex-grow xl:mx-2">
-      <CardHeader className=" text-center w-full">
-        <div className="flex justify-between items-center">
-          <label className=" w-24 font-semibold text-xs flex justify-center items-center">
-            v{process.env.NEXT_PUBLIC_VERSION}
-          </label>
-          <CardTitle className="flex justify-center items-center">Musidle - Multiplayer</CardTitle>
-          <GameInstructionsHover />
-        </div>
-      </CardHeader>
-      <CardContent className="flex h-full w-full">
-        <Card className="flex justify-center items-center h-full p-4 w-full">
-          <CardContent className="h-full flex flex-col">
+    <Card className="w-full flex flex-col  min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
+      <GameHeader title="Guess the song" />
+      <CardContent className="flex w-full">
+        <Card className="flex justify-center items-center p-4 w-full min-h-[500px] mt-2">
+          <CardContent className="flex flex-col">
             <div className="h-1/2">
               <AudioProgress />
               <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
                 <Button
-                  variant={'default'}
+                  variant={'tertiary'}
                   onClick={() => handlePlay()}
                   className="min-w-[80px]"
                   disabled={currentPlayer?._id != user?._id || !audio}

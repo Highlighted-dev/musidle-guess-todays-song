@@ -1,16 +1,23 @@
 import React from 'react';
 import { EditorToolbar } from './Toolbar';
-import { EditorContent } from '@tiptap/react';
+import { Editor, EditorContent } from '@tiptap/react';
 import { EditorBubbleMenu } from './BubbleMenu';
 import TextareaAutosize from 'react-textarea-autosize';
+import { UseFormRegister } from 'react-hook-form';
+
+export interface IFormData {
+  name: string;
+  content: string;
+}
+
 export default function EditorBase({
   editor,
   name,
   register,
 }: {
-  editor: any;
+  editor: Editor;
   name: string;
-  register: any;
+  register: UseFormRegister<{ name: string; content: string }>;
 }) {
   return (
     <div className="mx-auto">

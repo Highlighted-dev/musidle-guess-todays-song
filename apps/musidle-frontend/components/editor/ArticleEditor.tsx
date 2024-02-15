@@ -9,17 +9,20 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import { ImSpinner2 } from 'react-icons/im';
 import { editorExtensions, editorProps } from './editorConfig';
-import EditorBase from './EditorBase';
+import EditorBase, { IFormData } from './EditorBase';
 
-interface IFormData {
+export function ArticleEditor({
+  url,
+  name,
+  content,
+}: {
   name: string;
-  content: any;
-}
-
-export function ArticleEditor({ url, name, content }: { name: string; content: any; url: string }) {
+  content: string;
+  url: string;
+}) {
   const { register, handleSubmit } = useForm<IFormData>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const onSubmit = async (data: { name: string; content: any }) => {
+  const onSubmit = async (data: { name: string; content: string }) => {
     setIsSaving(true);
     const content = editor?.getHTML();
 

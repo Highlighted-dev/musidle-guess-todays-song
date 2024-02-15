@@ -21,28 +21,13 @@ import {
 } from '../ui/table';
 import Image from 'next/image';
 import { Input } from '../ui/input';
-import EditorBase from './EditorBase';
-interface IFormData {
-  name: string;
-  content: any;
-}
+import EditorBase, { IFormData } from './EditorBase';
+import { IWiki } from '@/@types/Wiki';
 
-export function WikiEditor({
-  wiki,
-}: {
-  wiki: {
-    _id: string;
-    name: string;
-    description: string;
-    notableAlbums: any[];
-    popularSongs: any[];
-    relatedArtists: any[];
-    tags: any[];
-  };
-}) {
+export function WikiEditor({ wiki }: { wiki: IWiki }) {
   const { register, handleSubmit } = useForm<IFormData>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const onSubmit = async (data: { name: string; content: any }) => {
+  const onSubmit = async (data: { name: string; content: string }) => {
     setIsSaving(true);
     const content = editor?.getHTML();
 
@@ -143,7 +128,7 @@ export function WikiEditor({
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Wiki Url</TableHead>
+                <TableHead>Url</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -153,7 +138,7 @@ export function WikiEditor({
                     <Input defaultValue={artist.name} />
                   </TableCell>
                   <TableCell>
-                    <Input defaultValue={artist.wikiUrl} />
+                    <Input defaultValue={artist.url} />
                   </TableCell>
                 </TableRow>
               ))}

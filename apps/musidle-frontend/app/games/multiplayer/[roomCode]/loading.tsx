@@ -20,7 +20,7 @@ export default async function Loading() {
         </Card>
         <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
           <CardHeader className="flex flex-row justify-between border-b  w-full h-14 p-2">
-            <div className="w-1/3 flex justify-start p-4">
+            <div className="w-1/3 flex justify-start items-center p-4">
               <Skeleton className="w-14 h-8" />
             </div>
             <div className="w-1/3 flex justify-center">

@@ -28,12 +28,12 @@ export default function GamePhase1() {
         <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
           <GameHeader title="Phase 1" />
           <CardContent className=" w-full p-4">
-            <div className="flex flex-col space-y-4 w-full min-h-[570px]">
+            <div className="flex flex-col space-y-4 w-full min-h-[600px]">
               {categories &&
                 categories.length > 0 &&
                 categories?.map((category, index) => (
                   <Button
-                    variant={'secondary'}
+                    variant={'outline'}
                     onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
                     id={category}
                     disabled={
@@ -45,7 +45,7 @@ export default function GamePhase1() {
                   >
                     <div className=" flex flex-row justify-center items-center relative w-full">
                       <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
-                      <span className="absolute left-[98%] text-gray-400">
+                      <span className="absolute left-[98%] ">
                         {isCategoryCompleted(category) ? <span>0/1</span> : <span>1/1</span>}
                       </span>
                     </div>

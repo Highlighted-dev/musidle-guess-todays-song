@@ -24,6 +24,7 @@ export interface ILastFmSong {
 }
 
 export interface IAnswerStore {
+  loadingAnswer: boolean;
   answer: string | null;
   setAnswer: (answer: string) => void;
   value: string;

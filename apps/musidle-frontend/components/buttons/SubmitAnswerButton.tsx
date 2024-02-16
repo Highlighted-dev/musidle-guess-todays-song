@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '../ui/button';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { ImSpinner2 } from 'react-icons/im';
 
 export default function SubmitAnswerButton({
   className,
@@ -13,7 +14,7 @@ export default function SubmitAnswerButton({
   disabled?: boolean;
   router?: AppRouterInstance;
 }) {
-  const { handleAnswerSubmit } = useAnswerStore();
+  const { handleAnswerSubmit, loadingAnswer } = useAnswerStore();
   const { value } = useAnswerStore();
   return (
     <Button
@@ -22,7 +23,7 @@ export default function SubmitAnswerButton({
       onClick={() => handleAnswerSubmit(router)}
       variant={'tertiary'}
     >
-      Submit
+      {loadingAnswer ? <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" /> : 'Submit'}
     </Button>
   );
 }

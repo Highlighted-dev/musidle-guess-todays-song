@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 
 export default function GameHeader({ title }: { title: string }) {
   return (
-    <CardHeader className="flex flex-row justify-between border-b  w-full h-14 p-2">
+    <CardHeader className="flex flex-row justify-between border-b w-full h-14 p-4">
       <div className="text-xs flex justify-start items-center w-28">
         <Button variant={'link'}>v{process.env.NEXT_PUBLIC_VERSION}</Button>
       </div>

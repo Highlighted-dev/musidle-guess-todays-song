@@ -43,7 +43,7 @@ function GamePhase3() {
   return (
     <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
       <GameHeader title="Phase 3" />
-      <CardContent className="w-full p-4 min-h-[470px]">
+      <CardContent className="w-full p-4 min-h-[510px]">
         <div className="grid grid-cols-3 gap-2 w-full ">
           {possibleSongs
             .filter(song => song.songId.includes('final'))

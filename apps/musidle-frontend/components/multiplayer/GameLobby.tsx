@@ -22,7 +22,7 @@ export default function GameLobby(params: { roomCode: string }) {
     <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
       <GameHeader title="Game Lobby" />
       <CardContent className="flex flex-col w-full mt-2">
-        <Card className="mb-3 min-h-[480px]">
+        <Card className="mb-3 min-h-[524px]">
           <CardHeader className=" text-center">
             <CardTitle>Settings</CardTitle>
           </CardHeader>

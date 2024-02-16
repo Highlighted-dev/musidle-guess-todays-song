@@ -11,6 +11,7 @@ import { IPlayerCategories } from '@/@types/Categories';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
+  loadingAnswer: false,
   answer: '',
   setAnswer: (answer: string | null) =>
     set(() => ({
@@ -63,6 +64,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const { setValue, setAnswer, setPossibleAnswers } = useAnswerStore.getState();
     let category = '';
     if (!currentPlayer && !router) return;
+    useAnswerStore.setState({ loadingAnswer: true });
     if (
       useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne &&
       currentPlayer?._id == session?.user?._id
@@ -133,6 +135,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
 
     useTimerStore.getState().setTimer(useTimerStore.getState().maxTimer);
     // if (audio) audio.volume = 0.05;
+    useAnswerStore.setState({ loadingAnswer: false });
     if (currentPlayer && currentPlayer._id === session?.user?._id) handleTurnChange();
     else if (router) {
       // Set cookie that ends on 00:00:00 the next day

@@ -12,9 +12,9 @@ function GameEndScreen() {
   const router = useRouter();
   const user = useSession().data?.user;
   return (
-    <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
+    <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 lg:min-h-[700px] min-h-[500px]">
       <GameHeader title="The game has ended" />
-      <CardContent className="flex flex-col  items-center h-[90%]">
+      <CardContent className="flex flex-col items-center lg:min-h-[640px] min-h-[460px]">
         <h1 className="text-center">Winner: {currentPlayer?.username}</h1>
         <div className="p-16">
           <div className="flex flex-col">

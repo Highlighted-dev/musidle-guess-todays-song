@@ -7,7 +7,7 @@ export default async function Loading() {
     <>
       <div className="flex lg:flex-row flex-col justify-center items-center my-2 min-h-[450px]">
         <Card className="min-w-[220px] lg:w-auto w-full lg:min-h-[700px] min-h-[500px] h-full relative lg:mt-2 mb-2">
-          <CardHeader className="border-b p-4 flex items-center justify-center">
+          <CardHeader className="border-b p-4 flex items-center h-14">
             <Skeleton className="w-12 h-5" />
           </CardHeader>
           <CardContent className="overflow-y-auto overflow-x-hidden w-full p-4 break-words relative lg:h-[450px] h-[300px]" />
@@ -30,10 +30,10 @@ export default async function Loading() {
               <Skeleton className="w-24 h-8" />
             </div>
           </CardHeader>
-          <CardContent className="flex flex-col w-full min-h-[570px]" />
+          <CardContent className="flex flex-col w-full min-h-[640px]" />
         </Card>
         <Card className="min-w-[220px] lg:w-auto w-full lg:min-h-[700px] min-h-[500px] h-full relative lg:mt-0 mt-2">
-          <CardHeader className="border-b p-4 flex items-center">
+          <CardHeader className="border-b p-4 flex items-center h-14">
             <Skeleton className="w-2/3 h-5" />
           </CardHeader>
           <CardContent className="mt-2">

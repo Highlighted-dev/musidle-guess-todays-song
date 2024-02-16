@@ -23,13 +23,13 @@ function GamePhase2() {
         <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
           <GameHeader title="Phase 2" />
           <CardContent className="w-full p-4">
-            <div className="grid grid-cols-2 gap-4 w-full min-h-[570px]">
+            <div className="grid grid-cols-2 gap-4 w-full min-h-[610px]">
               {possibleSongs
                 .filter(song => song.category == 'artists')
                 ?.map((song, index) => (
                   <Button
                     key={index}
-                    variant={'secondary'}
+                    variant={'outline'}
                     onClick={e => {
                       setChoosingArtist(true);
                       revealArtist(song.songId);

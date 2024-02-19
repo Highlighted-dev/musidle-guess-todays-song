@@ -4,12 +4,10 @@ import '../../styles/editor.css';
 import { toast } from '../ui/use-toast';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { FaChevronLeft } from 'react-icons/fa';
-import { Button } from '../ui/button';
-import Link from 'next/link';
 import { ImSpinner2 } from 'react-icons/im';
 import { editorExtensions, editorProps } from './editorConfig';
 import EditorBase, { IFormData } from './EditorBase';
+import EditorFooter from './EditorFooter';
 
 export function ArticleEditor({
   url,
@@ -65,29 +63,7 @@ export function ArticleEditor({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid w-full">
         <EditorBase editor={editor} name={name} register={register} />
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center space-x-10">
-            <Button variant={'ghost'}>
-              <Link href="/">
-                <div className="flex items-center">
-                  <FaChevronLeft className="mr-2 h-4 w-4" />
-                  Go Back
-                </div>
-              </Link>
-            </Button>
-          </div>
-          <p className="text-sm text-gray-500">
-            Check{' '}
-            <kbd className="rounded-md border bg-muted px-1 text-xs">
-              <Link href={'https://tiptap.dev/docs/editor/introduction'}>TipTap docs</Link>
-            </kbd>{' '}
-            for useful hotkeys
-          </p>
-          <Button type="submit">
-            {isSaving && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
-            <span>Save</span>
-          </Button>
-        </div>
+        <EditorFooter isSaving={isSaving} />
       </div>
     </form>
   );

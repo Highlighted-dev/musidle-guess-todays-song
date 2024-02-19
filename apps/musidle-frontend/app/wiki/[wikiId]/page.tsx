@@ -1,8 +1,10 @@
+import { IWiki } from '@/@types/Wiki';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import PlaySong from '@/components/wiki/PlayEmbed';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import DOMPurify from 'isomorphic-dompurify';
 import { FacebookIcon, InstagramIcon, TwitterIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,7 +14,7 @@ import { RxCross1 } from 'react-icons/rx';
 
 async function getWiki(wikiId: string) {
   try {
-    const wiki = await fetch(getCurrentUrl() + `/externalApi/wikis/${wikiId}`, {
+    const wiki: IWiki = await fetch(getCurrentUrl() + `/externalApi/wikis/${wikiId}`, {
       cache: 'no-store',
     }).then(res => res.json());
     return wiki;
@@ -24,6 +26,13 @@ async function getWiki(wikiId: string) {
 
 export default async function Wiki({ params }: { params: { wikiId: string } }) {
   const wiki = await getWiki(params.wikiId);
+  const sanitizedHTML = () => {
+    if (!wiki?.description) {
+      return { __html: DOMPurify.sanitize('Here will be an artist bio') };
+    }
+    return { __html: DOMPurify.sanitize(wiki?.description) };
+  };
+
   return (
     <div className="flex flex-col min-h-screen h-full w-full">
       <div className="flex items-center justify-center h-20">
@@ -32,7 +41,7 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
       <div className="flex-1 py-10 px-4 md:px-6 lg:px-8">
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Bio</h2>
-          <p>{wiki?.description || 'Here will be an artist bio'}</p>
+          <div dangerouslySetInnerHTML={sanitizedHTML()} />
         </div>
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Notable Albums</h2>

@@ -104,4 +104,25 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
   }
 });
 
+router.patch('/:id', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (
+      !req.params.id ||
+      req.params.id.length !== 24 ||
+      !req.body.name ||
+      !req.body.description ||
+      !req.body.notableAlbums ||
+      !req.body.popularSongs ||
+      !req.body.relatedArtists ||
+      !req.body.tags
+    ) {
+      return res.status(400).json({ message: 'Bad Request' });
+    }
+    const wiki = await wikiModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    return res.status(200).json(wiki);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

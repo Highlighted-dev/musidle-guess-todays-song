@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
@@ -6,7 +7,7 @@ import { ImSpinner2 } from 'react-icons/im';
 
 export default function EditorFooter({ isSaving }: { isSaving: boolean }) {
   return (
-    <div className="flex w-full items-center justify-between">
+    <div className="flex w-full items-center justify-between relative">
       <div className="flex items-center space-x-10">
         <Button variant={'ghost'}>
           <Link href="/">

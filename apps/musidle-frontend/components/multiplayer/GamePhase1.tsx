@@ -33,7 +33,7 @@ export default function GamePhase1() {
                 categories.length > 0 &&
                 categories?.map((category, index) => (
                   <Button
-                    variant={'outline'}
+                    variant={'secondary'}
                     onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
                     id={category}
                     disabled={

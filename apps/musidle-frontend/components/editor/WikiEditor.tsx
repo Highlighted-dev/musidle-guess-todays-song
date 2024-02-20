@@ -54,11 +54,11 @@ export function WikiEditor({ wiki }: { wiki: IWiki }) {
 
     setIsSaving(false);
     if (!response.ok)
-      return toast({ title: 'Error', description: 'Failed to save post', variant: 'destructive' });
+      return toast({ title: 'Error', description: 'Failed to save wiki', variant: 'destructive' });
 
     return toast({
-      title: 'Post saved',
-      description: 'Your post has been saved',
+      title: 'Wiki saved',
+      description: 'Your wiki has been saved',
       duration: 5000,
     });
   };

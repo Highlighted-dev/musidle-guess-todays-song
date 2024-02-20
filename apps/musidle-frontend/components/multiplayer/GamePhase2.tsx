@@ -29,7 +29,7 @@ function GamePhase2() {
                 ?.map((song, index) => (
                   <Button
                     key={index}
-                    variant={'outline'}
+                    variant={'secondary'}
                     onClick={e => {
                       setChoosingArtist(true);
                       revealArtist(song.songId);

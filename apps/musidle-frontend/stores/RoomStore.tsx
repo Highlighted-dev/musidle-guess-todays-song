@@ -119,13 +119,18 @@ export const useRoomStore = create<IRoomStore>(set => ({
   handleTurnChange: async () => {
     if (!useRoomStore.getState().currentPlayer) return;
     const socket = useSocketStore.getState().socket;
-    socket?.emit('turnChange', useRoomStore.getState().roomCode, useAudioStore.getState().songId);
+    if (socket) {
+      socket.emit('turnChange', useRoomStore.getState().roomCode, useAudioStore.getState().songId);
+    }
   },
 
   handleChooseCategory: async (songId, phase = 1, socket = null) => {
     if (!socket) socket = useSocketStore.getState().socket;
     const { roomCode } = useRoomStore.getState();
-    socket?.emit('chooseSong', songId, roomCode, phase);
+    if (socket && roomCode) {
+      useAudioStore.setState({ audioContext: null });
+      socket?.emit('chooseSong', songId, roomCode, phase);
+    }
   },
   async updateSettings(maxRoundsPhaseOne, maxRoundsPhaseTwo, maxTimer) {
     if (

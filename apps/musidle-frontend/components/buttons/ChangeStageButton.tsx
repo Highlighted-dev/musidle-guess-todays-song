@@ -13,7 +13,7 @@ export default function ChangeStageButton({
   const { changeStage, audioContext } = useAudioStore();
   return (
     <Button
-      variant={'outline'}
+      variant={'secondary'}
       onClick={() => changeStage()}
       className={className}
       disabled={disabled || !audioContext}

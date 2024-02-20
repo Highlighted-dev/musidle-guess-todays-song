@@ -58,7 +58,7 @@ function GameMultiplayerLayout() {
       </CardContent>
       <CardFooter className="flex justify-between text-center w-full">
         <Button
-          variant={'outline'}
+          variant={'secondary'}
           onClick={() => changeStage()}
           className="w-[12%] min-w-[130px]"
           disabled={currentPlayer?._id != user?._id || !audioContext}

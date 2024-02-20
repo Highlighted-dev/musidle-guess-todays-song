@@ -83,9 +83,7 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
                 >
                   <h3 className="font-bold">{song.name}</h3>
                   {song.youtubeUrl ? (
-                    <PlaySong
-                      url={'https://www.youtube.com/embed/mzB1VGEGcSU?si=ge1mcpn4pOXzBGzT'}
-                    />
+                    <PlaySong url={song.youtubeUrl} />
                   ) : (
                     <Button size="icon" variant="ghost">
                       <RxCross1 className="h-6 w-6 text-destructive" />

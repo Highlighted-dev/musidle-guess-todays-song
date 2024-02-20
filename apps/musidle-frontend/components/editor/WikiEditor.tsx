@@ -50,8 +50,6 @@ export function WikiEditor({ wiki }: { wiki: IWiki }) {
       body: JSON.stringify(updatedData),
     });
 
-    console.log(response);
-
     setIsSaving(false);
     if (!response.ok)
       return toast({ title: 'Error', description: 'Failed to save wiki', variant: 'destructive' });

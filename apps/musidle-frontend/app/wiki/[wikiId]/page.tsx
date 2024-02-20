@@ -1,11 +1,14 @@
 import { IWiki } from '@/@types/Wiki';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import EditButton from '@/components/buttons/EditButton';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import PlaySong from '@/components/wiki/PlayEmbed';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import DOMPurify from 'isomorphic-dompurify';
-import { FacebookIcon, InstagramIcon, TwitterIcon } from 'lucide-react';
+import { InstagramIcon, TwitterIcon } from 'lucide-react';
+import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -26,6 +29,7 @@ async function getWiki(wikiId: string) {
 
 export default async function Wiki({ params }: { params: { wikiId: string } }) {
   const wiki = await getWiki(params.wikiId);
+  const session = await getServerSession(authOptions);
   const sanitizedHTML = () => {
     if (!wiki?.description) {
       return { __html: DOMPurify.sanitize('Here will be an artist bio') };
@@ -37,6 +41,9 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
     <div className="flex flex-col min-h-screen h-full w-full">
       <div className="flex items-center justify-center h-20">
         <h1 className="text-3xl font-bold">{wiki?.name || 'This wiki does not exist yet'}</h1>
+        {session?.user.role == 'admin' ? (
+          <EditButton url={`/admin/editor/wiki/${wiki?._id}`} size={25} />
+        ) : null}
       </div>
       <div className="flex-1 py-10 px-4 md:px-6 lg:px-8">
         <div className="mb-10">

@@ -38,7 +38,9 @@ export default async function Articles({ params }: { params: { articleId: string
       <div className="container px-4 md:px-6">
         <div className="flex">
           <h1 className="text-5xl font-bold">{articleData.title}</h1>
-          {session?.user.role == 'admin' ? <EditButton id={articleData._id} /> : null}
+          {session?.user.role == 'admin' ? (
+            <EditButton url={`/admin/editor/articles/${articleData._id}`} />
+          ) : null}
         </div>
         <Separator className="my-4" />
         <div dangerouslySetInnerHTML={sanitizedHTML()} id={'editor'} />

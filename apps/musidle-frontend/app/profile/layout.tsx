@@ -1,10 +1,5 @@
-import Footer from '@/components/Footer';
 import React from 'react';
 
 export default async function ProfileLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="h-4/5 w-[90%] flex xl:flex-row xl:relative flex-col justify-center align-center relative min-h-[450px]">
-      {children}
-    </div>
-  );
+  return <div className="container flex justify-center align-center py-12 ">{children}</div>;
 }

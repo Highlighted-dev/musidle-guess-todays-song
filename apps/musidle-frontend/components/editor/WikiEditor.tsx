@@ -33,6 +33,14 @@ export function WikiEditor({ wiki }: { wiki: IWiki }) {
     setIsSaving(true);
     const content = editor?.getHTML();
 
+    // map over popular songs urls and change "watch?v=" to "embed/" if it exists
+    popularSongs.forEach(song => {
+      if (song.youtubeUrl.includes('watch?v=')) {
+        const url = song.youtubeUrl.replace('watch?v=', 'embed/');
+        song.youtubeUrl = url;
+      }
+    });
+
     const updatedData = {
       name: data.name,
       description: content,

@@ -16,7 +16,7 @@ export function PlayEmbed({ url }: { url: string }) {
         <iframe
           width={'100%'}
           height={'200px'}
-          src={url + '&autoplay=1'}
+          src={url + '?autoplay=true'}
           title="Youtube embeds on Musidle"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen

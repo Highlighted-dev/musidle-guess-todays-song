@@ -1,10 +1,12 @@
 import { IWiki } from '@/@types/Wiki';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import Redirecter from '@/components/Redirecter';
 import EditButton from '@/components/buttons/EditButton';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import PlaySong from '@/components/wiki/PlayEmbed';
+import WikiNavbar from '@/components/wiki/WikiNavbar';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import DOMPurify from 'isomorphic-dompurify';
 import { InstagramIcon, TwitterIcon } from 'lucide-react';
@@ -14,6 +16,7 @@ import Link from 'next/link';
 import React from 'react';
 import { FaSpotify } from 'react-icons/fa';
 import { RxCross1 } from 'react-icons/rx';
+import '../../../styles/editor.css';
 
 async function getWiki(wikiId: string) {
   try {
@@ -30,31 +33,38 @@ async function getWiki(wikiId: string) {
 export default async function Wiki({ params }: { params: { wikiId: string } }) {
   const wiki = await getWiki(params.wikiId);
   const session = await getServerSession(authOptions);
+  if (!wiki) {
+    return (
+      <Redirecter
+        url={`/`}
+        message={`The wiki you tried to open does not exist.`}
+        variant={'default'}
+      />
+    );
+  }
   const sanitizedHTML = () => {
-    if (!wiki?.description) {
-      return { __html: DOMPurify.sanitize('Here will be an artist bio') };
-    }
-    return { __html: DOMPurify.sanitize(wiki?.description) };
+    return { __html: DOMPurify.sanitize(wiki.description) };
   };
 
   return (
     <div className="flex flex-col min-h-screen h-full w-full">
-      <div className="flex items-center justify-center h-20">
-        <h1 className="text-3xl font-bold">{wiki?.name || 'This wiki does not exist yet'}</h1>
+      <div className="flex items-center justify-start h-20 py-10 px-4 md:px-6 lg:px-8 ">
+        <h1 className="text-3xl font-bold">{wiki.name || 'This wiki does not exist yet'}</h1>
         {session?.user.role == 'admin' ? (
-          <EditButton url={`/admin/editor/wiki/${wiki?._id}`} size={25} />
+          <EditButton url={`/admin/editor/wiki/${wiki._id}`} size={25} />
         ) : null}
       </div>
+      <WikiNavbar id={wiki._id} />
       <div className="flex-1 py-10 px-4 md:px-6 lg:px-8">
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Bio</h2>
-          <div dangerouslySetInnerHTML={sanitizedHTML()} />
+          <div dangerouslySetInnerHTML={sanitizedHTML()} id="editor" />
         </div>
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Notable Albums</h2>
-          {wiki?.notableAlbums ? (
+          {wiki.notableAlbums ? (
             <div className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4">
-              {wiki?.notableAlbums.slice(0, 4).map((album: any) => (
+              {wiki.notableAlbums.slice(0, 4).map(album => (
                 <Card key={album.name}>
                   <AspectRatio ratio={1}>
                     <Image
@@ -82,8 +92,8 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Popular Songs</h2>
           <div className="space-y-4">
-            {wiki?.popularSongs ? (
-              wiki?.popularSongs.slice(0, 5).map((song: any) => (
+            {wiki.popularSongs ? (
+              wiki.popularSongs.slice(0, 5).map(song => (
                 <Card
                   key={song.name}
                   className="flex items-center justify-between p-4 rounded-lg shadow"
@@ -107,9 +117,9 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
         </div>
         <div>
           <h2 className="text-2xl font-bold mb-4">Related Artists</h2>
-          {wiki?.relatedArtists ? (
+          {wiki.relatedArtists ? (
             <div className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4">
-              {wiki?.relatedArtists.slice(0, 4).map((artist: any) => (
+              {wiki.relatedArtists.slice(0, 4).map(artist => (
                 <Link key={artist.name} href={`/wiki/${artist.name}`}>
                   <Card className="rounded-lg shadow group">
                     <AspectRatio ratio={1}>
@@ -139,8 +149,8 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
         <div className="mt-10">
           <h2 className="text-2xl font-bold mb-4">Tags</h2>
           <div className="grid grid-cols-2 min-[480px]:grid-cols-3 lg:grid-cols-6 gap-4">
-            {wiki?.tags ? (
-              wiki?.tags.map((tag: string) => (
+            {wiki.tags ? (
+              wiki.tags.map((tag: string) => (
                 <Button key={tag} className="px-2 py-1 text-sm font-bold">
                   {tag}
                 </Button>

@@ -66,7 +66,7 @@ export default async function Page() {
   return (
     <>
       <CardContent className="flex w-full">
-        <Card className="flex justify-center items-center p-4 w-full min-h-[540px] mt-2">
+        <Card className="flex justify-center items-center p-4 w-full lg:min-h-[540px] min-h-[300px] mt-2">
           {getCookie('playedDaily', { cookies }) === 'true' ? (
             <AlreadyPlayed />
           ) : (

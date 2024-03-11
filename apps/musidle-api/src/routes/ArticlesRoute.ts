@@ -8,6 +8,7 @@ const jsonParser = bodyParser.json();
 
 const router: Router = express.Router();
 
+// Route to get all articles
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const articles = await articleModel.find();
@@ -17,24 +18,30 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+// Route to get a specific article by ID
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.params.id || req.params.id.length !== 24) {
+    // Validate the ID parameter
+    const { id } = req.params;
+    if (!id || id.length !== 24) {
       return res.status(400).json({ message: 'Bad Request' });
     }
-    const article = await articleModel.findById(req.params.id);
+    const article = await articleModel.findById(id);
     return res.json(article);
   } catch (error) {
     next(error);
   }
 });
 
+// Route to create a new article
 router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.author) {
+    // Validate the request body
+    const { author, title, content } = req.body;
+    if (!author) {
       return res.status(400).json({ message: 'Bad Request' });
     }
-    if (!req.body.title || !req.body.content) {
+    if (!title || !content) {
       req.body.title = 'Article Title';
       req.body.content = '';
     }
@@ -45,16 +52,20 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
   }
 });
 
+// Route to update an existing article by ID
 router.patch('/:id', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.params.id || req.params.id.length !== 24 || !req.body.title || !req.body.content) {
+    // Validate the ID parameter and request body
+    const { id } = req.params;
+    const { title, content } = req.body;
+    if (!id || id.length !== 24 || !title || !content) {
       return res.status(400).json({ message: 'Bad Request' });
     }
     const article = await articleModel.findByIdAndUpdate(
-      req.params.id,
+      id,
       {
-        title: req.body.title,
-        content: req.body.content,
+        title,
+        content,
       },
       { new: true },
     );
@@ -64,4 +75,5 @@ router.patch('/:id', jsonParser, async (req: Request, res: Response, next: NextF
   }
 });
 
+// Export the router
 export default router;

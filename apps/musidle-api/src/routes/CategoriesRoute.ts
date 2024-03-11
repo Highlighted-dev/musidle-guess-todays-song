@@ -9,7 +9,7 @@ interface ICustomResponse extends Response {
 const router = Router();
 const jsonParser = bodyParser.json();
 
-// GET all categories
+//Route to GET all categories
 router.get('/', async (req: Request, res: ICustomResponse, next: NextFunction) => {
   try {
     const categories = await categoryModel.find();
@@ -19,7 +19,7 @@ router.get('/', async (req: Request, res: ICustomResponse, next: NextFunction) =
   }
 });
 
-// GET a specific category by ID
+//Route to GET a specific category by ID
 router.get('/:id', getCategory, (req: Request, res: ICustomResponse, next: NextFunction) => {
   try {
     res.status(200).json(res.category);
@@ -28,7 +28,7 @@ router.get('/:id', getCategory, (req: Request, res: ICustomResponse, next: NextF
   }
 });
 
-// CREATE a new category
+//Route to CREATE a new category
 router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const category = new categoryModel({
@@ -41,15 +41,14 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
   }
 });
 
-// UPDATE a category by ID
+//Route to UPDATE a category by ID
 router.put(
   '/:id',
   getCategory,
   jsonParser,
   async (req: Request, res: ICustomResponse, next: NextFunction) => {
     try {
-      if (req.body.category == null)
-        return res.status(400).json({ message: 'Missing required fields' });
+      if (!req.body.category) return res.status(400).json({ message: 'Missing required fields' });
       res.category.category = req.body.category;
       const updatedCategory = await res.category.save();
       res.json(updatedCategory);
@@ -75,20 +74,18 @@ router.delete(
 
 // Middleware function to get a category by ID
 async function getCategory(req: Request, res: ICustomResponse, next: NextFunction) {
-  let category;
-
   try {
-    category = await categoryModel.findById(req.params.id);
+    const category = await categoryModel.findById(req.params.id);
 
-    if (category == null) {
+    if (!category) {
       return res.status(404).json({ message: 'Cannot find category' });
     }
+
+    res.category = category;
+    next();
   } catch (err) {
     next(err);
   }
-
-  res.category = category;
-  next();
 }
 
 export default router;

@@ -1,17 +1,17 @@
-import AnswerSelector from '@/components/game-related/AnswerSelector';
-import AudioProgress from '@/components/game-related/AudioProgress';
-import PlayAudioButton from '@/components/buttons/PlayAudioButton';
-import AudioSetter from '@/components/daily/AudioSetter';
-import SingleplayerFooter from '@/components/daily/SingleplayerFooter';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import AnswerSelector from 'apps/musidle-frontend/components/game-related/AnswerSelector';
+import AudioProgress from 'apps/musidle-frontend/components/game-related/AudioProgress';
+import PlayAudioButton from 'apps/musidle-frontend/components/buttons/PlayAudioButton';
+import AudioSetter from 'apps/musidle-frontend/components/daily/AudioSetter';
+import SingleplayerFooter from 'apps/musidle-frontend/components/daily/SingleplayerFooter';
+import { Card, CardContent, CardFooter } from 'apps/musidle-frontend/components/ui/card';
 import React from 'react';
-import { AlreadyPlayed } from '@/components/daily/AlreadyPlayed';
+import { AlreadyPlayed } from 'apps/musidle-frontend/components/daily/AlreadyPlayed';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
+import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
 import { getServerSession } from 'next-auth';
-import Redirecter from '@/components/Redirecter';
+import Redirecter from 'apps/musidle-frontend/components/Redirecter';
 
 export const metadata = {
   title: 'Musidle Daily',

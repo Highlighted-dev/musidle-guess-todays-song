@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '../ui/button';
-import { useAnswerStore } from '@/stores/AnswerStore';
+import { useAnswerStore } from '../../stores/AnswerStore';
 import { LuChevronsUpDown } from 'react-icons/lu';
-import { useRoomStore } from '@/stores/RoomStore';
+import { useRoomStore } from '../../stores/RoomStore';
 import { Command, CommandGroup, CommandInput, CommandItem } from '../ui/command';
 import { AiOutlineCheck } from 'react-icons/ai';
-import { useNextAuthStore } from '@/stores/NextAuthStore';
-import { cn } from '@/lib/utils';
+import { useNextAuthStore } from '../../stores/NextAuthStore';
+import { cn } from '../../lib/utils';
 
 export default function AnswerSelector() {
   const { possibleAnswers, value, handleValueChange, getPossibleSongAnswers } = useAnswerStore();

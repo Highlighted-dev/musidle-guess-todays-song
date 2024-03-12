@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Button } from '../ui/button';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { getCurrentUrl } from '../../utils/GetCurrentUrl';
 import { useSession } from 'next-auth/react';
 
 export default function JoinGuildButton({ name }: { name: string }) {

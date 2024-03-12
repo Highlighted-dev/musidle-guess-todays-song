@@ -1,9 +1,9 @@
-import { IRoom } from '@/@types/Rooms';
-import JoinRoomButton from '@/components/buttons/CreateRoomButton';
-import RefreshRooms from '@/components/multiplayer/RefreshRooms';
-import NoRooms from '@/components/NoRooms';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { IRoom } from 'apps/musidle-frontend/@types/Rooms';
+import JoinRoomButton from 'apps/musidle-frontend/components/buttons/CreateRoomButton';
+import RefreshRooms from 'apps/musidle-frontend/components/multiplayer/RefreshRooms';
+import NoRooms from 'apps/musidle-frontend/components/NoRooms';
+import { Card, CardContent, CardHeader, CardTitle } from 'apps/musidle-frontend/components/ui/card';
+import { Label } from 'apps/musidle-frontend/components/ui/label';
 
 export const metadata = {
   title: 'Musidle Multiplayer',

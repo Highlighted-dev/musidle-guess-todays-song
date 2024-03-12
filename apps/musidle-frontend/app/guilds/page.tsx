@@ -1,9 +1,9 @@
 import React from 'react';
-import { IGuild } from '@/@types/Guild';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IGuild } from 'apps/musidle-frontend/@types/Guild';
+import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
+import { Card, CardContent, CardHeader, CardTitle } from 'apps/musidle-frontend/components/ui/card';
 import Link from 'next/link';
-import JoinGuildButton from '@/components/buttons/JoinGuildButton';
+import JoinGuildButton from 'apps/musidle-frontend/components/buttons/JoinGuildButton';
 
 const fetchGuilds = async () => {
   try {

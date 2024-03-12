@@ -2,8 +2,8 @@
 import { create } from 'zustand';
 import { useSocketStore } from './SocketStore';
 import { useRoomStore } from './RoomStore';
-import { useTimerStore } from '@/stores/TimerStore';
-import { useNextAuthStore } from '@/stores/NextAuthStore';
+import { useTimerStore } from './TimerStore';
+import { useNextAuthStore } from './NextAuthStore';
 
 interface IAudioStore {
   audioContext: AudioContext | null;

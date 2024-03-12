@@ -1,0 +1,29 @@
+{
+  "name": "util-user-validation",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/util-user-validation/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/util-user-validation",
+        "main": "libs/util-user-validation/src/index.ts",
+        "tsConfig": "libs/util-user-validation/tsconfig.lib.json",
+        "assets": ["libs/util-user-validation/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/util-user-validation/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

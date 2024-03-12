@@ -1,12 +1,12 @@
-import Redirecter from '@/components/Redirecter';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import Redirecter from 'apps/musidle-frontend/components/Redirecter';
+import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
 import '../../../styles/editor.css';
 import React from 'react';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from 'apps/musidle-frontend/components/ui/separator';
 import DOMPurify from 'isomorphic-dompurify';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import EditButton from '@/components/buttons/EditButton';
+import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
+import EditButton from 'apps/musidle-frontend/components/buttons/EditButton';
 
 async function getArticle(articleId: string) {
   try {

@@ -1,12 +1,12 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
 import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
-import { useRoomStore } from '@/stores/RoomStore';
+import { useRoomStore } from '../../stores/RoomStore';
 import { useSession } from 'next-auth/react';
-import { IPlayerCategories } from '@/@types/Categories';
-import { useAnswerStore } from '@/stores/AnswerStore';
+import { IPlayerCategories } from '../../@types/Categories';
+import { useAnswerStore } from '../../stores/AnswerStore';
 import GameHeader from './GameHeader';
 
 export default function GamePhase1() {

@@ -12,7 +12,7 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import { IoIosArrowDown } from 'react-icons/io';
 import { signOut, useSession } from 'next-auth/react';
-import { useNextAuthStore } from '@/stores/NextAuthStore';
+import { useNextAuthStore } from '../stores/NextAuthStore';
 import GuildCreation from './GuildCreation';
 
 export default function UserMenu() {

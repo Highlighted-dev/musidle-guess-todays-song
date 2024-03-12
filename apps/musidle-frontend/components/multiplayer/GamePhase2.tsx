@@ -1,11 +1,11 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
 import React from 'react';
 import GameMultiplayerLayout from './GameMultiplayerLayout';
-import { useRoomStore } from '@/stores/RoomStore';
-import { useAnswerStore } from '@/stores/AnswerStore';
-import { useSocketStore } from '@/stores/SocketStore';
+import { useRoomStore } from '../../stores/RoomStore';
+import { useAnswerStore } from '../../stores/AnswerStore';
+import { useSocketStore } from '../../stores/SocketStore';
 import { useSession } from 'next-auth/react';
 import GameHeader from './GameHeader';
 

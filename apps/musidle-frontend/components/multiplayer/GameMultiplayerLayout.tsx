@@ -1,10 +1,10 @@
 'use client';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { useTimerStore } from '@/stores/TimerStore';
-import { useRoomStore } from '@/stores/RoomStore';
-import { useAudioStore } from '@/stores/AudioStore';
-import { useAnswerStore } from '@/stores/AnswerStore';
+import { Card, CardContent, CardFooter } from '../ui/card';
+import { Label } from '../ui/label';
+import { useTimerStore } from '../../stores/TimerStore';
+import { useRoomStore } from '../../stores/RoomStore';
+import { useAudioStore } from '../../stores/AudioStore';
+import { useAnswerStore } from '../../stores/AnswerStore';
 import { useSession } from 'next-auth/react';
 import AnswerSelector from '../game-related/AnswerSelector';
 import AudioProgress from '../game-related/AudioProgress';

@@ -1,10 +1,10 @@
 'use client';
-import { useSocketStore } from '@/stores/SocketStore';
+import { useSocketStore } from '../../stores/SocketStore';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { useRoomStore } from '@/stores/RoomStore';
+import { useRoomStore } from '../../stores/RoomStore';
 import { useSession } from 'next-auth/react';
 import { toast } from '../ui/use-toast';
 

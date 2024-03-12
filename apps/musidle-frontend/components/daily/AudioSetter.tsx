@@ -1,5 +1,5 @@
 'use client';
-import { useAudioStore } from '@/stores/AudioStore';
+import { useAudioStore } from '../../stores/AudioStore';
 import { useEffect } from 'react';
 
 export default function AudioSetter({

@@ -7,7 +7,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from './ui/navigation-menu';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import LoginAndRegister from './LoginAndRegister';

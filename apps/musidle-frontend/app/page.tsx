@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { CardHeader, CardContent, Card } from '@/components/ui/card';
+import { CardHeader, CardContent, Card } from '../components/ui/card';
 import Image from 'next/image';
-import { EmptyPlaceholder } from '@/components/ui/empty-placeholder';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { Button } from '@/components/ui/button';
+import { EmptyPlaceholder } from '../components/ui/empty-placeholder';
+import { AspectRatio } from '../components/ui/aspect-ratio';
+import { Button } from '../components/ui/button';
 
 export default async function Page() {
   return (

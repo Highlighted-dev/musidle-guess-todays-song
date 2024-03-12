@@ -2,7 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import clientPromise from '@/lib/mongodb';
+import clientPromise from 'apps/musidle-frontend/lib/mongodb';
 
 export const authOptions: NextAuthOptions = {
   providers: [

@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from 'apps/musidle-frontend/components/ui/card';
+import { Label } from 'apps/musidle-frontend/components/ui/label';
 import React from 'react';
 
 export default async function Page() {

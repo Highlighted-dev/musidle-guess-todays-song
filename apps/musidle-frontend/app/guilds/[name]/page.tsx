@@ -1,5 +1,5 @@
-import { IGuild } from '@/@types/Guild';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IGuild } from 'apps/musidle-frontend/@types/Guild';
+import { Card, CardContent, CardHeader, CardTitle } from 'apps/musidle-frontend/components/ui/card';
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+} from 'apps/musidle-frontend/components/ui/table';
+import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
 import React from 'react';
 
 async function fetchGuild(name: string) {

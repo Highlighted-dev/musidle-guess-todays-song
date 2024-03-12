@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card';
+import { Card } from 'apps/musidle-frontend/components/ui/card';
 import React from 'react';
 
 export default function VerifyLayout({ children }: { children: React.ReactNode }) {

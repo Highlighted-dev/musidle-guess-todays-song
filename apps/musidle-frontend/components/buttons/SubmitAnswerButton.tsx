@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Button } from '../ui/button';
-import { useAnswerStore } from '@/stores/AnswerStore';
+import { useAnswerStore } from '../../stores/AnswerStore';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { ImSpinner2 } from 'react-icons/im';
 

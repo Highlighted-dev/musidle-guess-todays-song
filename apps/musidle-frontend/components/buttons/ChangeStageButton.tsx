@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Button } from '../ui/button';
-import { useAudioStore } from '@/stores/AudioStore';
+import { useAudioStore } from '../../stores/AudioStore';
 
 export default function ChangeStageButton({
   className,

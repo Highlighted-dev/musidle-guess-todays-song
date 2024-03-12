@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { useRoomStore } from '@/stores/RoomStore';
+import { useRoomStore } from '../../stores/RoomStore';
 import { Label } from '../ui/label';
 import VoteForTurnSkipButton from '../buttons/VoteForTurnSkipButton';
 

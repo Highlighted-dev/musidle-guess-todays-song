@@ -2,13 +2,13 @@
 import { create } from 'zustand';
 import { useRoomStore } from './RoomStore';
 import { useSocketStore } from './SocketStore';
-import { useTimerStore } from '@/stores/TimerStore';
+import { useTimerStore } from './TimerStore';
 import { useAudioStore } from './AudioStore';
-import { IAnswer, IAnswerStore, ILastFmSong, ISong } from '@/@types/AnswerStore';
-import { useNextAuthStore } from '@/stores/NextAuthStore';
-import { toast } from '@/components/ui/use-toast';
-import { IPlayerCategories } from '@/@types/Categories';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { IAnswer, IAnswerStore, ILastFmSong, ISong } from '../@types/AnswerStore';
+import { useNextAuthStore } from './NextAuthStore';
+import { toast } from '../components/ui/use-toast';
+import { IPlayerCategories } from '../@types/Categories';
+import { getCurrentUrl } from '../utils/GetCurrentUrl';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   loadingAnswer: false,

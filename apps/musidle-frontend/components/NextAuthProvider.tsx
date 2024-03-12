@@ -1,6 +1,6 @@
 'use client';
 import { SessionProvider } from 'next-auth/react';
-import { useNextAuthStore } from '@/stores/NextAuthStore';
+import { useNextAuthStore } from '../stores/NextAuthStore';
 import { Session } from 'next-auth';
 export default function NextAuthProvider({
   children,

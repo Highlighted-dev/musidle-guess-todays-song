@@ -1,5 +1,5 @@
 'use client';
-import { useRoomStore } from '@/stores/RoomStore';
+import { useRoomStore } from '../../stores/RoomStore';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import GamePhase1 from './GamePhase1';

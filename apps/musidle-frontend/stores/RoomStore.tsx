@@ -1,19 +1,19 @@
 'use client';
 import axios from 'axios';
 import { create } from 'zustand';
-import { IRoomStore, IPlayer } from '@/@types/Rooms';
+import { IRoomStore, IPlayer } from '../@types/Rooms';
 import { useSocketStore } from './SocketStore';
 import { io } from 'socket.io-client';
 import { useAnswerStore } from './AnswerStore';
 import { useAudioStore } from './AudioStore';
-import { toast } from '@/components/ui/use-toast';
-import { useTimerStore } from '@/stores/TimerStore';
+import { toast } from '../components/ui/use-toast';
+import { useTimerStore } from './TimerStore';
 import { Router } from 'next/router';
 import { useRouter } from 'next/navigation';
 import dotenv from 'dotenv';
 import { useRef } from 'react';
 import { useNextAuthStore } from './NextAuthStore';
-import { ICategory } from '@/@types/Categories';
+import { ICategory } from '../@types/Categories';
 dotenv.config();
 
 export const useRoomStore = create<IRoomStore>(set => ({

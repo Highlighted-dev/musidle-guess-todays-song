@@ -1,14 +1,14 @@
-import { IWiki } from '@/@types/Wiki';
-import { Card } from '@/components/ui/card';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { IWiki } from 'apps/musidle-frontend/@types/Wiki';
+import { Card } from 'apps/musidle-frontend/components/ui/card';
+import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
 import Image from 'next/image';
 import React from 'react';
-import Redirecter from '@/components/Redirecter';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
-import EditButton from '@/components/buttons/EditButton';
+import Redirecter from 'apps/musidle-frontend/components/Redirecter';
+import { AspectRatio } from 'apps/musidle-frontend/components/ui/aspect-ratio';
+import EditButton from 'apps/musidle-frontend/components/buttons/EditButton';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import WikiNavbar from '@/components/wiki/WikiNavbar';
+import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
+import WikiNavbar from 'apps/musidle-frontend/components/wiki/WikiNavbar';
 
 async function getWiki(wikiId: string) {
   try {

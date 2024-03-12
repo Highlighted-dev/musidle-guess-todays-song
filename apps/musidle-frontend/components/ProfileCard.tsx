@@ -1,10 +1,10 @@
 'use client';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from './ui/card';
 import React from 'react';
-import { Label } from '@/components/ui/label';
-import UserAvatar from '@/components/UserAvatar';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import { Button } from '@/components/ui/button';
+import { Label } from './ui/label';
+import UserAvatar from './UserAvatar';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
+import { Button } from './ui/button';
 import { Session } from 'next-auth';
 import { Input } from './ui/input';
 import { toast } from './ui/use-toast';

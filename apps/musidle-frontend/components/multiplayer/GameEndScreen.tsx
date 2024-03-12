@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { useRoomStore } from '@/stores/RoomStore';
+import { Card, CardContent } from '../ui/card';
+import { useRoomStore } from '../../stores/RoomStore';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';

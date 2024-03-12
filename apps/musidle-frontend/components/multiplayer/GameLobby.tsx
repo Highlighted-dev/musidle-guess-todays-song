@@ -1,13 +1,13 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRoomStore } from '@/stores/RoomStore';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { useRoomStore } from '../../stores/RoomStore';
 import React from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useTimerStore } from '@/stores/TimerStore';
+import { useTimerStore } from '../../stores/TimerStore';
 import GameHeader from './GameHeader';
 
 export default function GameLobby(params: { roomCode: string }) {

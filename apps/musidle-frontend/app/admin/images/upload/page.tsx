@@ -1,8 +1,8 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
+import { Button } from 'apps/musidle-frontend/components/ui/button';
+import { Card } from 'apps/musidle-frontend/components/ui/card';
+import { Input } from 'apps/musidle-frontend/components/ui/input';
+import { toast } from 'apps/musidle-frontend/components/ui/use-toast';
 import axios, { AxiosError } from 'axios';
 import React, { useState } from 'react';
 

@@ -1,8 +1,13 @@
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from 'apps/musidle-frontend/components/ui/card';
 import { getServerSession } from 'next-auth/next';
 import React from 'react';
 import { authOptions } from '../api/auth/[...nextauth]/route';
-import ProfileCard from '@/components/ProfileCard';
+import ProfileCard from 'apps/musidle-frontend/components/ProfileCard';
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);

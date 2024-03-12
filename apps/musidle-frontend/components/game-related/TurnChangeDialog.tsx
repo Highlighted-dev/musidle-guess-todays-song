@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Progress } from '../ui/progress';
-import { useAnswerStore } from '@/stores/AnswerStore';
-import { useRoomStore } from '@/stores/RoomStore';
+import { useAnswerStore } from '../../stores/AnswerStore';
+import { useRoomStore } from '../../stores/RoomStore';
 
 export default function TurnChangeDialog({
   displayPlayerName = true,

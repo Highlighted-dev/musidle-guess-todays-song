@@ -1,7 +1,7 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import Redirecter from '@/components/Redirecter';
-import { WikiEditor } from '@/components/editor/WikiEditor';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
+import Redirecter from 'apps/musidle-frontend/components/Redirecter';
+import { WikiEditor } from 'apps/musidle-frontend/components/editor/WikiEditor';
+import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
 import { getServerSession } from 'next-auth';
 import React from 'react';
 

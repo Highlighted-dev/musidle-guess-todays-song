@@ -5,7 +5,7 @@ import { toast } from '../ui/use-toast';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { ImSpinner2 } from 'react-icons/im';
-import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { getCurrentUrl } from '../../utils/GetCurrentUrl';
 import { editorExtensions, editorProps } from './editorConfig';
 import {
   Table,
@@ -19,7 +19,7 @@ import {
 import Image from 'next/image';
 import { Input } from '../ui/input';
 import EditorBase, { IFormData } from './EditorBase';
-import { IWiki } from '@/@types/Wiki';
+import { IWiki } from '../../@types/Wiki';
 import EditorFooter from './EditorFooter';
 
 export function WikiEditor({ wiki }: { wiki: IWiki }) {

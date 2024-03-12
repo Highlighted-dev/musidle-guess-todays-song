@@ -1,11 +1,11 @@
 import React from 'react';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import GameController from '@/components/multiplayer/GameController';
-import { RoomStoreInitializer } from '@/stores/RoomStore';
-import Leaderboard from '@/components/multiplayer/Leaderboard';
-import Redirecter from '@/components/Redirecter';
-import GameChat from '@/components/multiplayer/GameChat';
+import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
+import GameController from 'apps/musidle-frontend/components/multiplayer/GameController';
+import { RoomStoreInitializer } from 'apps/musidle-frontend/stores/RoomStore';
+import Leaderboard from 'apps/musidle-frontend/components/multiplayer/Leaderboard';
+import Redirecter from 'apps/musidle-frontend/components/Redirecter';
+import GameChat from 'apps/musidle-frontend/components/multiplayer/GameChat';
 
 export default async function Page({ params }: { params: { roomCode: string } }) {
   const session = await getServerSession(authOptions);

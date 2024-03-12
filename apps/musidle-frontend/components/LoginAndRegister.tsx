@@ -1,23 +1,16 @@
 'use client';
 import React, { MutableRefObject, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { Button } from './ui/button';
+import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Label } from './ui/label';
+import { Input } from './ui/input';
 import {
   doesPasswordHaveCapitalLetter,
   doesPasswordHaveNumber,
   isEmailValid,
-} from '@/utils/Validations';
+} from '@musidle-guess-todays-song/util-user-validation';
 import { toast } from './ui/use-toast';
 import { signIn, useSession } from 'next-auth/react';
 import axios from 'axios';

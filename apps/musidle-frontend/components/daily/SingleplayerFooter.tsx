@@ -1,6 +1,6 @@
 'use client';
 import { useEffect } from 'react';
-import { useRoomStore } from '@/stores/RoomStore';
+import { useRoomStore } from '../../stores/RoomStore';
 import { toast } from '../ui/use-toast';
 import ChangeStageButton from '../buttons/ChangeStageButton';
 import SubmitAnswerButton from '../buttons/SubmitAnswerButton';

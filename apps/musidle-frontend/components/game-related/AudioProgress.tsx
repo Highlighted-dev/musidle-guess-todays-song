@@ -2,9 +2,9 @@
 import React from 'react';
 import { Slider } from '../ui/slider';
 import { Label } from '../ui/label';
-import { cn } from '@/lib/utils';
-import { useAudioStore } from '@/stores/AudioStore';
-import { useRoomStore } from '@/stores/RoomStore';
+import { cn } from '../../lib/utils';
+import { useAudioStore } from '../../stores/AudioStore';
+import { useRoomStore } from '../../stores/RoomStore';
 
 export default function AudioProgress() {
   const { audioTime, time } = useAudioStore();

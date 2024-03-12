@@ -36,7 +36,8 @@
             "custom": { "regex": "^I[A-Z]", "match": true }
           },
           { "selector": "enum", "format": ["PascalCase"] }
-        ]
+        ],
+        "@nx/enforce-module-boundaries": false
       }
     },
     {

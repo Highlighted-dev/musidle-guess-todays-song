@@ -6,7 +6,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
+} from '../ui/navigation-menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 

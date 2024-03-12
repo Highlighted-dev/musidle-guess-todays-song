@@ -1,19 +1,19 @@
 'use client';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '../ui/card';
 import React, { useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import { Button } from '../ui/button';
-import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useAudioStore } from '@/stores/AudioStore';
-import { useRoomStore } from '@/stores/RoomStore';
+import { Command, CommandGroup, CommandInput, CommandItem } from '../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { useAudioStore } from '../../stores/AudioStore';
+import { useRoomStore } from '../../stores/RoomStore';
 import { Toggle } from '../ui/toggle';
 import { Label } from '../ui/label';
-import { useTimerStore } from '@/stores/TimerStore';
-import { cn } from '@/lib/utils';
-import { useAnswerStore } from '@/stores/AnswerStore';
-import { useGameFinalStore } from '@/stores/GameFinalStore';
+import { useTimerStore } from '../../stores/TimerStore';
+import { cn } from '../../lib/utils';
+import { useAnswerStore } from '../../stores/AnswerStore';
+import { useGameFinalStore } from '../../stores/GameFinalStore';
 import { useSession } from 'next-auth/react';
 import GameHeader from './GameHeader';
 function GamePhase3() {

@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import { Button } from '../ui/button';
-import { useRoomStore } from '@/stores/RoomStore';
-import { useSocketStore } from '@/stores/SocketStore';
-import { useNextAuthStore } from '@/stores/NextAuthStore';
+import { useRoomStore } from '../../stores/RoomStore';
+import { useSocketStore } from '../../stores/SocketStore';
+import { useNextAuthStore } from '../../stores/NextAuthStore';
 
 export default function VoteForTurnSkipButton({ className }: { className?: string }) {
   const { votesForTurnSkip, voteForTurnSkip, players, isInLobby } = useRoomStore();

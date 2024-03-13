@@ -6,11 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
-import {
-  doesPasswordHaveCapitalLetter,
-  doesPasswordHaveNumber,
-  isEmailValid,
-} from '@musidle-guess-todays-song/util-user-validation';
+import { validateSingUp } from '@musidle-guess-todays-song/util-user-validation';
 import { toast } from './ui/use-toast';
 import { signIn, useSession } from 'next-auth/react';
 import axios from 'axios';
@@ -29,64 +25,55 @@ function LoginAndRegister() {
       const email = emailRef.current.value;
       const username = usernameRef.current.value;
       const password = passwordRef.current.value;
-      if (!isEmailValid(email))
-        return toast({
-          variant: 'destructive',
-          title: 'Failed to Register',
-          description: 'Email is not valid',
-        });
+      try {
+        validateSingUp(email, password, username);
+        setLoading(true);
 
-      if (!doesPasswordHaveCapitalLetter(password))
-        return toast({
-          variant: 'destructive',
-          title: 'Failed to Register',
-          description: 'Password does not have a capital letter',
-        });
-
-      if (!doesPasswordHaveNumber(password))
-        return toast({
-          variant: 'destructive',
-          title: 'Failed to Register',
-          description: 'Password does not have a number',
-        });
-
-      setLoading(true);
-      await axios
-        .post('/externalApi/auth/register/', {
-          username,
-          email,
-          password,
-        })
-        .then(response => response.data)
-        .then(async responseData => {
-          if (responseData.status === 'ok') {
-            await signIn('credentials', {
-              email,
-              password,
-              redirect: false,
-            }).catch(error => {
-              toast({
-                variant: 'destructive',
-                title: 'Failed to login',
-                description: error,
+        await axios
+          .post('/externalApi/auth/register/', {
+            username,
+            email,
+            password,
+          })
+          .then(response => response.data)
+          .then(async responseData => {
+            if (responseData.status === 'ok') {
+              await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
+              }).catch(error => {
+                toast({
+                  variant: 'destructive',
+                  title: 'Failed to login',
+                  description: error,
+                });
               });
+              return toast({
+                title: 'Registered successfully, please check your email to verify your account',
+              });
+            } else {
+              throw responseData.message.message;
+            }
+          })
+          .catch(error => {
+            toast({
+              variant: 'destructive',
+              title: 'Failed to Register',
+              description: error,
             });
-            return toast({
-              title: 'Registered successfully, please check your email to verify your account',
-            });
-          } else {
-            throw responseData.message.message;
-          }
-        })
-        .catch(error => {
-          toast({
+          });
+        setLoading(false);
+        return;
+      } catch (error) {
+        if (error instanceof Error) {
+          return toast({
             variant: 'destructive',
             title: 'Failed to Register',
-            description: error,
+            description: error.message,
           });
-        });
-      setLoading(false);
-      return;
+        }
+      }
     }
     return toast({
       variant: 'destructive',

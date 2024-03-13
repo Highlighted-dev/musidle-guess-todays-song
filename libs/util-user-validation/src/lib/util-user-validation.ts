@@ -25,3 +25,39 @@ export const isEmailValid = (email: string) => {
     return true;
   return false;
 };
+
+export const isPasswordLongEnough = (password: string) => {
+  // Check if password is at least 8 characters long. If it is not, return error
+  if (password.length >= 8) return true;
+  return false;
+};
+
+export const isUsernameLengthValid = (username: string) => {
+  // Check if username is between 3 and 20 characters long. If it is not, return error
+  if (username.length >= 3 && username.length <= 20) return true;
+  return false;
+};
+
+export const doesUsernameHaveValidCharacters = (username: string) => {
+  // Check if username has only letters, numbers and underscores. If it does not, return error. The username can have letters, numbers and underscores. Examples:
+  // test  /Valid
+  // test123  /Valid
+  // test_123  /Valid
+  // test-123  /Not valid
+  // test 123  /Not valid
+  if (/^[a-zA-Z0-9_]*$/.test(username)) return true;
+  return false;
+};
+
+//throw error if any of the validations fail
+export const validateSingUp = (email: string, password: string, username: string) => {
+  if (!isEmailValid(email)) throw new Error('Email is not valid');
+  if (!doesPasswordHaveCapitalLetter(password))
+    throw new Error('Password does not have a capital letter');
+  if (!doesPasswordHaveNumber(password)) throw new Error('Password does not have a number');
+  if (!isUsernameLengthValid(username))
+    throw new Error('Username must be between 3 and 20 characters long');
+  if (!doesUsernameHaveValidCharacters(username))
+    throw new Error('Username can only have letters, numbers and underscores');
+  return true;
+};

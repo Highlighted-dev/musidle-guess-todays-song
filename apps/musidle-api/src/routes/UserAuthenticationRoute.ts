@@ -5,11 +5,7 @@ import dotenv from 'dotenv';
 import userModel from '../models/UserModel';
 import Mailgun from 'mailgun.js';
 import formData from 'form-data';
-import {
-  doesPasswordHaveCapitalLetter,
-  doesPasswordHaveNumber,
-  isEmailValid,
-} from '@musidle-guess-todays-song/util-user-validation';
+import { validateSingUp } from '@musidle-guess-todays-song/util-user-validation';
 dotenv.config();
 
 const router: Router = express.Router();
@@ -23,15 +19,9 @@ const generateToken = () => {
 
 router.post('/register', jsonParser, async (req: Request, res: Response) => {
   // Checks if any value is null. Validates password and email. If password is not valid, return error. If email is not valid, return error.
-  if (
-    req.body.username &&
-    req.body.email &&
-    req.body.password &&
-    doesPasswordHaveCapitalLetter(req.body.password) &&
-    doesPasswordHaveNumber(req.body.password) &&
-    isEmailValid(req.body.email)
-  ) {
+  if (req.body.username && req.body.email && req.body.password) {
     try {
+      validateSingUp(req.body.email, req.body.password, req.body.username);
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const token = generateToken();
 
@@ -109,6 +99,12 @@ router.post('/register', jsonParser, async (req: Request, res: Response) => {
         .catch(err => console.log(err));
       return res.json({ status: 'ok' });
     } catch (e) {
+      if (e instanceof Error) {
+        return res.json({
+          status: 'error',
+          message: e.message,
+        });
+      }
       return res.json({
         status: 'error',
         message: e,

@@ -49,13 +49,20 @@ export default function WikiNavbar({ id }: { id: string }) {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem
+            className={`${isActive(`/wiki/${id}/quiz`) ? 'border-b border-tertiary' : ''}`}
+          >
+            <Link href={`/wiki/${id}/quiz`} legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>Quiz</NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem
             className={`${isActive(`/wiki/${id}/news`) ? 'border-b border-tertiary' : ''}`}
           >
             <Link href={`/wiki/${id}/news`} legacyBehavior passHref aria-disabled>
               <NavigationMenuLink
                 className={`${navigationMenuTriggerStyle() + 'pointer-events-none opacity-50'}`}
               >
-                News (Coming soon)
+                News
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>

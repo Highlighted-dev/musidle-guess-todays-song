@@ -12,10 +12,10 @@ import { Toggle } from '../ui/toggle';
 import { Label } from '../ui/label';
 import { useTimerStore } from '../../stores/TimerStore';
 import { cn } from '../../lib/utils';
-import { useAnswerStore } from '../../stores/AnswerStore';
 import { useGameFinalStore } from '../../stores/GameFinalStore';
 import { useSession } from 'next-auth/react';
 import GameHeader from './GameHeader';
+import { useAnswerStore } from 'apps/musidle-frontend/stores/AnswerStore';
 function GamePhase3() {
   const user = useSession().data?.user;
   const { currentPlayer, handleChooseCategory } = useRoomStore();

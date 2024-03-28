@@ -1,14 +1,14 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
-import { DropdownMenuItem } from './ui/dropdown-menu';
-import { getCurrentUrl } from '../utils/GetCurrentUrl';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
+import { DropdownMenuItem } from '../ui/dropdown-menu';
+import { getCurrentUrl } from '../../utils/GetCurrentUrl';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import { IUser } from '../@types/next-auth';
+import { IUser } from '../../@types/next-auth';
 
 interface IGuildCreationForm {
   name: string;

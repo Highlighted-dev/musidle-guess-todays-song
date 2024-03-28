@@ -1,14 +1,23 @@
 import React from 'react';
 import { IGuild } from 'apps/musidle-frontend/@types/Guild';
 import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
-import { Card, CardContent, CardHeader, CardTitle } from 'apps/musidle-frontend/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from 'apps/musidle-frontend/components/ui/card';
 import Link from 'next/link';
 import JoinGuildButton from 'apps/musidle-frontend/components/buttons/JoinGuildButton';
+import GuildPagination from 'apps/musidle-frontend/components/guilds/GuildPagination';
 
 const fetchGuilds = async () => {
   try {
     const response = await fetch(getCurrentUrl() + '/externalApi/guilds', {
-      cache: 'no-store',
+      next: {
+        revalidate: 60,
+      },
     }).then(res => res.json());
     return response;
   } catch (err) {
@@ -17,17 +26,22 @@ const fetchGuilds = async () => {
   }
 };
 
-export default async function Guilds() {
+export default async function Guilds({ pageNumber }: { pageNumber?: number }) {
   const guilds: IGuild[] | null = await fetchGuilds();
+  const guildsToDisplay = guilds
+    ? pageNumber
+      ? guilds.slice(4 * (pageNumber - 1), 4 * pageNumber)
+      : guilds.slice(0, 4)
+    : [];
   return (
-    <div className="h-full w-[90%] p-2 flex justify-center items-center">
-      <Card className="h-full md:w-4/5 w-full">
+    <div className="container">
+      <Card className="h-full w-full p-2 flex flex-col">
         <CardHeader className="text-center">
           <CardTitle>Guilds</CardTitle>
         </CardHeader>
-        <CardContent className="overflow-y-auto">
-          {guilds ? (
-            guilds?.map(guild => (
+        <CardContent className="overflow-y-auto space-y-3 lg:min-h-[500px]">
+          {guildsToDisplay.length > 0 ? (
+            guildsToDisplay.map(guild => (
               <Card
                 key={guild._id}
                 className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6 text-center p-6"
@@ -71,6 +85,11 @@ export default async function Guilds() {
             </div>
           )}
         </CardContent>
+        {guilds && guilds.length > 4 && (
+          <CardFooter>
+            <GuildPagination pageNumber={pageNumber ? pageNumber : 1} />
+          </CardFooter>
+        )}
       </Card>
     </div>
   );

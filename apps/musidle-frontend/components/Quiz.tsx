@@ -4,8 +4,8 @@ import { IQuiz } from '../@types/Quiz';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { Pagination, PaginationContent, PaginationEllipsis } from './ui/pagination';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Toggle } from './ui/toggle';
+import { LuChevronLeft } from '@react-icons/all-files/lu/LuChevronLeft';
+import { LuChevronRight } from '@react-icons/all-files/lu/LuChevronRight';
 import { toast } from './ui/use-toast';
 
 export default function Quiz({ quizData }: { quizData: IQuiz[] }) {
@@ -54,7 +54,7 @@ export default function Quiz({ quizData }: { quizData: IQuiz[] }) {
             variant={'ghost'}
             onClick={() => setCurrentQuestion(currentQuestion <= 1 ? 1 : currentQuestion - 1)}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <LuChevronLeft className="h-4 w-4" />
             <span>Previous</span>
           </Button>
           <Button
@@ -87,7 +87,7 @@ export default function Quiz({ quizData }: { quizData: IQuiz[] }) {
             }
           >
             <span>Next</span>
-            <ChevronRight className="h-4 w-4" />
+            <LuChevronRight className="h-4 w-4" />
           </Button>
         </PaginationContent>
       </Pagination>

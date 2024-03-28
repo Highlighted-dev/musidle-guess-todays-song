@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '../ui/button';
 import { useAnswerStore } from '../../stores/AnswerStore';
-import { LuChevronsUpDown } from 'react-icons/lu';
+import { LuChevronsUpDown } from '@react-icons/all-files/lu/LuChevronsUpDown';
 import { useRoomStore } from '../../stores/RoomStore';
 import { Command, CommandGroup, CommandInput, CommandItem } from '../ui/command';
-import { AiOutlineCheck } from 'react-icons/ai';
+import { AiOutlineCheck } from '@react-icons/all-files/ai/AiOutlineCheck';
 import { useNextAuthStore } from '../../stores/NextAuthStore';
 import { cn } from '../../lib/utils';
 

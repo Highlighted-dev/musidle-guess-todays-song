@@ -9,13 +9,14 @@ import PlaySong from 'apps/musidle-frontend/components/wiki/PlayEmbed';
 import WikiNavbar from 'apps/musidle-frontend/components/wiki/WikiNavbar';
 import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
 import DOMPurify from 'isomorphic-dompurify';
-import { InstagramIcon, TwitterIcon } from 'lucide-react';
+import { LuInstagram } from '@react-icons/all-files/lu/LuInstagram';
+import { LuTwitter } from '@react-icons/all-files/lu/LuTwitter';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { FaSpotify } from 'react-icons/fa';
-import { RxCross1 } from 'react-icons/rx';
+import { FaSpotify } from '@react-icons/all-files/fa/FaSpotify';
+import { RxCross1 } from '@react-icons/all-files/rx/RxCross1';
 import '../../../styles/editor.css';
 
 async function getWiki(wikiId: string) {
@@ -169,10 +170,10 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
               <FaSpotify size={24} />
             </Button>
             <Button size="icon" variant="ghost">
-              <TwitterIcon size={24} />
+              <LuTwitter size={24} />
             </Button>
             <Button size="icon" variant="ghost">
-              <InstagramIcon size={24} />
+              <LuInstagram size={24} />
             </Button>
           </div>
         </div>

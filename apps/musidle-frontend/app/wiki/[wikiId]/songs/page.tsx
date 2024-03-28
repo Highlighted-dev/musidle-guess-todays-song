@@ -8,7 +8,7 @@ import WikiNavbar from 'apps/musidle-frontend/components/wiki/WikiNavbar';
 import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
 import { getServerSession } from 'next-auth';
 import React from 'react';
-import { RxCross1 } from 'react-icons/rx';
+import { RxCross1 } from '@react-icons/all-files/rx/RxCross1';
 import PlaySong from 'apps/musidle-frontend/components/wiki/PlayEmbed';
 
 async function getWiki(wikiId: string) {

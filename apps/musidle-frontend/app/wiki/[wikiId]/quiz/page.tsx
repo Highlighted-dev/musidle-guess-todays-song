@@ -1,22 +1,8 @@
 import { IQuiz } from 'apps/musidle-frontend/@types/Quiz';
 import Quiz from 'apps/musidle-frontend/components/Quiz';
 import Redirecter from 'apps/musidle-frontend/components/Redirecter';
-import { Button, buttonVariants } from 'apps/musidle-frontend/components/ui/button';
-import { Label } from 'apps/musidle-frontend/components/ui/label';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from 'apps/musidle-frontend/components/ui/pagination';
-import { Toggle } from 'apps/musidle-frontend/components/ui/toggle';
 import WikiNavbar from 'apps/musidle-frontend/components/wiki/WikiNavbar';
-import { cn } from 'apps/musidle-frontend/lib/utils';
 import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 
 async function getQuizData({ wikiId }: { wikiId: string }) {

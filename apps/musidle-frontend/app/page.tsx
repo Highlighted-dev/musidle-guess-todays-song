@@ -8,7 +8,7 @@ import { Button } from '../components/ui/button';
 export default async function Page() {
   return (
     <div>
-      <section className="flex justify-center items-center w-full h-full pt-24 min-h-screen">
+      <section className="flex justify-center items-center w-full h-full min-h-screen">
         <div className="container space-y-10 xl:space-y-16">
           <div className="grid gap-4 px-10 md:grid-cols-2 md:gap-16">
             <div>

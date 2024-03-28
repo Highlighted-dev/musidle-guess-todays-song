@@ -1,5 +1,5 @@
 'use client';
-import { MdBedroomChild } from 'react-icons/md';
+import { MdBedroomChild } from '@react-icons/all-files/md/MdBedroomChild';
 import React from 'react';
 import { EmptyPlaceholder } from './ui/empty-placeholder';
 import JoinRoomButton from './buttons/CreateRoomButton';

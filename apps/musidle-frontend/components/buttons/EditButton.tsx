@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { FaPen } from 'react-icons/fa';
+import { FaPen } from '@react-icons/all-files/fa/FaPen';
 
 export default function EditButton({ size, url }: { size?: number; url: string }) {
   const router = useRouter();

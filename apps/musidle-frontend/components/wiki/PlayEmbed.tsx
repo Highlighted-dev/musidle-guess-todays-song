@@ -2,14 +2,14 @@
 import { Popover } from '../ui/popover';
 import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import { Button } from '../ui/button';
-import { PlayIcon } from 'lucide-react';
+import { LuPlay } from '@react-icons/all-files/lu/LuPlay';
 
 export function PlayEmbed({ url }: { url: string }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button size="icon" variant="ghost">
-          <PlayIcon className="h-6 w-6" />
+          <LuPlay className="h-6 w-6" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="z-20">

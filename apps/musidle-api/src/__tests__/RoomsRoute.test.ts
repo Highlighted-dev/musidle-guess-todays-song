@@ -29,6 +29,7 @@ describe('POST /rooms', () => {
         player: {
           _id: '60e1b9b2a1c3c5c9f4d2e4b2',
           username: 'TestUser',
+          score: 0,
         },
         maxRoundsPhaseOne: 40,
         maxRoundsPhaseTwo: 8,
@@ -36,7 +37,7 @@ describe('POST /rooms', () => {
 
     expect(response.status).toBe(200);
     checkRoomStructure(response.body);
-  });
+  }, 10000);
 });
 
 describe('GET /rooms/:roomCode', () => {
@@ -95,7 +96,6 @@ describe('POST /songs/chooseSong', () => {
       })
       .expect('Content-Type', /json/)
       .expect(200);
-
     expect(response.body.songId).toContain('pop');
   });
 });

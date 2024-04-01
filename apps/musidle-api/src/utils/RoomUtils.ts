@@ -25,10 +25,10 @@ export function preparePlayer(player: IPlayer, categories: ICategory[]) {
   return player;
 }
 
-export function isOnlyPlayerInRoom(room: IRoom) {
+export function isRoomEmpty(room: IRoom) {
   return (
-    (room.players.length === 1 && room.spectators.length === 0) ||
-    (room.players.length === 0 && room.spectators.length === 1)
+    (room.players.length === 0 && room.spectators.length === 0) ||
+    (room.players.length === 0 && room.spectators.length === 0)
   );
 }
 

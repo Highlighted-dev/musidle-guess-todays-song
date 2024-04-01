@@ -9,7 +9,7 @@ import {
   generateRoomCode,
   getNewPlayersAndSpectators,
   getNextPlayer,
-  isOnlyPlayerInRoom,
+  isRoomEmpty,
   preparePlayer,
   updateRoomAfterTurnChange,
 } from '../utils/RoomUtils';
@@ -27,7 +27,7 @@ const router: Router = express.Router();
 
 router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.player) {
+    if (!req.body.player || (!req.body.player._id && !req.body.player.username)) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     }
 
@@ -103,22 +103,19 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
     if (!roomCode || !playerId)
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
 
-    let room = await roomModel.findOne({ roomCode });
-
-    if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
-
-    // If the player is the only one in the room, delete the room
-    if (isOnlyPlayerInRoom(room)) {
-      await roomModel.deleteOne({ roomCode });
-      Timer(roomCode, 0, (req as ICustomRequest).io).stop();
-      return res.status(200).json({ message: 'Room deleted' });
-    }
-
-    room = await roomModel.findOneAndUpdate(
+    const room = await roomModel.findOneAndUpdate(
       { roomCode },
       { $pull: { players: { _id: playerId } } },
       { new: true },
     );
+
+    if (!room) return res.status(404).json({ status: 'error', message: 'Room not found' });
+
+    if (isRoomEmpty(room)) {
+      await roomModel.deleteOne({ roomCode });
+      Timer(roomCode, 0, (req as ICustomRequest).io).stop();
+      return res.status(200).json({ message: 'Room deleted' });
+    }
 
     return res.status(200).json(room);
   } catch (error) {

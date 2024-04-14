@@ -2,8 +2,18 @@ import { Document, Schema, model } from 'mongoose';
 
 export interface IWikiModel extends Document {
   name: string;
-  coverImage: { url: string; creator: string };
+  coverImage: {
+    url: string;
+    copyright: {
+      creatorUrl: string;
+      creatorName: string;
+      licenseName: string;
+      licenseUrl: string;
+      serviceName: string;
+    };
+  };
   description: string;
+  shortDescription: string;
   notableAlbums: string[];
   popularSongs: string[];
   relatedArtists: string[];
@@ -13,8 +23,23 @@ export interface IWikiModel extends Document {
 const wikiSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
-    coverImage: { type: { url: String, creator: String }, required: false },
+    coverImage: {
+      type: {
+        url: { type: String, required: true },
+        copyright: {
+          type: {
+            creatorUrl: { type: String, required: true },
+            creatorName: { type: String, required: true },
+            licenseName: { type: String, required: true },
+            licenseUrl: { type: String, required: true },
+            serviceName: { type: String, required: true },
+          },
+          required: true,
+        },
+      },
+    },
     description: { type: String, required: true },
+    shortDescription: { type: String, required: true },
     notableAlbums: { type: [], required: false },
     popularSongs: { type: [], required: false },
     relatedArtists: { type: [], required: false },

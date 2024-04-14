@@ -53,7 +53,7 @@ function Navbar({ sectionClassname }: { sectionClassname?: string }) {
 
   return (
     <>
-      <div className="flex w-full h-[50px] p-8 z-10 relative justify-center items-center" />
+      <div className="flex w-full h-[50px] p-[29px] z-10 relative justify-center items-center" />
       <section
         className={
           sectionClassname ? sectionClassname : 'fixed top-0 z-50 w-full bg-background p-1'

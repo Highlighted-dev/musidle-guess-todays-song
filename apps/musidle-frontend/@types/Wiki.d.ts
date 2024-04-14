@@ -2,6 +2,18 @@ export interface IWiki {
   _id: string;
   name: string;
   description: string;
+  shortDescription: string;
+  coverImage: {
+    url: string;
+    copyright: {
+      creatorUrl: string;
+      creatorName: string;
+      licenseName: string;
+      licenseUrl: string;
+      serviceName: string;
+    };
+  };
+
   notableAlbums: {
     name: string;
     artist: {

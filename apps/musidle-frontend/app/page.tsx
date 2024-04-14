@@ -4,6 +4,20 @@ import Image from 'next/image';
 import { EmptyPlaceholder } from '../components/ui/empty-placeholder';
 import { AspectRatio } from '../components/ui/aspect-ratio';
 import { Button } from '../components/ui/button';
+import { getCurrentUrl } from '../utils/GetCurrentUrl';
+import { IWiki } from '../@types/Wiki';
+
+async function getWikis() {
+  try {
+    const wiki: IWiki[] = await fetch(getCurrentUrl() + `/externalApi/wikis/`, {
+      cache: 'no-store',
+    }).then(res => res.json());
+    return wiki;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
 
 export default async function Page() {
   return (

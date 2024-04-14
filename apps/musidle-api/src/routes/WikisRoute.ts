@@ -33,6 +33,35 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.get('/name/:name', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name } = req.params;
+    if (!name) {
+      return res.status(400).json({ message: 'Bad Request' });
+    }
+    const wiki = await wikiModel.find({ name: { $regex: name, $options: 'i' } });
+    return res.json(wiki);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/tag/:tag', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    let { tag } = req.params;
+    if (!tag) {
+      return res.status(400).json({ message: 'Bad Request' });
+    }
+    // Decode the URL-encoded string
+    tag = decodeURIComponent(tag);
+    // Find wikis that have the tag in their tags array, case insensitive
+    const wiki = await wikiModel.find({ tags: { $regex: new RegExp(tag, 'i') } });
+    return res.json(wiki);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Create a new wiki
 router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {

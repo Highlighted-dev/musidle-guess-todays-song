@@ -152,9 +152,11 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
           <div className="grid grid-cols-2 min-[480px]:grid-cols-3 lg:grid-cols-6 gap-4">
             {wiki.tags ? (
               wiki.tags.map((tag: string) => (
-                <Button key={tag} className="px-2 py-1 text-sm font-bold">
-                  {tag}
-                </Button>
+                <Link key={tag} href={`/wiki?tag=${tag}`} className="w-full">
+                  <Button key={tag} className="px-2 py-1 text-sm font-bold w-full">
+                    {tag}
+                  </Button>
+                </Link>
               ))
             ) : (
               <p>No tags found</p>

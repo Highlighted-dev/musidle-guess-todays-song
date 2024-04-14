@@ -46,7 +46,7 @@ export default function GameChat() {
   };
 
   return (
-    <Card className="lg:w-[220px] w-full lg:min-h-[700px] min-h-[500px] h-full relative lg:mt-2 mb-2">
+    <Card className="lg:w-[220px] lg:min-w-[220px] w-full lg:min-h-[700px] min-h-[500px] h-full relative lg:mt-2 mb-2">
       <CardHeader className="border-b p-4 flex items-center h-14">
         <div className="flex-1">
           <CardTitle className="text-center">Chat</CardTitle>

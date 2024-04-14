@@ -13,7 +13,7 @@ export default function GuildPagination({ pageNumber }: { pageNumber: number }) 
   const previousPageNumber = pageNumber === 1 ? 1 : pageNumber - 1;
   const nextPageNumber = pageNumber === 1 ? 2 : pageNumber + 1;
 
-  const generateGuildURLs = (pageNumber: number) => `/guilds/browse/${pageNumber}`;
+  const generateGuildURLs = (pageNumber: number) => `/guilds?page=${pageNumber}`;
 
   return (
     <Pagination>
@@ -28,7 +28,7 @@ export default function GuildPagination({ pageNumber }: { pageNumber: number }) 
         >
           {pageNumber === 1 ? 2 : pageNumber}
         </PaginationLink>
-        <PaginationLink href={generateGuildURLs(nextPageNumber)}>
+        <PaginationLink href={generateGuildURLs(pageNumber === 1 ? 3 : pageNumber + 1)}>
           {pageNumber === 1 ? 3 : pageNumber + 1}
         </PaginationLink>
         <PaginationEllipsis />

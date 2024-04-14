@@ -26,8 +26,9 @@ const fetchGuilds = async () => {
   }
 };
 
-export default async function Guilds({ pageNumber }: { pageNumber?: number }) {
+export default async function Guilds({ searchParams }: { searchParams: { page: string } }) {
   const guilds: IGuild[] | null = await fetchGuilds();
+  const pageNumber = searchParams.page ? parseInt(searchParams.page) : 1;
   const guildsToDisplay = guilds
     ? pageNumber
       ? guilds.slice(4 * (pageNumber - 1), 4 * pageNumber)

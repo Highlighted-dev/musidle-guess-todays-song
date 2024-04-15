@@ -60,7 +60,7 @@ export default async function Page() {
                 growing popularity, and its future.
               </p>
               <Link className="inline-flex w-full" href="/articles/65be98854c2ef87123c1f37e">
-                <Button className="w-full"> Read More</Button>
+                <Button className="w-full">Read More</Button>
               </Link>
             </div>
           </div>

@@ -65,7 +65,8 @@ router.get('/tag/:tag', async (req: Request, res: Response, next: NextFunction) 
 // Create a new wiki
 router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, description } = req.body;
+    const { description } = req.body;
+    let { name } = req.body;
     if (!name || !description) {
       return res.status(400).json({ message: 'Bad Request' });
     }
@@ -130,6 +131,23 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
         };
       },
     );
+
+    if (!req.body.coverImage.url) {
+      // if name has spaces, replace them with underscores
+      if (name.includes(' ')) {
+        name = name.replace(/ /g, '_');
+      }
+      req.body.coverImage.url = `https://musidle.live/externalApi/images/${name}.jpg`;
+    }
+
+    if (!req.body.coverImage.copyright.serviceName) {
+      req.body.coverImage.copyright.serviceName = 'Commons';
+    }
+
+    if (!req.body.coverImage.copyright.licenseName && !req.body.coverImage.copyright.licenseUrl) {
+      req.body.coverImage.copyright.licenseName = 'CC BY-SA 2.0';
+      req.body.coverImage.licenseUrl = 'https://creativecommons.org/licenses/by-sa/2.0';
+    }
 
     const result = await wikiModel.create(req.body);
     return res.status(201).json(result);

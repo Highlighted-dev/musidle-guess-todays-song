@@ -10,7 +10,7 @@ import {
 } from 'apps/musidle-frontend/components/ui/card';
 import Link from 'next/link';
 import JoinGuildButton from 'apps/musidle-frontend/components/buttons/JoinGuildButton';
-import GuildPagination from 'apps/musidle-frontend/components/guilds/GuildPagination';
+import GuildPagination from 'apps/musidle-frontend/components/EnchancedPagination';
 
 const fetchGuilds = async () => {
   try {
@@ -88,7 +88,7 @@ export default async function Guilds({ searchParams }: { searchParams: { page: s
         </CardContent>
         {guilds && guilds.length > 4 && (
           <CardFooter>
-            <GuildPagination pageNumber={pageNumber ? pageNumber : 1} />
+            <GuildPagination pageNumber={pageNumber ? pageNumber : 1} url={'/guilds?page='} />
           </CardFooter>
         )}
       </Card>

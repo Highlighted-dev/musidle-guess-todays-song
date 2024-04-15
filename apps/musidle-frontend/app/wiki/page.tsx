@@ -9,6 +9,7 @@ import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
 import { IWiki } from 'apps/musidle-frontend/@types/Wiki';
 import { AspectRatio } from 'apps/musidle-frontend/components/ui/aspect-ratio';
 import Image from 'next/image';
+import EnchancedPagination from 'apps/musidle-frontend/components/EnchancedPagination';
 
 async function getWikis(searchParams: { search: string; tag: string }) {
   try {
@@ -44,16 +45,19 @@ async function getWikis(searchParams: { search: string; tag: string }) {
 export default async function Wiki({
   searchParams,
 }: {
-  searchParams: { search: string; tag: string };
+  searchParams: { search: string; tag: string; page: string };
 }) {
-  const wikis = await getWikis(searchParams);
+  let wikis = await getWikis(searchParams);
+  if (!searchParams.page) searchParams.page = '1';
+  wikis =
+    wikis?.slice(8 * (parseInt(searchParams.page) - 1), 8 * parseInt(searchParams.page)) || null;
 
   return (
     <>
       <h1 className="text-3xl font-bold">Featured Artists</h1>
-      <div className="grid gap-4 p-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
+      <div className="grid gap-4 p-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 grid-rows-2 min-h-screen">
         {wikis?.map(wiki => (
-          <Card>
+          <Card key={wiki._id}>
             <CardHeader>
               <Link href={`/wiki/${wiki._id}`}>
                 <AspectRatio ratio={4 / 3}>
@@ -83,7 +87,7 @@ export default async function Wiki({
                 >
                   {wiki.coverImage?.copyright.licenseName}
                 </Link>
-                , Wikimedia Commons
+                , {wiki.coverImage?.copyright.serviceName || 'Commons'}
               </p>
             </CardHeader>
             <Link href={`/wiki/${wiki._id}`}>
@@ -95,6 +99,10 @@ export default async function Wiki({
           </Card>
         ))}
       </div>
+      <EnchancedPagination
+        pageNumber={searchParams.page ? parseInt(searchParams.page) : 1}
+        url={'/wiki?page='}
+      />
     </>
   );
 }

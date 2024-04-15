@@ -26,7 +26,7 @@
     "../../apps/musidle-frontend/.next/types/**/*.ts",
     "../../dist/apps/musidle-frontend/.next/types/**/*.ts",
     "next-env.d.ts",
-    "./postcss.config.js",
+    "postcss.config.cjs",
     "./tailwind.config.js",
     ".next/types/**/*.ts",
     "../musidle-api/src/models/UserModel.ts",

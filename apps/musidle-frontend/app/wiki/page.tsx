@@ -1,8 +1,4 @@
-import { Button } from 'apps/musidle-frontend/components/ui/button';
 import React from 'react';
-import { IoIosSearch } from '@react-icons/all-files/io/IoIosSearch';
-import { Label } from 'apps/musidle-frontend/components/ui/label';
-import { Input } from 'apps/musidle-frontend/components/ui/input';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader } from 'apps/musidle-frontend/components/ui/card';
 import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
@@ -11,7 +7,8 @@ import { AspectRatio } from 'apps/musidle-frontend/components/ui/aspect-ratio';
 import Image from 'next/image';
 import EnchancedPagination from 'apps/musidle-frontend/components/EnchancedPagination';
 
-async function getWikis(searchParams: { search: string; tag: string }) {
+export const dynamic = 'force-dynamic';
+const getWikis = async (searchParams: { search: string; tag: string }) => {
   try {
     if (searchParams.search) {
       const wiki: IWiki[] = await fetch(
@@ -40,12 +37,12 @@ async function getWikis(searchParams: { search: string; tag: string }) {
     console.log(err);
     return null;
   }
-}
+};
 
 export default async function Wiki({
   searchParams,
 }: {
-  searchParams: { search: string; tag: string; page: string };
+  searchParams: { page: string; search: string; tag: string };
 }) {
   let wikis = await getWikis(searchParams);
   if (!searchParams.page) searchParams.page = '1';

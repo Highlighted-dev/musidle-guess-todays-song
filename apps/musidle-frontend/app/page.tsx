@@ -114,7 +114,7 @@ export default async function Page() {
             ))}
           </div>
           <div className="flex justify-end mt-6">
-            <Link href="/wiki" className="w-full">
+            <Link href="/wiki" className="lg:w-[10%] md:w-[20%] w-[30%]">
               <Button className="w-full">View more</Button>
             </Link>
           </div>

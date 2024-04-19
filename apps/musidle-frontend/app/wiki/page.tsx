@@ -98,7 +98,13 @@ export default async function Wiki({
       </div>
       <EnchancedPagination
         pageNumber={searchParams.page ? parseInt(searchParams.page) : 1}
-        url={'/wiki?page='}
+        url={
+          searchParams.search
+            ? `/wiki?search=${searchParams.search}&page=`
+            : searchParams.tag
+            ? `/wiki?tag=${searchParams.tag}&page=`
+            : `/wiki?page=`
+        }
       />
     </>
   );

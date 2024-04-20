@@ -56,7 +56,7 @@ export default function WikiNavbar({ id }: { id: string }) {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem
-            className={`${isActive(`/wiki/${id}`) ? 'border-b border-tertiary' : ''}`}
+          // className={`${isActive(`/wiki/${id}`) ? 'border-b border-tertiary' : ''}`}
           >
             <Link href={`/wiki/${id}`} legacyBehavior passHref aria-disabled>
               <NavigationMenuLink

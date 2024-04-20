@@ -18,6 +18,12 @@ import React from 'react';
 import { FaSpotify } from '@react-icons/all-files/fa/FaSpotify';
 import { RxCross1 } from '@react-icons/all-files/rx/RxCross1';
 import '../../../styles/editor.css';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from 'apps/musidle-frontend/components/ui/accordion';
 
 async function getWiki(wikiId: string) {
   try {
@@ -58,8 +64,15 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
       <WikiNavbar id={wiki._id} />
       <div className="flex-1 py-10 px-4 md:px-6 lg:px-8">
         <div className="mb-10">
-          <h2 className="text-2xl font-bold mb-4">Bio</h2>
-          <div dangerouslySetInnerHTML={sanitizedHTML()} id="editor" />
+          <p className="mb-4">{wiki.shortDescription}</p>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="item-1">
+              <AccordionTrigger className=" text-2xl font-bold py-3">Bio</AccordionTrigger>
+              <AccordionContent>
+                <div dangerouslySetInnerHTML={sanitizedHTML()} id="editor" />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Notable Albums</h2>

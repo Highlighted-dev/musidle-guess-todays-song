@@ -21,7 +21,7 @@ async function verifyUser(userId: string, token: string) {
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
+      cache: 'no-cache',
     });
     const data = await res.json();
     return data;

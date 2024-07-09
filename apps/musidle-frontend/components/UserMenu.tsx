@@ -11,7 +11,7 @@ import {
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { IoIosArrowDown } from '@react-icons/all-files/io/IoIosArrowDown';
+import { IoIosArrowDown } from 'react-icons/io';
 import { signOut, useSession } from 'next-auth/react';
 import { useNextAuthStore } from '../stores/NextAuthStore';
 import GuildCreation from './guilds/GuildCreation';

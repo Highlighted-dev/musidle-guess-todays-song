@@ -4,8 +4,7 @@ import { IQuiz } from '../@types/Quiz';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { Pagination, PaginationContent, PaginationEllipsis } from './ui/pagination';
-import { LuChevronLeft } from '@react-icons/all-files/lu/LuChevronLeft';
-import { LuChevronRight } from '@react-icons/all-files/lu/LuChevronRight';
+import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import { toast } from './ui/use-toast';
 
 export default function Quiz({ quizData }: { quizData: IQuiz[] }) {

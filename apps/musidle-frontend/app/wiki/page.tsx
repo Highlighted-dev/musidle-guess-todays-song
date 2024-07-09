@@ -14,7 +14,7 @@ const getWikis = async (searchParams: { search: string; tag: string }) => {
       const wiki: IWiki[] = await fetch(
         getCurrentUrl() + `/externalApi/wikis/name/${searchParams.search}`,
         {
-          cache: 'no-store',
+          cache: 'no-cache',
         },
       ).then(res => res.json());
       return wiki;
@@ -22,7 +22,7 @@ const getWikis = async (searchParams: { search: string; tag: string }) => {
       const wiki: IWiki[] = await fetch(
         getCurrentUrl() + `/externalApi/wikis/tag/${searchParams.tag}`,
         {
-          cache: 'no-store',
+          cache: 'no-cache',
         },
       ).then(res => res.json());
       return wiki;

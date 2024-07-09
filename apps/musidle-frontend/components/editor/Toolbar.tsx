@@ -1,14 +1,15 @@
 'use client';
 import { type Editor } from '@tiptap/react';
 import { Toggle } from '../ui/toggle';
-import { LuBold } from '@react-icons/all-files/lu/LuBold';
-import { LuItalic } from '@react-icons/all-files/lu/LuItalic';
-import { LuStrikethrough } from '@react-icons/all-files/lu/LuStrikethrough';
-import { LuUnderline } from '@react-icons/all-files/lu/LuUnderline';
-import { LuHighlighter } from '@react-icons/all-files/lu/LuHighlighter';
-import { LuList } from '@react-icons/all-files/lu/LuList';
-import { LuImage } from '@react-icons/all-files/lu/LuImage';
-import { MdOutlineFormatListNumbered } from '@react-icons/all-files/md/MdOutlineFormatListNumbered';
+import {
+  LuBold,
+  LuHighlighter,
+  LuImage,
+  LuItalic,
+  LuList,
+  LuStrikethrough,
+  LuUnderline,
+} from 'react-icons/lu';
 import { Input } from '../ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Separator } from '../ui/separator';

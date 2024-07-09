@@ -1,8 +1,8 @@
 'use client';
 import { Card, CardContent } from '../ui/card';
 import React, { useState } from 'react';
-import { AiOutlineCheck } from '@react-icons/all-files/ai/AiOutlineCheck';
-import { LuChevronsUpDown } from '@react-icons/all-files/lu/LuChevronsUpDown';
+import { AiOutlineCheck } from 'react-icons/ai';
+import { LuChevronsUpDown } from 'react-icons/lu';
 import { Button } from '../ui/button';
 import { Command, CommandGroup, CommandInput, CommandItem } from '../ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';

@@ -11,7 +11,7 @@ import EditButton from 'apps/musidle-frontend/components/buttons/EditButton';
 async function getArticle(articleId: string) {
   try {
     const post = await fetch(getCurrentUrl() + `/externalApi/articles/${articleId}`, {
-      cache: 'no-store',
+      cache: 'no-cache',
     }).then(res => res.json());
     return post;
   } catch (error) {

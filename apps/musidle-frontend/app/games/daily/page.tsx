@@ -23,7 +23,7 @@ export const metadata = {
 async function getSong() {
   try {
     const song = await fetch(getCurrentUrl() + `/externalApi/audio/daily`, {
-      cache: 'no-store',
+      cache: 'no-cache',
     }).then(res => res.arrayBuffer());
     return song;
   } catch (err) {
@@ -33,12 +33,11 @@ async function getSong() {
 }
 async function getSongId() {
   try {
-    const song = await fetch(getCurrentUrl() + '/externalApi/daily', {
-      cache: 'no-store',
-    })
-      .then(res => res.json())
-      .then(res => res.song);
-    return song.songId;
+    const response = await fetch(getCurrentUrl() + '/externalApi/daily', {
+      cache: 'no-cache',
+    });
+    const result = await response.json();
+    return result.song ? result.song.songId : null;
   } catch (err) {
     console.log(err);
     return null;

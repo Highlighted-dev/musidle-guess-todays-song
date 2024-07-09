@@ -8,7 +8,7 @@ import React from 'react';
 async function getArticle(articleId: string, session?: any) {
   try {
     let post = await fetch(getCurrentUrl() + `/externalApi/articles/${articleId}`, {
-      cache: 'no-store',
+      cache: 'no-cache',
     }).then(res => res.json());
     if (!post._id) {
       post = await fetch(getCurrentUrl() + `/externalApi/articles/`, {
@@ -16,7 +16,7 @@ async function getArticle(articleId: string, session?: any) {
         headers: {
           'Content-Type': 'application/json',
         },
-        cache: 'no-store',
+        cache: 'no-cache',
         body: JSON.stringify({
           author: {
             _id: session?.user._id,

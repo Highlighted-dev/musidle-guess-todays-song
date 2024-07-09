@@ -9,14 +9,10 @@ import PlaySong from 'apps/musidle-frontend/components/wiki/PlayEmbed';
 import WikiNavbar from 'apps/musidle-frontend/components/wiki/WikiNavbar';
 import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
 import DOMPurify from 'isomorphic-dompurify';
-import { LuInstagram } from '@react-icons/all-files/lu/LuInstagram';
-import { LuTwitter } from '@react-icons/all-files/lu/LuTwitter';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { FaSpotify } from '@react-icons/all-files/fa/FaSpotify';
-import { RxCross1 } from '@react-icons/all-files/rx/RxCross1';
 import '../../../styles/editor.css';
 import {
   Accordion,
@@ -24,11 +20,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from 'apps/musidle-frontend/components/ui/accordion';
+import { RxCross1 } from 'react-icons/rx';
+import { FaSpotify } from 'react-icons/fa';
+import { LuInstagram, LuTwitter } from 'react-icons/lu';
 
 async function getWiki(wikiId: string) {
   try {
     const wiki: IWiki = await fetch(getCurrentUrl() + `/externalApi/wikis/${wikiId}`, {
-      cache: 'no-store',
+      cache: 'no-cache',
     }).then(res => res.json());
     return wiki;
   } catch (err) {

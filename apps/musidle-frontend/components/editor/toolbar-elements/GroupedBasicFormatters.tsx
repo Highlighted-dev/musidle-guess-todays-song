@@ -1,12 +1,7 @@
 'use client';
 import { type Editor } from '@tiptap/react';
 import { Toggle } from '../../ui/toggle';
-import { LuBold } from '@react-icons/all-files/lu/LuBold';
-import { LuHighlighter } from '@react-icons/all-files/lu/LuHighlighter';
-import { LuItalic } from '@react-icons/all-files/lu/LuItalic';
-import { LuStrikethrough } from '@react-icons/all-files/lu/LuStrikethrough';
-import { LuType } from '@react-icons/all-files/lu/LuType';
-import { LuUnderline } from '@react-icons/all-files/lu/LuUnderline';
+import { LuBold, LuHighlighter, LuItalic, LuStrikethrough, LuUnderline } from 'react-icons/lu';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 
 export function GroupedBasicFormatters({ editor }: { editor: Editor }) {

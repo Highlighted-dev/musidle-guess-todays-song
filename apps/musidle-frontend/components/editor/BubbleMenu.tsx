@@ -1,8 +1,6 @@
 import { Editor, BubbleMenu } from '@tiptap/react';
 import { Button } from '../ui/button';
-import { LuBold } from '@react-icons/all-files/lu/LuBold';
-import { LuItalic } from '@react-icons/all-files/lu/LuItalic';
-import { LuStrikethrough } from '@react-icons/all-files/lu/LuStrikethrough';
+import { LuBold, LuItalic, LuStrikethrough } from 'react-icons/lu';
 export function EditorBubbleMenu({ editor }: { editor: Editor }) {
   return (
     <BubbleMenu

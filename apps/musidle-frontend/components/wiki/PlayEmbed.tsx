@@ -2,7 +2,7 @@
 import { Popover } from '../ui/popover';
 import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import { Button } from '../ui/button';
-import { LuPlay } from '@react-icons/all-files/lu/LuPlay';
+import { LuPlay } from 'react-icons/lu';
 
 export function PlayEmbed({ url }: { url: string }) {
   return (

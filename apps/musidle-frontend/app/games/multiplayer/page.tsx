@@ -18,7 +18,7 @@ async function getRooms() {
   }
   try {
     const rooms: IRoom[] = await fetch(url, {
-      cache: 'no-store',
+      cache: 'no-cache',
     })
       .then(res => res.json())
       .then(res => res.rooms);

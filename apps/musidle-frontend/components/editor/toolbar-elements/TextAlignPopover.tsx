@@ -1,9 +1,6 @@
 'use client';
 import { type Editor } from '@tiptap/react';
-import { LuAlignJustify } from '@react-icons/all-files/lu/LuAlignJustify';
-import { LuAlignLeft } from '@react-icons/all-files/lu/LuAlignLeft';
-import { LuAlignCenter } from '@react-icons/all-files/lu/LuAlignCenter';
-import { LuAlignRight } from '@react-icons/all-files/lu/LuAlignRight';
+import { LuAlignCenter, LuAlignJustify, LuAlignLeft, LuAlignRight } from 'react-icons/lu';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { Button } from '../../ui/button';
 export function TextAlignPopover({ editor }: { editor: Editor }) {

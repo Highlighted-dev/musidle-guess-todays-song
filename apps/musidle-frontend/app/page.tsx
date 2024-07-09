@@ -10,7 +10,7 @@ import { IWiki } from '../@types/Wiki';
 async function getWikis() {
   try {
     const wiki: IWiki[] = await fetch(getCurrentUrl() + `/externalApi/wikis/`, {
-      cache: 'no-store',
+      cache: 'no-cache',
     }).then(res => res.json());
     return wiki;
   } catch (err) {

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
+import { FaChevronDown } from 'react-icons/fa';
 
 import { cn } from '../../lib/utils';
 

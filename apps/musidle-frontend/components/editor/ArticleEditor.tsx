@@ -4,7 +4,7 @@ import '../../styles/editor.css';
 import { toast } from '../ui/use-toast';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { ImSpinner2 } from '@react-icons/all-files/im/ImSpinner2';
+import { ImSpinner2 } from 'react-icons/im';
 import { editorExtensions, editorProps } from './editorConfig';
 import EditorBase, { IFormData } from './EditorBase';
 import EditorFooter from './EditorFooter';

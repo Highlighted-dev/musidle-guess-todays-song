@@ -1,8 +1,6 @@
 'use client';
 import * as React from 'react';
-import { LuChevronLeft } from '@react-icons/all-files/lu/LuChevronLeft';
-import { LuChevronRight } from '@react-icons/all-files/lu/LuChevronRight';
-import { LuMoreHorizontal } from '@react-icons/all-files/lu/LuMoreHorizontal';
+import { LuChevronLeft, LuChevronRight, LuMoreHorizontal } from 'react-icons/lu';
 import { ButtonProps, buttonVariants } from 'apps/musidle-frontend/components/ui/button';
 import { cn } from 'apps/musidle-frontend/lib/utils';
 import Link from 'next/link';

@@ -14,7 +14,7 @@ import React from 'react';
 async function fetchGuild(name: string) {
   try {
     const response = await fetch(getCurrentUrl() + `/externalApi/guilds/${name}`, {
-      cache: 'no-store',
+      cache: 'no-cache',
     }).then(res => res.json());
     return response;
   } catch (err) {

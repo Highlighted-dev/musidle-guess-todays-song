@@ -2,8 +2,7 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import { FaChevronLeft } from '@react-icons/all-files/fa/FaChevronLeft';
-import { ImSpinner2 } from '@react-icons/all-files/im/ImSpinner2';
+import { FaChevronLeft } from 'react-icons/fa';
 
 export default function EditorFooter({ isSaving }: { isSaving: boolean }) {
   return (

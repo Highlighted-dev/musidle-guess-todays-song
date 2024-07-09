@@ -1,13 +1,14 @@
 'use client';
 import { type Editor } from '@tiptap/react';
 import { Toggle } from '../../ui/toggle';
-import { LuHeading } from '@react-icons/all-files/lu/LuHeading';
-import { LuHeading1 } from '@react-icons/all-files/lu/LuHeading1';
-import { LuHeading2 } from '@react-icons/all-files/lu/LuHeading2';
-import { LuHeading3 } from '@react-icons/all-files/lu/LuHeading3';
-import { LuHeading4 } from '@react-icons/all-files/lu/LuHeading4';
-import { LuHeading5 } from '@react-icons/all-files/lu/LuHeading5';
-import { LuHeading6 } from '@react-icons/all-files/lu/LuHeading6';
+import {
+  LuHeading1,
+  LuHeading2,
+  LuHeading3,
+  LuHeading4,
+  LuHeading5,
+  LuHeading6,
+} from 'react-icons/lu';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 
 export function HeaderPopover({ editor }: { editor: Editor }) {

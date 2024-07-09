@@ -64,5 +64,5 @@ div::-webkit-scrollbar {
 html::-webkit-scrollbar-thumb,
 div::-webkit-scrollbar-thumb {
   background-color: 224 71% 4%;
-  border: 2px solid #202020;
+  border: 1px solid #202020;
 }

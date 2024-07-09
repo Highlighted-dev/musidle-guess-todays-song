@@ -50,8 +50,9 @@ function LoginAndRegister() {
                 });
               });
               return toast({
-                title:
-                  'Registered successfully. Please check your email to verify your account (check spam folder). It may take a few minutes to receive the email.',
+                title: 'Registered successfully',
+                description:
+                  'Please check your email to verify your account (check spam folder). It may take a few minutes to receive the email.',
               });
             } else {
               throw responseData.message.message;

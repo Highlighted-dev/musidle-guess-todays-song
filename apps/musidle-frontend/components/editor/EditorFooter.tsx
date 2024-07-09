@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { FaChevronLeft } from 'react-icons/fa';
+import { ImSpinner2 } from 'react-icons/im';
 
 export default function EditorFooter({ isSaving }: { isSaving: boolean }) {
   return (

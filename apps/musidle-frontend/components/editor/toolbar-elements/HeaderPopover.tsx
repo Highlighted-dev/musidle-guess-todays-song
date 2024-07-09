@@ -2,6 +2,7 @@
 import { type Editor } from '@tiptap/react';
 import { Toggle } from '../../ui/toggle';
 import {
+  LuHeading,
   LuHeading1,
   LuHeading2,
   LuHeading3,

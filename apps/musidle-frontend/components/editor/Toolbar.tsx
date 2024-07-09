@@ -17,6 +17,7 @@ import { HeaderPopover } from './toolbar-elements/HeaderPopover';
 import { TablePopover } from './toolbar-elements/TablePopover';
 import { TextAlignPopover } from './toolbar-elements/TextAlignPopover';
 import { GroupedBasicFormatters } from './toolbar-elements/GroupedBasicFormatters';
+import { MdOutlineFormatListNumbered } from 'react-icons/md';
 
 export function EditorToolbar({ editor }: { editor: Editor }) {
   return (

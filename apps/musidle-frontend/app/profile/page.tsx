@@ -13,12 +13,14 @@ export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
   return (
-    <Card className="w-full flex flex-col min-h-[620px]">
-      <CardHeader className="text-center">
-        <CardTitle>Profile</CardTitle>
-        <CardDescription>Everything about you</CardDescription>
-      </CardHeader>
-      <ProfileCard session={session} />
-    </Card>
+    <div className="container flex justify-center align-center py-12 ">
+      <Card className="w-full flex flex-col min-h-[620px]">
+        <CardHeader className="text-center">
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>Everything about you</CardDescription>
+        </CardHeader>
+        <ProfileCard session={session} />
+      </Card>
+    </div>
   );
 }

@@ -27,7 +27,7 @@ export default async function Page() {
         <div className="container space-y-10 xl:space-y-16">
           <div className="grid gap-4 px-10 md:grid-cols-2 md:gap-16">
             <div>
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl xl:text-[3.4rem] 2xl:text-[3.75rem] z-10">
                 Welcome to Musidle
               </h1>
               <p className="mt-4 text-lg">Your one-stop destination for all things music.</p>
@@ -36,7 +36,7 @@ export default async function Page() {
               src="https://musidle.live/externalApi/images/concert.jpg"
               alt="Concert photo by Drew Beamer"
               fill
-              className="rounded-md object-cover opacity-15  "
+              className="rounded-md object-cover opacity-10 -z-10"
             />
           </div>
         </div>

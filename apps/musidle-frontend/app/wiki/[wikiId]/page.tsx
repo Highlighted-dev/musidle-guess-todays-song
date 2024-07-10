@@ -63,12 +63,16 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
       <WikiNavbar id={wiki._id} />
       <div className="flex-1 py-10 px-4 md:px-6 lg:px-8">
         <div className="mb-10">
-          <p className="mb-4">{wiki.shortDescription}</p>
+          <p className="mb-4 prose prose-invert max-w-none">{wiki.shortDescription}</p>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
               <AccordionTrigger className=" text-2xl font-bold py-3">Bio</AccordionTrigger>
               <AccordionContent>
-                <div dangerouslySetInnerHTML={sanitizedHTML()} id="editor" />
+                <div
+                  dangerouslySetInnerHTML={sanitizedHTML()}
+                  id="editor"
+                  className="prose prose-invert max-w-none"
+                />
               </AccordionContent>
             </AccordionItem>
           </Accordion>

@@ -21,6 +21,20 @@ async function getWikis() {
 
 export default async function Page() {
   const wikis = await getWikis();
+  const tutorials = [
+    {
+      title: 'Guitar Basics',
+      description: 'Learn the basics of playing the guitar in this comprehensive guide.',
+    },
+    {
+      title: 'Music Theory 101',
+      description: 'Understand the fundamentals of music theory with this tutorial.',
+    },
+    {
+      title: 'Songwriting for Beginners',
+      description: 'Get started with songwriting with this beginner-friendly guide.',
+    },
+  ];
   return (
     <div>
       <section className="flex justify-center items-center w-full h-full min-h-screen">
@@ -124,54 +138,22 @@ export default async function Page() {
         <div className="container px-4 md:px-6">
           <h2 className="text-3xl font-bold">Tutorials</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            <Card className="flex flex-col">
-              <CardHeader>
-                <EmptyPlaceholder>
-                  <h2 className="mt-6 text-xl font-semibold" />
-                  <p className="mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground">
-                    Tutorial image or something not sure yet
-                  </p>
-                </EmptyPlaceholder>
-              </CardHeader>
-              <CardContent>
-                <h3 className="mt-4 text-xl font-bold">Guitar Basics</h3>
-                <p className="mt-2">
-                  Learn the basics of playing the guitar in this comprehensive guide.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="flex flex-col">
-              <CardHeader>
-                <EmptyPlaceholder>
-                  <h2 className="mt-6 text-xl font-semibold" />
-                  <p className="mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground">
-                    Tutorial image or something not sure yet
-                  </p>
-                </EmptyPlaceholder>
-              </CardHeader>
-              <CardContent>
-                <h3 className="mt-4 text-xl font-bold">Music Theory 101</h3>
-                <p className="mt-2">
-                  Understand the fundamentals of music theory with this tutorial.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="flex flex-col">
-              <CardHeader>
-                <EmptyPlaceholder>
-                  <h2 className="mt-6 text-xl font-semibold" />
-                  <p className="mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground">
-                    Tutorial image or something not sure yet
-                  </p>
-                </EmptyPlaceholder>
-              </CardHeader>
-              <CardContent>
-                <h3 className="mt-4 text-xl font-bold">Songwriting for Beginners</h3>
-                <p className="mt-2">
-                  Get started with songwriting with this beginner-friendly guide.
-                </p>
-              </CardContent>
-            </Card>
+            {tutorials.map(tutorial => (
+              <Card key={tutorial.title} className="flex flex-col">
+                <CardHeader>
+                  <EmptyPlaceholder>
+                    <h2 className="mt-6 text-xl font-semibold" />
+                    <p className="mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground">
+                      Tutorial image or something not sure yet
+                    </p>
+                  </EmptyPlaceholder>
+                </CardHeader>
+                <CardContent>
+                  <h3 className="mt-4 text-xl font-bold">{tutorial.title}</h3>
+                  <p className="mt-2">{tutorial.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

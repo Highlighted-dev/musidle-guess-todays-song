@@ -7,7 +7,7 @@ import {
 import { getServerSession } from 'next-auth/next';
 import React from 'react';
 import { authOptions } from '../api/auth/[...nextauth]/route';
-import ProfileCard from 'apps/musidle-frontend/components/ProfileCard';
+import ProfileCard from 'apps/musidle-frontend/components/user/ProfileCard';
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);

@@ -10,7 +10,7 @@ import { validateSingUp } from '@musidle-guess-todays-song/util-user-validation'
 import { toast } from './ui/use-toast';
 import { signIn, useSession } from 'next-auth/react';
 import axios from 'axios';
-import UserMenu from './UserMenu';
+import UserMenu from './user/UserMenu';
 
 function LoginAndRegister() {
   const { data } = useSession();

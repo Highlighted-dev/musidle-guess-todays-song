@@ -1,7 +1,7 @@
 import '../styles/global.css';
 import React from 'react';
 import { Toaster } from '../components/ui/toaster';
-import NextAuthProvider from '../components/NextAuthProvider';
+import NextAuthProvider from '../components/auth/NextAuthProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/route';
 import { TriggerCookieSheet } from '../components/CookiesSheet';

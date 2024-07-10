@@ -12,8 +12,22 @@
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Chainable<Subject> {
+    login(email: string, password: string): void;
+  }
 }
+Cypress.Commands.add('login', (email, password) => {
+  cy.visit('http://localhost:4200/');
 
+  cy.get('button').contains('Accept').click();
+  cy.get('button').contains('Login').click();
+  cy.get('input[id=email]').type(email);
+  cy.get('input[id=password]').type(password);
+  cy.get('button').contains('Sign in').click();
+
+  // Wait for the 'token' cookie to exist, with a timeout
+  cy.waitUntil(() => cy.getCookie('next-auth.session-token'), { timeout: 10000 }).should('exist');
+});
 //
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })

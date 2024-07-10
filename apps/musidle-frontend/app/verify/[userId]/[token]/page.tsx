@@ -1,7 +1,7 @@
 import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
-import Verify from 'apps/musidle-frontend/components/Verify';
+import Verify from 'apps/musidle-frontend/components/auth/Verify';
 
 async function verifyUser(userId: string, token: string) {
   const session = await getServerSession(authOptions);

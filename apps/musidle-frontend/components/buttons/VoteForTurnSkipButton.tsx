@@ -10,7 +10,6 @@ export default function VoteForTurnSkipButton({ className }: { className?: strin
   const { session } = useNextAuthStore();
   return (
     <Button
-      variant={'tertiary'}
       onClick={() => {
         voteForTurnSkip(useSocketStore.getState().socket || null);
       }}

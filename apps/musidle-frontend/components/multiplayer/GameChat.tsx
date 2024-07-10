@@ -69,9 +69,7 @@ export default function GameChat() {
             onChange={e => setMessage(e.target.value)}
             value={message}
           />
-          <Button type="submit" variant={'tertiary'}>
-            Send
-          </Button>
+          <Button type="submit">Send</Button>
         </form>
       </CardFooter>
     </Card>

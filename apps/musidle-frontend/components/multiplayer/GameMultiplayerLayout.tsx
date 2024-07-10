@@ -29,7 +29,6 @@ function GameMultiplayerLayout() {
               <AudioProgress />
               <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
                 <Button
-                  variant={'tertiary'}
                   onClick={() => handlePlay()}
                   className="min-w-[80px]"
                   disabled={currentPlayer?._id != user?._id || !audio}

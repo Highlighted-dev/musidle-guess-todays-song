@@ -70,7 +70,6 @@ function GamePhase3() {
         <div className="flex justify-center items-center mt-2">
           <Button
             onClick={() => handlePlay()}
-            variant={'tertiary'}
             className="min-w-[100px]"
             disabled={currentPlayer?._id != user?._id || !audioContext}
           >
@@ -134,7 +133,6 @@ function GamePhase3() {
           </Popover>
           <div className="py-2">
             <Button
-              variant={'tertiary'}
               onClick={() => {
                 handleFinalAnswerSubmit();
               }}

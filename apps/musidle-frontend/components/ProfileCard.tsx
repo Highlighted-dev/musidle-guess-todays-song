@@ -82,12 +82,10 @@ export default function ProfileCard({ session }: { session: Session | null }) {
         </CardContent>
         <CardFooter className="flex lg:justify-between justify-center items-center text-center w-full lg:flex-row flex-col">
           <div className="lg:w-1/2 h-full">
-            <Button variant="tertiary" onClick={handleProfileEdit}>
-              {editMode ? 'Save' : 'Edit profile'}
-            </Button>
+            <Button onClick={handleProfileEdit}>{editMode ? 'Save' : 'Edit profile'}</Button>
           </div>
           <div className="lg:w-1/2 h-full">
-            <Button variant="tertiary">Message</Button>
+            <Button>Message</Button>
           </div>
         </CardFooter>
       </Card>

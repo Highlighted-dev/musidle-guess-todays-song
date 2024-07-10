@@ -36,7 +36,7 @@ export default async function Page() {
               src="https://musidle.live/externalApi/images/concert.jpg"
               alt="Concert photo by Drew Beamer"
               fill
-              className="rounded-md object-cover opacity-10 bg-inherit"
+              className="rounded-md object-cover opacity-15  "
             />
           </div>
         </div>

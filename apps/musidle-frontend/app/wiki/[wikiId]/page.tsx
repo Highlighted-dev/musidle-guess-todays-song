@@ -176,9 +176,7 @@ export default async function Wiki({ params }: { params: { wikiId: string } }) {
           </div>
         </div>
         <div className="flex flex-col justify-center items-center mt-10">
-          <Button size="lg" variant={'tertiary'}>
-            View Upcoming Tours
-          </Button>
+          <Button size="lg">View Upcoming Tours</Button>
           <div className="flex space-x-4 p-2">
             <Button size="icon" variant="ghost">
               <FaSpotify size={24} />

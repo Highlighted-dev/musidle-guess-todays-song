@@ -21,7 +21,6 @@ export default function SubmitAnswerButton({
       className={className}
       disabled={disabled || !value}
       onClick={() => handleAnswerSubmit(router)}
-      variant={'tertiary'}
     >
       {loadingAnswer ? <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" /> : 'Submit'}
     </Button>

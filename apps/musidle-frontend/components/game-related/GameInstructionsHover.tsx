@@ -7,7 +7,9 @@ export default function GameInstructionsHover() {
     <div className="flex justify-end items-center">
       <HoverCard>
         <HoverCardTrigger asChild className="w-28">
-          <Button variant="link">Instructions</Button>
+          <Button variant={'link'} className=" underline">
+            Instructions
+          </Button>
         </HoverCardTrigger>
         <HoverCardContent className="w-96">
           <div className="flex space-x-4">

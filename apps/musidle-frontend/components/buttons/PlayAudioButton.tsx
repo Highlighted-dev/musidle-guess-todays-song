@@ -12,12 +12,7 @@ export default function PlayAudioButton({
 }) {
   const { handlePlay, audioContext, audio } = useAudioStore();
   return (
-    <Button
-      onClick={handlePlay}
-      className={className}
-      disabled={!audio || disabled}
-      variant={'tertiary'}
-    >
+    <Button onClick={handlePlay} className={className} disabled={!audio || disabled}>
       {audioContext?.state == 'running' ? 'Pause' : 'Play'}
     </Button>
   );

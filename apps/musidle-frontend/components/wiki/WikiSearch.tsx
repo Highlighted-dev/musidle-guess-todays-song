@@ -16,9 +16,7 @@ export default function WikiSearch() {
         className="mb-1"
       />
       <Link href={`/wiki?search=${search}`}>
-        <Button className="w-full" variant={'tertiary'}>
-          Search
-        </Button>
+        <Button className="w-full">Search</Button>
       </Link>
     </>
   );

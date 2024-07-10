@@ -97,7 +97,7 @@ export default function GameLobby(params: { roomCode: string }) {
           <Button variant={'secondary'} onClick={() => leaveRoom(router, user?._id)}>
             Leave game
           </Button>
-          <Button variant={'tertiary'} disabled={user?.role != 'admin'} onClick={() => startGame()}>
+          <Button disabled={user?.role != 'admin'} onClick={() => startGame()}>
             Start game
           </Button>
         </div>

@@ -7,7 +7,7 @@ export default function GameHeader({ title }: { title: string }) {
   return (
     <CardHeader className="flex flex-row justify-between border-b w-full h-14 p-4">
       <div className="text-xs flex justify-start items-center">
-        <Button variant={'link'} className="w-28">
+        <Button variant={'ghost'} className="w-28">
           v{process.env.NEXT_PUBLIC_VERSION}
         </Button>
       </div>

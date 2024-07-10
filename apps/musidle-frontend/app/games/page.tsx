@@ -22,9 +22,7 @@ export default async function Page() {
           </CardTitle>
           <div className="flex flex-col justify-center items-center">
             <Link href={'/games/daily'}>
-              <Button className="sm:w-[250px] w-[170px] m-4" variant={'outline'}>
-                Musidle Daily
-              </Button>
+              <Button className="sm:w-[250px] w-[170px] m-4">Musidle Daily</Button>
             </Link>
           </div>
         </Card>
@@ -34,9 +32,7 @@ export default async function Page() {
           </CardTitle>
           <div className="flex flex-col justify-center items-center">
             <Link href={'/games/multiplayer'}>
-              <Button className="sm:w-[250px] w-[170px] m-4" variant={'outline'}>
-                Musidle Multiplayer
-              </Button>
+              <Button className="sm:w-[250px] w-[170px] m-4">Musidle Multiplayer</Button>
             </Link>
           </div>
         </Card>

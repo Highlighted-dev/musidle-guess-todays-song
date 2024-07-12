@@ -1,15 +1,16 @@
-import express, { Router, Request, Response, NextFunction } from 'express';
+import express, { Router, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 import axios from 'axios';
 import { getCurrentUrl } from '../utils/GetCurrentUrl';
+import { logger } from '../utils/Logger';
 dotenv.config();
 
 const router: Router = express.Router();
 
 // Route to get the daily song
-router.get('/daily', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/daily', async (req: Request, res: Response) => {
   try {
     // Fetch the songId of the daily song from the external API
     const songId = (await axios.get(`${getCurrentUrl()}/externalApi/daily`)).data.song.songId;
@@ -26,12 +27,13 @@ router.get('/daily', async (req: Request, res: Response, next: NextFunction) => 
     // Stream the song file to the response
     fs.createReadStream(filePath).pipe(res);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get daily song' });
   }
 });
 
 // Route to get the song for a multiplayer room
-router.get('/multiplayer/:roomCode', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/multiplayer/:roomCode', async (req: Request, res: Response) => {
   try {
     const roomCode = req.params.roomCode;
 
@@ -51,7 +53,8 @@ router.get('/multiplayer/:roomCode', async (req: Request, res: Response, next: N
     // Stream the song file to the response
     fs.createReadStream(filePath).pipe(res);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get multiplayer song' });
   }
 });
 

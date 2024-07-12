@@ -39,7 +39,7 @@ export default function ProfileCard({ session }: { session: Session | null }) {
       <Card className="w-full p-2 flex flex-col justify-center items-center">
         <CardHeader className="text-center pb-1 text-xs h-1/3 w-full flex justify-center items-center">
           <Avatar>
-            <AvatarImage src={session?.user.image} alt="@shadcn" />
+            <img src={session?.user.image} alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </CardHeader>

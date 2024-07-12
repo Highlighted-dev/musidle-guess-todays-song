@@ -1,6 +1,7 @@
 import express, { Router, Request, Response } from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { logger } from '../utils/Logger';
 dotenv.config();
 
 const router: Router = express.Router();
@@ -16,7 +17,7 @@ const searchTracks = async (query: string) => {
     const tracks = response.data.results.trackmatches.track;
     return tracks;
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     return [];
   }
 };

@@ -49,3 +49,6 @@ deploy_images.sh
 
 .nx/cache
 
+app.log
+error.log
+

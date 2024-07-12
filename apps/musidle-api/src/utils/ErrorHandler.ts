@@ -1,25 +1,31 @@
-import { NextFunction, Request, Response } from 'express';
-interface ICustomError extends Error {
-  type?: string;
-  status?: number;
-  code?: number;
+import { logger } from './Logger';
+
+export function errorHandler(err: Error): void {
+  logger.error(err);
 }
-
-const errorHandler = (error: ICustomError, req: Request, res: Response, next: NextFunction) => {
-  console.error(error.message);
-
-  const status = error.status || 500;
-  const message = error.message || 'Internal Server Error';
-
-  if (error.type === 'redirect') {
-    return res.redirect('/error');
+export const isTrustedError = (error: Error): boolean => {
+  if (error instanceof AppError) {
+    return error.isOperational;
   }
-
-  if (error.type === 'time-out') {
-    return res.status(408).send(error);
-  }
-
-  return res.status(status).send({ status: 'error', error_code: error.code, message: message });
+  return false;
 };
 
-export default errorHandler;
+export default class AppError extends Error {
+  //@ts-ignore
+  public readonly name: string;
+
+  public readonly httpCode: number;
+
+  public readonly isOperational: boolean;
+
+  constructor(httpCode: number, description: string, isOperational = true) {
+    super(description);
+
+    Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
+
+    this.httpCode = httpCode;
+    this.isOperational = isOperational;
+
+    Error.captureStackTrace(this);
+  }
+}

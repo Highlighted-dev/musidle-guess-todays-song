@@ -1,31 +1,16 @@
-import express from 'express';
-import SearchTrackRoute from './routes/SearchTrackRoute';
-import cookieParser from 'cookie-parser';
-import helmet from 'helmet';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import cors from 'cors';
 import http from 'http';
 import https from 'https';
-import guildRouter from './routes/GuildRoute';
 import { Server } from 'socket.io';
-import RoomsRoute from './routes/RoomsRoute';
 import { ISocketMiddleware, IUsers } from './@types';
-import errorHandler from './utils/ErrorHandler';
 import axios from 'axios';
-import AnswersRoute from './routes/SongsRoute';
 import roomModel from './models/RoomModel';
 import Timer from './utils/Timer';
-import CategoriesRoute from './routes/CategoriesRoute';
-import { scheduleSongUpdate } from './utils/ScheduleDailySongChange';
-import DailyRoute from './routes/DailyRoute';
-import AudioRoute from './routes/AudioRoute';
 import { getCurrentUrl } from './utils/GetCurrentUrl';
-import ArticlesRoute from './routes/ArticlesRoute';
-import ImagesRoute from './routes/ImagesRoute';
-import WikisRoute from './routes/WikisRoute';
-import QuizesRoute from './routes/QuizesRoute';
-import UserRoute from './routes/UserRoute';
+import { app } from './app';
+import { logger } from './utils/Logger';
+import { errorHandler, isTrustedError } from './utils/ErrorHandler';
 dotenv.config();
 
 const port = () => {
@@ -44,7 +29,6 @@ const mongodbUrl =
     ? process.env.MONGODB_URL_PROD || 'musidle'
     : process.env.MONGODB_URL || 'musidle';
 
-export const app = express();
 export const server =
   process.env.NODE_ENV == 'production'
     ? https.createServer(
@@ -62,6 +46,51 @@ const io = new Server(server, {
   cors: {
     origin: '*',
   },
+});
+
+const connectToDatabase = async (): Promise<void> => {
+  try {
+    await mongoose.connect(mongodbUrl).then(() => {
+      server.listen(port(), () => {
+        logger.info(
+          `Musidle API is listening on ${getCurrentUrl()} in ${process.env.NODE_ENV} mode.`,
+        );
+        console.log(
+          `Musidle API is listening on ${getCurrentUrl()} in ${process.env.NODE_ENV} mode.`,
+        );
+      });
+    });
+  } catch (error) {
+    logger.error(error);
+    process.exit(1);
+  }
+};
+
+connectToDatabase();
+
+const exitHandler = (): void => {
+  server.close(() => {
+    logger.info('Server closed');
+    process.exit(1);
+  });
+};
+
+const unexpectedErrorHandler = (error: Error): void => {
+  errorHandler(error);
+  if (!isTrustedError(error)) {
+    exitHandler();
+  }
+};
+
+process.on('uncaughtException', unexpectedErrorHandler);
+process.on('unhandledRejection', (reason: Error) => {
+  throw reason;
+});
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received');
+  if (server) {
+    server.close();
+  }
 });
 
 const users: Map<string, IUsers> = new Map();
@@ -226,39 +255,9 @@ io.on('connection', socket => {
   });
 });
 
-mongoose
-  .connect(mongodbUrl)
-  .then(() => {
-    server.listen(port(), () => {
-      console.log(
-        `Musidle API is listening on ${getCurrentUrl()} in ${process.env.NODE_ENV} mode.`,
-      );
-    });
-  })
-  .catch(error => {
-    console.error(error);
-  });
-app.use(errorHandler);
 const socketMiddleware: ISocketMiddleware = (req, res, next) => {
   req.io = io;
   return next;
 };
 
 server.on('request', socketMiddleware);
-app.use(cookieParser());
-app.use(cors());
-app.use(helmet());
-app.use('/externalApi/track/search/', SearchTrackRoute);
-app.use('/externalApi/rooms/', RoomsRoute);
-app.use('/externalApi/songs/', AnswersRoute);
-app.use('/externalApi/categories/', CategoriesRoute);
-app.use('/externalApi/daily/', DailyRoute);
-app.use('/externalApi/audio/', AudioRoute);
-app.use('/externalApi/guilds', guildRouter);
-app.use('/externalApi/articles', ArticlesRoute);
-app.use('/externalApi/images', ImagesRoute);
-app.use('/externalApi/wikis', WikisRoute);
-app.use('/externalApi/quizes', QuizesRoute);
-app.use('/externalApi/user', UserRoute);
-app.use(() => scheduleSongUpdate);
-app.use(errorHandler);

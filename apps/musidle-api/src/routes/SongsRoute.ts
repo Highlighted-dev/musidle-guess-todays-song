@@ -1,4 +1,4 @@
-import express, { Router, Request, Response, NextFunction } from 'express';
+import express, { Router, Request, Response } from 'express';
 import songModel from '../models/SongModel';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
@@ -8,13 +8,14 @@ import { ILastFmSong, ISong } from '../@types/songs';
 import { getCurrentUrl } from '../utils/GetCurrentUrl';
 import roomModel from '../models/RoomModel';
 import { IRoomSongs } from '../@types/room';
+import { logger } from '../utils/Logger';
 dotenv.config();
 
 const jsonParser = bodyParser.json();
 
 const router: Router = express.Router();
 
-router.get('/:songId', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:songId', async (req: Request, res: Response) => {
   try {
     const songId = req.params.songId;
     const song = await songModel.findOne({ songId: songId });
@@ -24,11 +25,12 @@ router.get('/:songId', async (req: Request, res: Response, next: NextFunction) =
     }
     return res.status(200).json({ message: 'Song found', song });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get the song' });
   }
 });
 
-router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/', jsonParser, async (req: Request, res: Response) => {
   try {
     if (!req.body.songId || !req.body.category || !req.body.value) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -53,74 +55,74 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
     const song = await songModel.create(req.body);
     return res.json({ message: 'Song created', song });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to create the song' });
   }
 });
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const songs = await songModel.find();
     return res.json({ message: 'Songs found', songs });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get songs' });
   }
 });
 
-router.delete('/:songId', async (req: Request, res: Response, next: NextFunction) => {
+router.delete('/:songId', async (req: Request, res: Response) => {
   try {
     const songId = req.params.songId;
     await songModel.findOneAndDelete({ songId: songId });
     return res.status(204).send();
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to delete the song' });
   }
 });
 
-router.post(
-  '/possibleSongs',
-  jsonParser,
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
-      const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
-      const songs = await axios
-        .get(`${getCurrentUrl()}/externalApi/songs`)
-        .then(res => res.data.songs);
+router.post('/possibleSongs', jsonParser, async (req: Request, res: Response) => {
+  try {
+    const maxRoundsPhaseOne = req.body.maxRoundsPhaseOne;
+    const maxRoundsPhaseTwo = req.body.maxRoundsPhaseTwo;
+    const songs = await axios
+      .get(`${getCurrentUrl()}/externalApi/songs`)
+      .then(res => res.data.songs);
 
-      const categories = await categoryModel
-        .find()
-        .then(res => res.map((category: { category: string }) => category.category));
+    const categories = await categoryModel
+      .find()
+      .then(res => res.map((category: { category: string }) => category.category));
 
-      //filter songs by category
-      const songsPhaseOne = songs.filter((song: ISong) => categories.includes(song.category));
+    //filter songs by category
+    const songsPhaseOne = songs.filter((song: ISong) => categories.includes(song.category));
 
-      const songsPhaseTwo = songs.filter((song: ISong) => song.category === 'artists');
-      const songsPhaseThree = songs.filter((song: ISong) => song.category === 'final');
+    const songsPhaseTwo = songs.filter((song: ISong) => song.category === 'artists');
+    const songsPhaseThree = songs.filter((song: ISong) => song.category === 'final');
 
-      const shuffle = (array: ISong[]) => {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-      };
+    const shuffle = (array: ISong[]) => {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    };
 
-      shuffle(songsPhaseOne);
-      shuffle(songsPhaseTwo);
+    shuffle(songsPhaseOne);
+    shuffle(songsPhaseTwo);
 
-      return res.status(200).json({
-        message: 'Songs found',
-        songs: songsPhaseOne
-          .slice(0, maxRoundsPhaseOne)
-          .concat(songsPhaseTwo.slice(0, maxRoundsPhaseTwo))
-          .concat(songsPhaseThree),
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-);
+    return res.status(200).json({
+      message: 'Songs found',
+      songs: songsPhaseOne
+        .slice(0, maxRoundsPhaseOne)
+        .concat(songsPhaseTwo.slice(0, maxRoundsPhaseTwo))
+        .concat(songsPhaseThree),
+    });
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get songs' });
+  }
+});
 
-router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/chooseSong', jsonParser, async (req: Request, res: Response) => {
   try {
     const songId = req.body.songId;
     const roomCode = req.body.roomCode;
@@ -154,7 +156,8 @@ router.post('/chooseSong', jsonParser, async (req: Request, res: Response, next:
     if (!song()) return res.status(404).json({ message: 'Song not found' });
     return res.json({ message: 'Song found', songId: song()?.songId });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get the song' });
   }
 });
 

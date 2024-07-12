@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import multer from 'multer';
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
+import { logger } from '../utils/Logger';
 dotenv.config();
 // Configure multer storage
 const storage = multer.diskStorage({
@@ -24,7 +25,7 @@ const jsonParser = bodyParser.json();
 router.use('/', express.static(path.join(__dirname, '../assets/images')));
 
 // Handle POST requests to upload images
-router.post('/', upload.single('file'), jsonParser, async (req, res, next) => {
+router.post('/', upload.single('file'), jsonParser, async (req, res) => {
   try {
     const { description } = req.body;
     const name = req.file?.filename.split('.').shift();
@@ -38,22 +39,24 @@ router.post('/', upload.single('file'), jsonParser, async (req, res, next) => {
 
     return res.status(201).json(image);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    return res.status(500).json({ message: 'Failed to upload image' });
   }
 });
 
 // Handle GET requests to fetch all images
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   try {
     const images = await imagesModel.find();
     return res.status(200).json(images);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    return res.status(500).json({ message: 'Failed to get images' });
   }
 });
 
 // remove image from database and delete file from server
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const image = await imagesModel.findByIdAndDelete(id);
@@ -66,7 +69,8 @@ router.delete('/:id', async (req, res, next) => {
     await fs.unlink(filePath);
     return res.status(200).json({ message: 'Image deleted' });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    return res.status(500).json({ message: 'Failed to delete image' });
   }
 });
 

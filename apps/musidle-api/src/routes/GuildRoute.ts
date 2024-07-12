@@ -2,12 +2,13 @@ import express from 'express';
 import GuildModel from '../models/GuildModel';
 import bodyParser from 'body-parser';
 import userModel from '../models/UserModel';
+import { logger } from '../utils/Logger';
 
 const router = express.Router();
 const jsonParser = bodyParser.json();
 
 // Create a new guild
-router.post('/', jsonParser, async (req, res, next) => {
+router.post('/', jsonParser, async (req, res) => {
   try {
     let { body } = req;
     if (!body.user) return res.status(400).send('Bad request');
@@ -29,16 +30,16 @@ router.post('/', jsonParser, async (req, res, next) => {
       },
     );
     res.status(201).json(guild);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Failed to create guild');
   }
 });
 
 // Add a member to a guild
-router.post('/:name', jsonParser, async (req, res, next) => {
+router.post('/:name', jsonParser, async (req, res) => {
   try {
     const { body, params } = req;
-    console.log;
     if (!body || !body.user) {
       return res.status(400).send('Bad request');
     }
@@ -61,23 +62,25 @@ router.post('/:name', jsonParser, async (req, res, next) => {
       },
     );
     res.status(200).json(guild);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Failed to add member to guild');
   }
 });
 
 // Get all guilds
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   try {
     const guilds = await GuildModel.find();
     res.json(guilds);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Failed to get guilds');
   }
 });
 
 // Get a guild by name
-router.get('/:name', async (req, res, next) => {
+router.get('/:name', async (req, res) => {
   try {
     const { params } = req;
 
@@ -86,13 +89,14 @@ router.get('/:name', async (req, res, next) => {
       return res.status(404).send('Guild not found');
     }
     res.json(guild);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Failed to get guild');
   }
 });
 
 // Update a guild by name
-router.put('/:name', jsonParser, async (req, res, next) => {
+router.put('/:name', jsonParser, async (req, res) => {
   try {
     const { params, body } = req;
 
@@ -106,13 +110,14 @@ router.put('/:name', jsonParser, async (req, res, next) => {
       return res.status(404).send('Guild not found');
     }
     res.status(200).json(guild);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Failed to update guild');
   }
 });
 
 // Delete a guild by id
-router.delete('/:name', jsonParser, async (req, res, next) => {
+router.delete('/:name', jsonParser, async (req, res) => {
   try {
     const { params } = req;
 
@@ -121,8 +126,9 @@ router.delete('/:name', jsonParser, async (req, res, next) => {
       return res.status(404).send('Guild not found');
     }
     res.status(204).send();
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Failed to delete guild');
   }
 });
 

@@ -3,6 +3,7 @@ import wikiModel from '../models/WikiModel';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import axios from 'axios';
+import { logger } from '../utils/Logger';
 dotenv.config();
 
 const router: Router = express.Router();
@@ -10,17 +11,18 @@ const router: Router = express.Router();
 const jsonParser = bodyParser.json();
 
 // Get all wikis
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const wikis = await wikiModel.find();
     return res.json(wikis);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get wikis' });
   }
 });
 
 // Get a wiki by id
-router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id || id.length !== 24) {
@@ -29,11 +31,12 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     const wiki = await wikiModel.findById(id);
     return res.json(wiki);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get wiki by id' });
   }
 });
 
-router.get('/name/:name', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/name/:name', async (req: Request, res: Response) => {
   try {
     const { name } = req.params;
     if (!name) {
@@ -42,11 +45,12 @@ router.get('/name/:name', async (req: Request, res: Response, next: NextFunction
     const wiki = await wikiModel.find({ name: { $regex: name, $options: 'i' } });
     return res.json(wiki);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get wiki by name' });
   }
 });
 
-router.get('/tag/:tag', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/tag/:tag', async (req: Request, res: Response) => {
   try {
     let { tag } = req.params;
     if (!tag) {
@@ -58,12 +62,13 @@ router.get('/tag/:tag', async (req: Request, res: Response, next: NextFunction) 
     const wiki = await wikiModel.find({ tags: { $regex: new RegExp(tag, 'i') } });
     return res.json(wiki);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to get wiki by tag' });
   }
 });
 
 // Create a new wiki
-router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/', jsonParser, async (req: Request, res: Response) => {
   try {
     const { description } = req.body;
     let { name } = req.body;
@@ -155,12 +160,13 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
     const result = await wikiModel.create(req.body);
     return res.status(201).json(result);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).send('Failed to create wiki');
   }
 });
 
 // Update a wiki
-router.patch('/:id', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.patch('/:id', jsonParser, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { name, description, notableAlbums, popularSongs, relatedArtists, tags } = req.body;
@@ -179,7 +185,8 @@ router.patch('/:id', jsonParser, async (req: Request, res: Response, next: NextF
     const wiki = await wikiModel.findByIdAndUpdate(id, req.body, { new: true });
     return res.status(200).json(wiki);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).send('Failed to update wiki');
   }
 });
 

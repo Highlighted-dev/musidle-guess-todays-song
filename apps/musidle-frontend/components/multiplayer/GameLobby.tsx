@@ -38,7 +38,7 @@ export default function GameLobby({ session }: { session: Session | null }) {
                 id="mxRoundsPhaseOne"
                 className="col-span-3"
                 placeholder={maxRoundsPhaseOne.toString()}
-                disabled={players && players[0].id != session?.user.id}
+                disabled={players[0]?.id != session?.user.id}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -53,7 +53,7 @@ export default function GameLobby({ session }: { session: Session | null }) {
                 maxLength={3}
                 id="mxRoundsPhaseTwo"
                 className="col-span-3"
-                disabled={players && players[0].id != session?.user.id}
+                disabled={players[0]?.id != session?.user.id}
                 placeholder={maxRoundsPhaseTwo.toString()}
               />
             </div>
@@ -69,7 +69,7 @@ export default function GameLobby({ session }: { session: Session | null }) {
                 id="mxTimer"
                 className="col-span-3"
                 placeholder={maxTimer.toString()}
-                disabled={players && players[0].id != session?.user.id}
+                disabled={players[0]?.id != session?.user.id}
               />
             </div>
             <div className="grid items-center gap-4">
@@ -86,7 +86,7 @@ export default function GameLobby({ session }: { session: Session | null }) {
                     parseInt((document.getElementById('mxTimer') as HTMLInputElement).value),
                   );
                 }}
-                disabled={players && players[0].id != session?.user.id}
+                disabled={players[0]?.id != session?.user.id}
               >
                 Save
               </Button>
@@ -97,10 +97,7 @@ export default function GameLobby({ session }: { session: Session | null }) {
           <Button variant={'secondary'} onClick={() => leaveRoom(router, session?.user.id)}>
             Leave game
           </Button>
-          <Button
-            disabled={players && players[0].id != session?.user.id}
-            onClick={() => startGame()}
-          >
+          <Button disabled={players[0]?.id != session?.user.id} onClick={() => startGame()}>
             Start game
           </Button>
         </div>

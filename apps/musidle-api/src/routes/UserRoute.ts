@@ -1,16 +1,17 @@
-import express, { Router, Request, Response, NextFunction } from 'express';
+import express, { Router, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import userModel from '../models/UserModel';
 import { articleModel } from '../models/ArticleModel';
 import guildModel from '../models/GuildModel';
+import { logger } from '../utils/Logger';
 dotenv.config();
 
 const router: Router = express.Router();
 
 const jsonParser = bodyParser.json();
 
-router.put('/:id', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.put('/:id', jsonParser, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id || id.length !== 24) {
@@ -27,7 +28,8 @@ router.put('/:id', jsonParser, async (req: Request, res: Response, next: NextFun
     }
     return res.json(user);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ message: 'Failed to update user' });
   }
 });
 

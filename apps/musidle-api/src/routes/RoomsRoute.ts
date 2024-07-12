@@ -1,4 +1,4 @@
-import express, { Router, Request, Response, NextFunction } from 'express';
+import express, { Router, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import roomModel from '../models/RoomModel';
 import bodyParser from 'body-parser';
@@ -15,6 +15,7 @@ import {
 } from '../utils/RoomUtils';
 import { ICustomRequest } from '../@types';
 import { getCurrentUrl } from '../utils/GetCurrentUrl';
+import { logger } from '../utils/Logger';
 
 // Load environment variables
 dotenv.config();
@@ -25,7 +26,7 @@ const jsonParser = bodyParser.json();
 // Create a new router
 const router: Router = express.Router();
 
-router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/', jsonParser, async (req: Request, res: Response) => {
   try {
     if (!req.body.player || (!req.body.player.id && !req.body.player.name)) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
@@ -92,11 +93,12 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
     room = await roomModel.findOne({ roomCode });
     return res.json(room);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to create room' });
   }
 });
 
-router.post('/leave', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/leave', jsonParser, async (req: Request, res: Response) => {
   try {
     const { roomCode, playerId } = req.body;
 
@@ -119,20 +121,22 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
 
     return res.status(200).json(room);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to leave room' });
   }
 });
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const rooms = await roomModel.find();
     return res.status(200).json({ rooms });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to get rooms' });
   }
 });
 
-router.get('/:roomCode', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:roomCode', async (req: Request, res: Response) => {
   try {
     const roomCode = req.params.roomCode;
 
@@ -140,11 +144,12 @@ router.get('/:roomCode', async (req: Request, res: Response, next: NextFunction)
     if (!room) return res.status(404).json({ message: 'Room not found' });
     return res.status(200).json(room);
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to get room' });
   }
 });
 
-router.post('/start', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/start', jsonParser, async (req: Request, res: Response) => {
   try {
     const roomCode = req.body.roomCode;
     if (!roomCode) return res.status(400).json({ status: 'error', message: 'Missing parameters' });
@@ -163,11 +168,12 @@ router.post('/start', jsonParser, async (req: Request, res: Response, next: Next
 
     return res.status(200).json({ status: 'success', message: 'Game started' });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to start game' });
   }
 });
 
-router.post('/turnChange', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/turnChange', jsonParser, async (req: Request, res: Response) => {
   try {
     const { roomCode } = req.body;
 
@@ -194,11 +200,12 @@ router.post('/turnChange', jsonParser, async (req: Request, res: Response, next:
 
     return res.status(200).json({ status: 'success', message: 'Turn changed' });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to change turn' });
   }
 });
 
-router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/checkAnswer', jsonParser, async (req: Request, res: Response) => {
   try {
     const { roomCode, playerId, playerAnswer, songId, time, category } = req.body;
     if (!playerId || !songId || !time)
@@ -275,11 +282,12 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
       answer: correctAnswer.value,
     });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to check answer' });
   }
 });
 
-router.post('/updateScore', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/updateScore', jsonParser, async (req: Request, res: Response) => {
   try {
     if (!req.body.roomCode || !req.body.playerId || req.body.score === undefined) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
@@ -294,11 +302,12 @@ router.post('/updateScore', jsonParser, async (req: Request, res: Response, next
 
     return res.status(200).json({ status: 'success', message: 'Score updated' });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to update score' });
   }
 });
 
-router.put('/settings', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
+router.put('/settings', jsonParser, async (req: Request, res: Response) => {
   try {
     if (
       !req.body.roomCode ||
@@ -324,7 +333,8 @@ router.put('/settings', jsonParser, async (req: Request, res: Response, next: Ne
 
     return res.status(200).json({ status: 'success', message: 'Settings updated' });
   } catch (error) {
-    next(error);
+    logger.error(error);
+    res.status(500).json({ status: 'error', message: 'Failed to update settings' });
   }
 });
 

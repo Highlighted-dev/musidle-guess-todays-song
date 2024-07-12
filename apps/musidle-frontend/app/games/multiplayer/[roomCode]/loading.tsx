@@ -1,17 +1,11 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from 'apps/musidle-frontend/components/ui/card';
-import { Skeleton } from 'apps/musidle-frontend/components/ui/skeleton';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 
 export default async function Loading() {
   return (
     <>
-      <div className="flex lg:flex-row flex-col justify-center items-center my-2 min-h-[450px]">
+      <div className="flex lg:flex-row flex-col justify-center items-center my-2">
         <Card className="min-w-[220px] lg:w-auto w-full lg:min-h-[700px] min-h-[500px] h-full relative lg:mt-2 mb-2">
           <CardHeader className="border-b p-4 flex items-center h-14">
             <Skeleton className="w-12 h-5" />

@@ -1,8 +1,8 @@
-import { IQuiz } from 'apps/musidle-frontend/@types/Quiz';
-import Quiz from 'apps/musidle-frontend/components/Quiz';
-import Redirecter from 'apps/musidle-frontend/components/Redirecter';
-import WikiNavbar from 'apps/musidle-frontend/components/wiki/WikiNavbar';
-import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
+import { IQuiz } from '@/@types/Quiz';
+import Quiz from '@/components/Quiz';
+import Redirecter from '@/components/Redirecter';
+import WikiNavbar from '@/components/wiki/WikiNavbar';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import React from 'react';
 
 async function getQuizData({ wikiId }: { wikiId: string }) {

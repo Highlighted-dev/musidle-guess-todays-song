@@ -1,6 +1,6 @@
 export interface IPlayer {
-  _id: string;
-  username: string;
+  id: string;
+  name: string;
   score: number;
   completedCategories: IPlayerCategories[];
   votedForTurnSkip: boolean;

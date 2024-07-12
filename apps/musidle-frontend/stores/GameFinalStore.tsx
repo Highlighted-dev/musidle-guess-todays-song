@@ -37,11 +37,11 @@ export const useGameFinalStore = create<IGameFinalStore>(set => ({
     const socket = useSocketStore.getState().socket;
     const { setAnswer, changeSongToCompleted } = useAnswerStore.getState();
 
-    if (currentPlayer?._id == session?.user?._id) {
+    if (currentPlayer?.id == session?.user?.id) {
       await axios
         .post(`/externalApi/rooms/checkAnswer`, {
           roomCode: useRoomStore.getState().roomCode,
-          playerId: currentPlayer?._id,
+          playerId: currentPlayer?.id,
           playerAnswer: useAnswerStore.getState().value,
           songId: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,

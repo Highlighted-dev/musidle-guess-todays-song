@@ -23,7 +23,7 @@ useTimerStore.subscribe(async ({ timer }) => {
   const { handleAnswerSubmit } = useAnswerStore.getState();
   const { setTimer } = useTimerStore.getState();
   const session = useNextAuthStore.getState().session;
-  if (timer <= 0 && useRoomStore.getState().currentPlayer?._id == session?.user?._id) {
+  if (timer <= 0 && useRoomStore.getState().currentPlayer?.id == session?.user?.id) {
     setTimer(useTimerStore.getState().maxTimer);
     handleAnswerSubmit();
   }

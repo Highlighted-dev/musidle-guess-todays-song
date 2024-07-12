@@ -7,21 +7,29 @@ const guildSchema = new Schema<IGuild>(
     members: {
       type: [
         new Schema({
-          _id: { type: String, required: true, unique: true },
-          username: { type: String, required: true },
+          id: { type: String, required: true, unique: true },
+          name: { type: String, required: true },
           email: { type: String, required: true },
+          image: { type: String, required: true },
           role: { type: String, required: true },
-          activated: { type: Boolean, required: true },
-          guild: {
-            _id: { type: String },
-            name: { type: String },
-          },
+          createdAt: { type: Date, required: true },
         }),
       ],
       required: true,
       unique: true,
     },
-    leader: { type: Object, unique: true },
+    leader: {
+      type: {
+        id: { type: String, required: true, unique: true },
+        name: { type: String, required: true },
+        email: { type: String, required: true },
+        image: { type: String, required: true },
+        role: { type: String, required: true },
+        createdAt: { type: Date, required: true },
+      },
+      required: true,
+      unique: true,
+    },
     level: { type: Number, default: 1 },
     description: { type: String },
   },

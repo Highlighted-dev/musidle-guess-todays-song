@@ -5,14 +5,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { useRoomStore } from '../../stores/RoomStore';
-import { useSession } from 'next-auth/react';
-import { toast } from '../ui/use-toast';
 
-export default function GameChat() {
+import { toast } from '../ui/use-toast';
+import { Session } from 'next-auth';
+
+export default function GameChat({ session }: { session: Session | null }) {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<string[]>([]);
   const { socket } = useSocketStore.getState();
-  const { data } = useSession();
 
   useEffect(() => {
     socket?.on('chat-message', message => {
@@ -39,7 +39,7 @@ export default function GameChat() {
       });
     socket?.emit(
       'send-chat-message',
-      data?.user?.username + ': ' + message + '\n',
+      session?.user?.name + ': ' + message + '\n',
       useRoomStore.getState().roomCode,
     );
     setMessage('');

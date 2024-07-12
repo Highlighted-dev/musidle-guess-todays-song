@@ -6,54 +6,46 @@ import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
 import { DropdownMenuItem } from '../ui/dropdown-menu';
 import { getCurrentUrl } from '../../utils/GetCurrentUrl';
-import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { IUser } from '../../@types/next-auth';
+import { Session } from 'next-auth';
+import { createGuildAction } from './CreateGuildAction';
+import { toast } from '../ui/use-toast';
 
-interface IGuildCreationForm {
+export interface IGuildCreationForm {
   name: string;
   description: string;
-  members: IUser[];
-  leader: IUser;
+  user: IUser;
 }
 
-function GuildCreation() {
+function GuildCreation({ session }: { session: Session | null }) {
   const router = useRouter();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<IGuildCreationForm>();
-  const { data, update } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const onSubmit = async (formData: IGuildCreationForm) => {
-    // Send a request to the backend to create the new guild
-    // If the request is successful, redirect the user to the new guild page
-    if (!data?.user) return;
-    formData.members = [data.user];
-    formData.leader = data.user;
-    await fetch(getCurrentUrl() + '/externalApi/guilds/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(async res => {
-        return res.json();
-      })
-      .then(async responseData => {
-        if (responseData._id) {
-          await update({
-            guild: {
-              _id: responseData._id,
-              name: responseData.name,
-            },
-          });
-          router.push(`/guilds/${responseData.name}`);
-          setIsOpen(false);
-        }
+    setLoading(true);
+    let result;
+    try {
+      result = await createGuildAction(formData, session);
+    } catch (error) {
+      console.error('Failed to create guild', error);
+    } finally {
+      setLoading(false);
+      toast({
+        title: result?.status,
+        description: result?.message,
       });
+      setIsOpen(false);
+      router.push(`/guilds/${formData.name}`);
+      router.refresh();
+      reset();
+    }
   };
 
   return (

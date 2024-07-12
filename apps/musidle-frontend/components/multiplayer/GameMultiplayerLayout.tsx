@@ -5,15 +5,14 @@ import { useTimerStore } from '../../stores/TimerStore';
 import { useRoomStore } from '../../stores/RoomStore';
 import { useAudioStore } from '../../stores/AudioStore';
 import { useAnswerStore } from '../../stores/AnswerStore';
-import { useSession } from 'next-auth/react';
 import AnswerSelector from '../game-related/AnswerSelector';
 import AudioProgress from '../game-related/AudioProgress';
 import SubmitAnswerButton from '../buttons/SubmitAnswerButton';
 import { Button } from '../ui/button';
-import GameHeader from './GameHeader';
+import GameHeader from '../game-related/GameHeader';
+import { Session } from 'next-auth';
 
-function GameMultiplayerLayout() {
-  const user = useSession().data?.user;
+function GameMultiplayerLayout({ session }: { session: Session | null }) {
   const { timer } = useTimerStore();
   const { value, possibleSongs } = useAnswerStore();
   const { currentPlayer } = useRoomStore();
@@ -31,7 +30,7 @@ function GameMultiplayerLayout() {
                 <Button
                   onClick={() => handlePlay()}
                   className="min-w-[80px]"
-                  disabled={currentPlayer?._id != user?._id || !audio}
+                  disabled={currentPlayer?.id != session?.user.id || !audio}
                 >
                   {audioContext?.state == 'running' ? 'Pause' : 'Play'}
                 </Button>
@@ -60,13 +59,13 @@ function GameMultiplayerLayout() {
           variant={'secondary'}
           onClick={() => changeStage()}
           className="w-[12%] min-w-[130px]"
-          disabled={currentPlayer?._id != user?._id || !audioContext}
+          disabled={currentPlayer?.id != session?.user.id || !audioContext}
         >
           Change Stage
         </Button>
         <SubmitAnswerButton
           className={
-            currentPlayer?._id != user?._id || value === ''
+            currentPlayer?.id != session?.user.id || value === ''
               ? 'pointer-events-none w-[9%] min-w-[130px] opacity-50'
               : 'w-[9%] min-w-[130px]'
           }

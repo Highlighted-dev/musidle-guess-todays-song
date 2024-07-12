@@ -6,15 +6,14 @@ import React from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import { useTimerStore } from '../../stores/TimerStore';
-import GameHeader from './GameHeader';
+import GameHeader from '../game-related/GameHeader';
+import { Session } from 'next-auth';
 
-export default function GameLobby(params: { roomCode: string }) {
-  const { maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame, leaveRoom } =
+export default function GameLobby({ session }: { session: Session | null }) {
+  const { maxRoundsPhaseOne, maxRoundsPhaseTwo, updateSettings, startGame, leaveRoom, players } =
     useRoomStore();
   const { maxTimer } = useTimerStore();
-  const user = useSession().data?.user;
 
   const router = useRouter();
 
@@ -39,7 +38,7 @@ export default function GameLobby(params: { roomCode: string }) {
                 id="mxRoundsPhaseOne"
                 className="col-span-3"
                 placeholder={maxRoundsPhaseOne.toString()}
-                disabled={user?.role != 'admin'}
+                disabled={players && players[0].id != session?.user.id}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -54,7 +53,7 @@ export default function GameLobby(params: { roomCode: string }) {
                 maxLength={3}
                 id="mxRoundsPhaseTwo"
                 className="col-span-3"
-                disabled={user?.role != 'admin'}
+                disabled={players && players[0].id != session?.user.id}
                 placeholder={maxRoundsPhaseTwo.toString()}
               />
             </div>
@@ -70,7 +69,7 @@ export default function GameLobby(params: { roomCode: string }) {
                 id="mxTimer"
                 className="col-span-3"
                 placeholder={maxTimer.toString()}
-                disabled={user?.role != 'admin'}
+                disabled={players && players[0].id != session?.user.id}
               />
             </div>
             <div className="grid items-center gap-4">
@@ -87,6 +86,7 @@ export default function GameLobby(params: { roomCode: string }) {
                     parseInt((document.getElementById('mxTimer') as HTMLInputElement).value),
                   );
                 }}
+                disabled={players && players[0].id != session?.user.id}
               >
                 Save
               </Button>
@@ -94,10 +94,13 @@ export default function GameLobby(params: { roomCode: string }) {
           </CardContent>
         </Card>
         <div className="flex justify-between items-center p-4">
-          <Button variant={'secondary'} onClick={() => leaveRoom(router, user?._id)}>
+          <Button variant={'secondary'} onClick={() => leaveRoom(router, session?.user.id)}>
             Leave game
           </Button>
-          <Button disabled={user?.role != 'admin'} onClick={() => startGame()}>
+          <Button
+            disabled={players && players[0].id != session?.user.id}
+            onClick={() => startGame()}
+          >
             Start game
           </Button>
         </div>

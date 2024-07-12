@@ -6,7 +6,7 @@ import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import GameHeader from './GameHeader';
+import GameHeader from '../game-related/GameHeader';
 function GameEndScreen() {
   const { currentPlayer, players, spectators, leaveRoom } = useRoomStore.getState();
   const router = useRouter();
@@ -15,22 +15,20 @@ function GameEndScreen() {
     <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 lg:min-h-[700px] min-h-[500px]">
       <GameHeader title="The game has ended" />
       <CardContent className="flex flex-col items-center lg:min-h-[640px] min-h-[460px]">
-        <h1 className="text-center">Winner: {currentPlayer?.username}</h1>
+        <h1 className="text-center">Winner: {currentPlayer?.name}</h1>
         <div className="p-16">
           <div className="flex flex-col">
             {players.map((player, index) => (
               <div className="flex justify-between" key={index}>
-                <Label
-                  className={currentPlayer?._id == player._id ? 'text-green-600 w-24' : 'w-28'}
-                >
-                  {player.username}
+                <Label className={currentPlayer?.id == player.id ? 'text-green-600 w-24' : 'w-28'}>
+                  {player.name}
                 </Label>
                 <Label>{player.score}</Label>
               </div>
             ))}
             {spectators.map((spectator, index) => (
               <div className="flex justify-between" key={index}>
-                <Label className="w-28">{spectator.username}</Label>
+                <Label className="w-28">{spectator.name}</Label>
                 <Label>{spectator.score}</Label>
               </div>
             ))}
@@ -41,7 +39,7 @@ function GameEndScreen() {
             variant="secondary"
             className="w-full"
             onClick={() => {
-              leaveRoom(router, user?._id);
+              leaveRoom(router, user?.id);
             }}
           >
             Leave Game

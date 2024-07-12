@@ -1,15 +1,13 @@
-import { IWiki } from 'apps/musidle-frontend/@types/Wiki';
-import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
-import Redirecter from 'apps/musidle-frontend/components/Redirecter';
-import EditButton from 'apps/musidle-frontend/components/buttons/EditButton';
-import { AspectRatio } from 'apps/musidle-frontend/components/ui/aspect-ratio';
-import { Button } from 'apps/musidle-frontend/components/ui/button';
-import { Card } from 'apps/musidle-frontend/components/ui/card';
-import PlaySong from 'apps/musidle-frontend/components/wiki/PlayEmbed';
-import WikiNavbar from 'apps/musidle-frontend/components/wiki/WikiNavbar';
-import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
+import { IWiki } from '@/@types/Wiki';
+import Redirecter from '@/components/Redirecter';
+import EditButton from '@/components/buttons/EditButton';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import PlaySong from '@/components/wiki/PlayEmbed';
+import WikiNavbar from '@/components/wiki/WikiNavbar';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import DOMPurify from 'isomorphic-dompurify';
-import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -19,10 +17,11 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from 'apps/musidle-frontend/components/ui/accordion';
+} from '@/components/ui/accordion';
 import { RxCross1 } from 'react-icons/rx';
 import { FaSpotify } from 'react-icons/fa';
 import { LuInstagram, LuTwitter } from 'react-icons/lu';
+import { auth } from '@/auth';
 
 async function getWiki(wikiId: string) {
   try {
@@ -38,7 +37,7 @@ async function getWiki(wikiId: string) {
 
 export default async function Wiki({ params }: { params: { wikiId: string } }) {
   const wiki = await getWiki(params.wikiId);
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!wiki) {
     return (
       <Redirecter

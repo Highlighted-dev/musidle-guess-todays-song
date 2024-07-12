@@ -1,6 +1,5 @@
 'use client';
 import { useRoomStore } from '../../stores/RoomStore';
-import { useSession } from 'next-auth/react';
 import React from 'react';
 import GamePhase1 from './GamePhase1';
 import GamePhase2 from './GamePhase2';
@@ -8,12 +7,19 @@ import GamePhase3 from './GamePhase3';
 import GameEndScreen from './GameEndScreen';
 import GameLobby from './GameLobby';
 import TurnChangeDialog from '../game-related/TurnChangeDialog';
+import { Session } from 'next-auth';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function GameController({ params }: any) {
+export default function GameController({
+  params,
+  session,
+}: {
+  params: any;
+  session: Session | null;
+}) {
   const { players, spectators, round, maxRoundsPhaseOne, maxRoundsPhaseTwo, isInLobby } =
     useRoomStore();
-  const user = useSession().data?.user;
+  const user = session?.user;
 
   return (
     <>
@@ -22,25 +28,25 @@ export default function GameController({ params }: any) {
         //If game has started and user is in players array, render GamePhase, else render GameLobby
         !isInLobby &&
         round <= maxRoundsPhaseOne &&
-        (players.find(player => player['_id'] == user?._id) ||
-          spectators.find(spectator => spectator['_id'] == user?._id)) ? (
-          <GamePhase1 />
+        (players.find(player => player['id'] == user?.id) ||
+          spectators.find(spectator => spectator['id'] == user?.id)) ? (
+          <GamePhase1 session={session} />
         ) : !isInLobby &&
           round <= maxRoundsPhaseOne + maxRoundsPhaseTwo &&
-          (players?.find(player => player['_id'] == user?._id) ||
-            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
-          <GamePhase2 />
+          (players?.find(player => player['id'] == user?.id) ||
+            spectators.find(spectator => spectator['id'] == user?.id)) ? (
+          <GamePhase2 session={session} />
         ) : !isInLobby &&
           round <= maxRoundsPhaseOne + maxRoundsPhaseTwo + 1 &&
-          (players?.find(player => player['_id'] == user?._id) ||
-            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
-          <GamePhase3 />
+          (players?.find(player => player['id'] == user?.id) ||
+            spectators.find(spectator => spectator['id'] == user?.id)) ? (
+          <GamePhase3 session={session} />
         ) : !isInLobby &&
-          (players.find(player => player['_id'] == user?._id) ||
-            spectators.find(spectator => spectator['_id'] == user?._id)) ? (
+          (players.find(player => player['id'] == user?.id) ||
+            spectators.find(spectator => spectator['id'] == user?.id)) ? (
           <GameEndScreen />
         ) : (
-          <GameLobby roomCode={params.roomCode as string} />
+          <GameLobby session={session} />
         )
       }
     </>

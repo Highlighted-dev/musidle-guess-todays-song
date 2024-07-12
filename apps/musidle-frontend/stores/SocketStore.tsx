@@ -28,10 +28,10 @@ export const useSocketStore = create<ISocketStore>(set => ({
 // Connect the socket and add event listeners
 useSocketStore.subscribe(async ({ socket }) => {
   if (socket) {
-    const { _id: userId, role } = useNextAuthStore.getState().session?.user || {};
+    const { id: userId, role } = useNextAuthStore.getState().session?.user || {};
     if (
-      !useRoomStore.getState().players.find(p => p._id === userId) &&
-      !useRoomStore.getState().spectators.find(p => p._id === userId)
+      !useRoomStore.getState().players.find(p => p.id === userId) &&
+      !useRoomStore.getState().spectators.find(p => p.id === userId)
     )
       return;
     socket.on('updatePlayerList', (players: IPlayer[], spectators: IPlayer[]) => {
@@ -106,11 +106,11 @@ useSocketStore.subscribe(async ({ socket }) => {
             key: 'no-song',
           },
         ]);
+        if (!(useRoomStore.getState().round <= maxRoundsPhaseOne + maxRoundsPhaseTwo)) {
+          handleFinal();
+        }
       }, 4000);
       setRound(round + 1);
-      if (!(useRoomStore.getState().round <= maxRoundsPhaseOne + maxRoundsPhaseTwo)) {
-        handleFinal();
-      }
     });
     socket.on('searchSong', (songs: IAnswer[]) => {
       useAnswerStore.setState({ possibleAnswers: songs });

@@ -1,12 +1,11 @@
-import Redirecter from 'apps/musidle-frontend/components/Redirecter';
-import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
+import Redirecter from '@/components/Redirecter';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import '../../../styles/editor.css';
 import React from 'react';
-import { Separator } from 'apps/musidle-frontend/components/ui/separator';
+import { Separator } from '@/components/ui/separator';
 import DOMPurify from 'isomorphic-dompurify';
-import { getServerSession } from 'next-auth';
-import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
-import EditButton from 'apps/musidle-frontend/components/buttons/EditButton';
+import EditButton from '@/components/buttons/EditButton';
+import { auth } from '@/auth';
 
 async function getArticle(articleId: string) {
   try {
@@ -22,7 +21,7 @@ async function getArticle(articleId: string) {
 
 export default async function Articles({ params }: { params: { articleId: string } }) {
   const articleData = await getArticle(params.articleId);
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!articleData) {
     <Redirecter
       url={`/`}
@@ -43,7 +42,11 @@ export default async function Articles({ params }: { params: { articleId: string
           ) : null}
         </div>
         <Separator className="my-4" />
-        <div dangerouslySetInnerHTML={sanitizedHTML()} id={'editor'} />
+        <div
+          dangerouslySetInnerHTML={sanitizedHTML()}
+          id={'editor'}
+          className="prose prose-invert max-w-none"
+        />
       </div>
     </div>
   );

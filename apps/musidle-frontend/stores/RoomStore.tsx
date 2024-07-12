@@ -74,8 +74,8 @@ export const useRoomStore = create<IRoomStore>(set => ({
     await axios.post(`/externalApi/rooms/`, {
       roomCode: roomCode,
       player: {
-        _id: useNextAuthStore.getState().session?.user?._id,
-        username: useNextAuthStore.getState().session?.user?.username,
+        id: useNextAuthStore.getState().session?.user?.id,
+        name: useNextAuthStore.getState().session?.user?.name,
       },
       asSpectator: true,
     });
@@ -109,7 +109,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
   },
   updatePlayerScore: (points, player) => {
     const tempPlayers = useRoomStore.getState().players.map(p => {
-      if (p._id === player._id) {
+      if (p.id === player.id) {
         p.score += points;
       }
       return p;
@@ -185,7 +185,7 @@ export const useRoomStore = create<IRoomStore>(set => ({
     socket?.emit(
       'voteForTurnSkip',
       useRoomStore.getState().roomCode,
-      useNextAuthStore.getState().session?.user?._id,
+      useNextAuthStore.getState().session?.user?.id,
       useAudioStore.getState().songId,
     );
     useRoomStore.setState({
@@ -277,7 +277,7 @@ export function RoomStoreInitializer({ data, buffer }: { data: any; buffer: any 
         );
       useSocketStore
         .getState()
-        .socket?.emit('id', useNextAuthStore.getState().session?.user._id, roomData.roomCode);
+        .socket?.emit('id', useNextAuthStore.getState().session?.user.id, roomData.roomCode);
     }
   }
   return null;

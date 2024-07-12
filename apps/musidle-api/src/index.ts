@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import http from 'http';
 import https from 'https';
-import UserAuthenticationRoute from './routes/UserAuthenticationRoute';
 import guildRouter from './routes/GuildRoute';
 import { Server } from 'socket.io';
 import RoomsRoute from './routes/RoomsRoute';
@@ -26,6 +25,7 @@ import ArticlesRoute from './routes/ArticlesRoute';
 import ImagesRoute from './routes/ImagesRoute';
 import WikisRoute from './routes/WikisRoute';
 import QuizesRoute from './routes/QuizesRoute';
+import UserRoute from './routes/UserRoute';
 dotenv.config();
 
 const port = () => {
@@ -184,12 +184,12 @@ io.on('connection', socket => {
     //Change the player.votedForTurnSkip to true for player that voted, but only if he hasnt voted yet. If he voted, then return;
     await roomModel.findOne({ roomCode: roomCode }).then(async room => {
       if (!room) return;
-      const players = room.players.filter(player => player._id === playerId);
+      const players = room.players.filter(player => player.id === playerId);
       if (players[0].votedForTurnSkip === true) return;
       await roomModel.updateOne(
         {
           roomCode: roomCode,
-          'players._id': playerId,
+          'players.id': playerId,
         },
         {
           $set: { 'players.$.votedForTurnSkip': true },
@@ -249,7 +249,6 @@ app.use(cookieParser());
 app.use(cors());
 app.use(helmet());
 app.use('/externalApi/track/search/', SearchTrackRoute);
-app.use('/externalApi/auth/', UserAuthenticationRoute);
 app.use('/externalApi/rooms/', RoomsRoute);
 app.use('/externalApi/songs/', AnswersRoute);
 app.use('/externalApi/categories/', CategoriesRoute);
@@ -260,5 +259,6 @@ app.use('/externalApi/articles', ArticlesRoute);
 app.use('/externalApi/images', ImagesRoute);
 app.use('/externalApi/wikis', WikisRoute);
 app.use('/externalApi/quizes', QuizesRoute);
+app.use('/externalApi/user', UserRoute);
 app.use(() => scheduleSongUpdate);
 app.use(errorHandler);

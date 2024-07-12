@@ -4,19 +4,23 @@ import { Button } from '../ui/button';
 import { useRoomStore } from '../../stores/RoomStore';
 import { useSocketStore } from '../../stores/SocketStore';
 import { useNextAuthStore } from '../../stores/NextAuthStore';
+import { Session } from 'next-auth';
 
-export default function VoteForTurnSkipButton({ className }: { className?: string }) {
+export default function VoteForTurnSkipButton({
+  className,
+  session,
+}: {
+  className?: string;
+  session: Session | null;
+}) {
   const { votesForTurnSkip, voteForTurnSkip, players, isInLobby } = useRoomStore();
-  const { session } = useNextAuthStore();
   return (
     <Button
       onClick={() => {
         voteForTurnSkip(useSocketStore.getState().socket || null);
       }}
       className={className}
-      disabled={
-        isInLobby || players.find(player => player._id === session?.user?._id) === undefined
-      }
+      disabled={isInLobby || players.find(player => player.id === session?.user?.id) === undefined}
     >
       Vote for turn skip ({votesForTurnSkip}/{players.length > 1 ? players.length - 1 : 1})
     </Button>

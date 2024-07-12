@@ -9,7 +9,12 @@ const jsonParser = bodyParser.json();
 // Create a new guild
 router.post('/', jsonParser, async (req, res, next) => {
   try {
-    const { body } = req;
+    let { body } = req;
+    if (!body.user) return res.status(400).send('Bad request');
+
+    body = { ...body, leader: body.user, members: [body.user] };
+    body.user = undefined;
+
     if (!body || !body.leader) {
       return res.status(400).send('Bad request');
     }
@@ -17,7 +22,7 @@ router.post('/', jsonParser, async (req, res, next) => {
     await guild.save();
     await userModel.updateOne(
       {
-        _id: body.leader._id,
+        _id: body.leader.id,
       },
       {
         $set: { guild: { _id: guild._id, name: guild.name } },
@@ -33,10 +38,12 @@ router.post('/', jsonParser, async (req, res, next) => {
 router.post('/:name', jsonParser, async (req, res, next) => {
   try {
     const { body, params } = req;
+    console.log;
     if (!body || !body.user) {
       return res.status(400).send('Bad request');
     }
-    const user = await userModel.findById(body.user._id);
+
+    const user = await userModel.findById(body.user.id);
     if (user && user?.guild._id) {
       return res.status(400).send('User already in a guild');
     }
@@ -47,13 +54,13 @@ router.post('/:name', jsonParser, async (req, res, next) => {
     await guild.updateOne({ $push: { members: body.user } });
     await userModel.updateOne(
       {
-        _id: body.user._id,
+        _id: body.user.id,
       },
       {
         $set: { guild: { _id: guild._id, name: guild.name } },
       },
     );
-    res.status(201).json(guild);
+    res.status(200).json(guild);
   } catch (err) {
     next(err);
   }

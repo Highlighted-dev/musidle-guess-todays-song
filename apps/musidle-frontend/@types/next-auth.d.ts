@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import NextAuth from 'next-auth';
 
 declare module 'next-auth' {
@@ -8,11 +6,13 @@ declare module 'next-auth' {
    */
   interface Session {
     user: {
-      activated: boolean;
-      role: string;
-      _id: string;
-      username: string;
+      id: string;
+      name: string;
       email: string;
+      image: string;
+      role: string;
+      emailVerified: Date | null;
+      createdAt: Date;
       guild: {
         _id: string | null;
         name: string | null;
@@ -23,11 +23,13 @@ declare module 'next-auth' {
 }
 
 export interface IUser {
-  activated: boolean;
-  role: string;
-  _id: string;
-  username: string;
+  id: string;
+  name: string;
   email: string;
+  image: string;
+  role: string;
+  emailVerified: Date | null;
+  createdAt: Date;
   guild: {
     _id: string | null;
     name: string | null;

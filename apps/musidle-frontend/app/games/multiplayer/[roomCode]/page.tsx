@@ -1,14 +1,14 @@
 import React from 'react';
-import { getServerSession } from 'next-auth';
-import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
-import GameController from 'apps/musidle-frontend/components/multiplayer/GameController';
-import { RoomStoreInitializer } from 'apps/musidle-frontend/stores/RoomStore';
-import Leaderboard from 'apps/musidle-frontend/components/multiplayer/Leaderboard';
-import Redirecter from 'apps/musidle-frontend/components/Redirecter';
-import GameChat from 'apps/musidle-frontend/components/multiplayer/GameChat';
+
+import GameController from '@/components/multiplayer/GameController';
+import { RoomStoreInitializer } from '@/stores/RoomStore';
+import Leaderboard from '@/components/multiplayer/Leaderboard';
+import Redirecter from '@/components/Redirecter';
+import { auth } from '@/auth';
+import GameChat from '@/components/multiplayer/GameChat';
 
 export default async function Page({ params }: { params: { roomCode: string } }) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   let url;
   if (process.env.NODE_ENV === 'development') {
     url = new URL('http://localhost:4200/externalApi/rooms/');
@@ -23,8 +23,8 @@ export default async function Page({ params }: { params: { roomCode: string } })
     body: JSON.stringify({
       roomCode: params.roomCode == 'null' ? null : params.roomCode,
       player: {
-        _id: session?.user._id,
-        username: session?.user.username,
+        id: session?.user.id,
+        name: session?.user.name,
       },
     }),
   })
@@ -62,9 +62,9 @@ export default async function Page({ params }: { params: { roomCode: string } })
       <>
         <RoomStoreInitializer data={data} buffer={buffer()} />
         <div className="flex lg:flex-row flex-col justify-center items-center my-2">
-          <GameChat />
-          <GameController params={params} />
-          <Leaderboard />
+          <GameChat session={session} />
+          <GameController params={params} session={session} />
+          <Leaderboard session={session} />
         </div>
       </>
     );

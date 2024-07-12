@@ -1,5 +1,5 @@
-import { IGuild } from 'apps/musidle-frontend/@types/Guild';
-import { Card, CardContent, CardHeader, CardTitle } from 'apps/musidle-frontend/components/ui/card';
+import { IGuild } from '@/@types/Guild';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from 'apps/musidle-frontend/components/ui/table';
-import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
+} from '@/components/ui/table';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import React from 'react';
 
 async function fetchGuild(name: string) {
@@ -39,7 +39,7 @@ export default async function GuildOverview({ params }: { params: { name: string
             </div>
             <div className="space-y-1">
               <h3 className="text-lg font-semibold text-gray-200">Guild Leader</h3>
-              <p>{guild.leader.username}</p>
+              <p>{guild.leader.name}</p>
             </div>
             <div className="space-y-1">
               <h3 className="text-lg font-semibold text-gray-200">Guild Level</h3>
@@ -88,8 +88,8 @@ export default async function GuildOverview({ params }: { params: { name: string
             </TableHeader>
             <TableBody>
               {guild?.members.map(member => (
-                <TableRow key={member._id}>
-                  <TableCell>{member.username}</TableCell>
+                <TableRow key={member.id}>
+                  <TableCell>{member.name}</TableCell>
                   <TableCell>{member.role}</TableCell>
                 </TableRow>
               ))}

@@ -1,6 +1,6 @@
-import { AspectRatio } from 'apps/musidle-frontend/components/ui/aspect-ratio';
-import { Card, CardContent, CardHeader } from 'apps/musidle-frontend/components/ui/card';
-import { Skeleton } from 'apps/musidle-frontend/components/ui/skeleton';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 
 export default function WikiLoading() {

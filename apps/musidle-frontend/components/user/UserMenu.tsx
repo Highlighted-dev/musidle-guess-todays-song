@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import {
   DropdownMenu,
@@ -12,20 +11,19 @@ import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { IoIosArrowDown } from 'react-icons/io';
-import { signOut, useSession } from 'next-auth/react';
-import { useNextAuthStore } from '../../stores/NextAuthStore';
 import GuildCreation from '../guilds/GuildCreation';
+import { Session } from 'next-auth';
+import { SignOut } from '../auth/SignOut';
 
-export default function UserMenu() {
-  const { data } = useSession();
+export default function UserMenu({ session }: { session: Session | null }) {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost">
-          <Label className="flex flex-row">
-            {data?.user.username}
-            <IoIosArrowDown className="ml-2" />
+        <Button variant="ghost" className=" ">
+          <Label className="max-w-[100px] sm:max-w-[140px] text-ellipsis whitespace-nowrap overflow-hidden leading-normal p-1">
+            {session?.user.name}
           </Label>
+          <IoIosArrowDown className="ml-2" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="font-inter">
@@ -42,12 +40,12 @@ export default function UserMenu() {
           <Link href="/guilds">
             <DropdownMenuItem>Guilds</DropdownMenuItem>
           </Link>
-          {data?.user?.guild?._id ? (
-            <Link href={`/guilds/${data.user.guild.name}`} key={data.user.guild._id}>
-              <DropdownMenuItem>{data?.user?.guild.name}</DropdownMenuItem>
+          {session?.user?.guild?._id ? (
+            <Link href={`/guilds/${session.user.guild.name}`} key={session.user.guild._id}>
+              <DropdownMenuItem>{session?.user?.guild.name}</DropdownMenuItem>
             </Link>
           ) : (
-            <GuildCreation />
+            <GuildCreation session={session} />
           )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -56,15 +54,8 @@ export default function UserMenu() {
           <DropdownMenuItem disabled>Report a problem</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => {
-            signOut();
-            useNextAuthStore.setState({
-              session: null,
-            });
-          }}
-        >
-          Logout
+        <DropdownMenuItem>
+          <SignOut />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

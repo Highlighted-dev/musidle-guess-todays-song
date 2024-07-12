@@ -4,10 +4,10 @@ import { Button } from '../ui/button';
 
 export default function GameInstructionsHover() {
   return (
-    <div className="flex justify-end items-center">
+    <div className="flex justify-end col-span-1">
       <HoverCard>
-        <HoverCardTrigger asChild className="w-28">
-          <Button variant={'link'} className=" underline">
+        <HoverCardTrigger asChild>
+          <Button variant={'link'} className="underline">
             Instructions
           </Button>
         </HoverCardTrigger>

@@ -1,4 +1,4 @@
-import WikiSearch from 'apps/musidle-frontend/components/wiki/WikiSearch';
+import WikiSearch from '@/components/wiki/WikiSearch';
 import Link from 'next/link';
 import React from 'react';
 

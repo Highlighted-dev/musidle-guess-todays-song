@@ -1,11 +1,11 @@
-import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
-import Redirecter from 'apps/musidle-frontend/components/Redirecter';
-import { ArticleEditor } from 'apps/musidle-frontend/components/editor/ArticleEditor';
-import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
-import { getServerSession } from 'next-auth';
+import { auth } from '@/auth';
+import Redirecter from '@/components/Redirecter';
+import { ArticleEditor } from '@/components/editor/ArticleEditor';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { Session } from 'next-auth';
 import React from 'react';
 
-async function getArticle(articleId: string, session?: any) {
+async function getArticle(articleId: string, session?: Session | null) {
   try {
     let post = await fetch(getCurrentUrl() + `/externalApi/articles/${articleId}`, {
       cache: 'no-cache',
@@ -19,8 +19,8 @@ async function getArticle(articleId: string, session?: any) {
         cache: 'no-cache',
         body: JSON.stringify({
           author: {
-            _id: session?.user._id,
-            username: session?.user.username,
+            id: session?.user.id,
+            name: session?.user.name,
           },
         }),
       }).then(res => res.json());
@@ -33,7 +33,7 @@ async function getArticle(articleId: string, session?: any) {
 }
 
 export default async function Page({ params }: { params: { articleId: string } }) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session?.user.role || session?.user.role !== 'admin') {
     return (
@@ -56,7 +56,7 @@ export default async function Page({ params }: { params: { articleId: string } }
   } else if (article._id != params.articleId) {
     return (
       <Redirecter
-        url={`/admin/editor/${article._id}`}
+        url={`/admin/editor/articles/${article._id}`}
         message={`The article you tried to edit does not exist, but we created a new one for you.`}
         variant={'default'}
       />

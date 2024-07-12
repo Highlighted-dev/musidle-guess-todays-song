@@ -14,7 +14,7 @@ export default function SingleplayerFooter() {
     if (!currentPlayer) return;
     toast({
       title: `You are currently playing multiplayer in ${roomCode} room`,
-      description: `You can't play singleplayer while playing multiplayer. Please leave multiplayer room to play singleplayer.`,
+      description: `You can't play singleplayer while playing multiplayer. Please leave multiplayer room to play singleplayer. (or hit f5 to clear room-related data)`,
       variant: 'destructive',
     });
   }, [currentPlayer]);

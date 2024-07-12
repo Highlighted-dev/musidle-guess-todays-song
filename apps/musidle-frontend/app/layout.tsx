@@ -2,11 +2,11 @@ import '../styles/global.css';
 import React from 'react';
 import { Toaster } from '../components/ui/toaster';
 import NextAuthProvider from '../components/auth/NextAuthProvider';
-import { getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]/route';
+
 import { TriggerCookieSheet } from '../components/CookiesSheet';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { auth } from '@/auth';
 
 export const metadata = {
   title: 'Musidle',
@@ -16,13 +16,8 @@ export const metadata = {
     'music, games, quizzes, articles, artist wikis, wordle, music quizzes, music games, music articles, music wiki',
 };
 
-export async function getNextSession() {
-  const session = await getServerSession(authOptions);
-  return session;
-}
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getNextSession();
+  const session = await auth();
   return (
     <html lang="en" className="w-full h-full xl:min-h-0 min-h-screen">
       <head>
@@ -35,7 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <TriggerCookieSheet />
           <div className="flex flex-col w-full h-full xl:min-h-0 min-h-screen">
             <header>
-              <Navbar sectionClassname="fixed top-0 z-50 w-full bg-background p-1 border-b" />
+              <Navbar session={session} />
             </header>
             <main className="flex-grow">
               <div className="flex justify-center items-center w-full h-full text-white m-0 p-0">

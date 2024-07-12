@@ -14,10 +14,11 @@ import { useTimerStore } from '../../stores/TimerStore';
 import { cn } from '../../lib/utils';
 import { useGameFinalStore } from '../../stores/GameFinalStore';
 import { useSession } from 'next-auth/react';
-import GameHeader from './GameHeader';
-import { useAnswerStore } from 'apps/musidle-frontend/stores/AnswerStore';
-function GamePhase3() {
-  const user = useSession().data?.user;
+import GameHeader from '../game-related/GameHeader';
+import { useAnswerStore } from '@/stores/AnswerStore';
+import { Session } from 'next-auth';
+function GamePhase3({ session }: { session: Session | null }) {
+  const user = session?.user;
   const { currentPlayer, handleChooseCategory } = useRoomStore();
   const { handlePlay, audioContext } = useAudioStore();
   const { timer } = useTimerStore();
@@ -51,7 +52,7 @@ function GamePhase3() {
               <div className="w-full" key={index}>
                 <Toggle
                   className="col-span-1 p-2 w-full min-h-[120px]"
-                  disabled={currentPlayer?._id != user?._id || song.completed}
+                  disabled={currentPlayer?.id != user?.id || song.completed}
                   id={song.songId}
                   key={`toggle${index}`}
                   defaultPressed={index + 1 == 1 ? true : false}
@@ -71,7 +72,7 @@ function GamePhase3() {
           <Button
             onClick={() => handlePlay()}
             className="min-w-[100px]"
-            disabled={currentPlayer?._id != user?._id || !audioContext}
+            disabled={currentPlayer?.id != user?.id || !audioContext}
           >
             {audioContext?.state == 'running' ? 'Pause' : 'Play'}
           </Button>
@@ -87,7 +88,7 @@ function GamePhase3() {
                 role="combobox"
                 aria-expanded={open}
                 className="w-[250px] justify-between"
-                disabled={currentPlayer?._id != user?._id}
+                disabled={currentPlayer?.id != user?.id}
               >
                 {value
                   ? possibleAnswers.find(song => song.value.toLowerCase() === value.toLowerCase())
@@ -137,7 +138,7 @@ function GamePhase3() {
                 handleFinalAnswerSubmit();
               }}
               className={
-                currentPlayer?._id != user?._id || value === ''
+                currentPlayer?.id != user?.id || value === ''
                   ? 'pointer-events-none w-[100%] opacity-50 min-w-[100px]'
                   : 'w-[100%] min-w-[100px]'
               }

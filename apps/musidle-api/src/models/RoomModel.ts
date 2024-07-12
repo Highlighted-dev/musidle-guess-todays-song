@@ -7,8 +7,8 @@ const roomSchema = new Schema<IRoom>(
     players: {
       type: [
         new Schema({
-          _id: { type: String, required: true, unique: true },
-          username: { type: String, required: true },
+          id: { type: String, required: true, unique: true },
+          name: { type: String, required: true },
           score: { type: Number, default: 0, required: true },
           completedCategories: {
             type: [

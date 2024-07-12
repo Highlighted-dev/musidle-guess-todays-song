@@ -4,8 +4,8 @@ export interface IArticleModel extends Document {
   title: string;
   content: any;
   author: {
-    _id: string;
-    username: string;
+    id: string;
+    name: string;
   };
 }
 
@@ -13,7 +13,13 @@ const articleSchema: Schema = new Schema(
   {
     title: { type: String },
     content: { type: Schema.Types.Mixed },
-    author: { type: Object, required: true },
+    author: {
+      type: {
+        id: { type: String, required: true },
+        name: { type: String, required: true },
+      },
+      required: true,
+    },
   },
   { versionKey: false },
 );

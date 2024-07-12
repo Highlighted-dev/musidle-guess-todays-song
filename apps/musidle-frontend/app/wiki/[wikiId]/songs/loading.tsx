@@ -1,5 +1,5 @@
-import { Card } from 'apps/musidle-frontend/components/ui/card';
-import { Skeleton } from 'apps/musidle-frontend/components/ui/skeleton';
+import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 
 export default function SongLoading() {

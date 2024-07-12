@@ -34,7 +34,7 @@ export function isRoomEmpty(room: IRoom) {
 
 export function getNextPlayer(players: IPlayer[], currentPlayer: IPlayer | null) {
   if (!currentPlayer) return players[0];
-  const index = players.findIndex(p => p._id === currentPlayer?._id);
+  const index = players.findIndex(p => p.id === currentPlayer?.id);
   if (index === players.length - 1) {
     return players[0];
   } else {

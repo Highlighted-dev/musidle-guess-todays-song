@@ -1,16 +1,11 @@
 import React from 'react';
-import { IGuild } from 'apps/musidle-frontend/@types/Guild';
-import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from 'apps/musidle-frontend/components/ui/card';
+import { IGuild } from '@/@types/Guild';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import JoinGuildButton from 'apps/musidle-frontend/components/buttons/JoinGuildButton';
-import EnchancedPagination from 'apps/musidle-frontend/components/EnchancedPagination';
+import JoinGuildButton from '@/components/buttons/JoinGuildButton';
+import EnchancedPagination from '@/components/EnchancedPagination';
+import { auth } from '@/auth';
 
 const fetchGuilds = async () => {
   try {
@@ -27,6 +22,7 @@ const fetchGuilds = async () => {
 };
 
 export default async function Guilds({ searchParams }: { searchParams: { page: string } }) {
+  const session = await auth();
   const guilds: IGuild[] | null = await fetchGuilds();
   const pageNumber = searchParams.page ? parseInt(searchParams.page) : 1;
   const guildsToDisplay = guilds
@@ -55,7 +51,7 @@ export default async function Guilds({ searchParams }: { searchParams: { page: s
                 </Link>
                 <div className="space-y-1">
                   <h3 className="text-lg font-semibold text-gray-200">Guild Leader</h3>
-                  <p className="text-gray-400">{guild.leader.username}</p>
+                  <p className="text-gray-400">{guild.leader.name}</p>
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-lg font-semibold text-gray-200">Guild Level</h3>
@@ -76,7 +72,7 @@ export default async function Guilds({ searchParams }: { searchParams: { page: s
                   </p>
                 </div>
                 <div className="mt-2">
-                  <JoinGuildButton name={guild.name} />
+                  <JoinGuildButton name={guild.name} session={session} />
                 </div>
               </Card>
             ))

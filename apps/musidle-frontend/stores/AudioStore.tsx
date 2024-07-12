@@ -90,7 +90,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
     useRoomStore.setState({ stage: useRoomStore.getState().stage + 1 });
     if (
       useSocketStore.getState().socket &&
-      useRoomStore.getState().currentPlayer?._id == useNextAuthStore.getState().session?.user?._id
+      useRoomStore.getState().currentPlayer?.id == useNextAuthStore.getState().session?.user?.id
     )
       useSocketStore.getState().socket!.emit('changeStage', useRoomStore.getState().roomCode);
   },
@@ -100,7 +100,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
     const session = useNextAuthStore.getState().session;
     if (!audio || !audioContext) return;
     if (
-      useRoomStore.getState().currentPlayer?._id == session?.user._id &&
+      useRoomStore.getState().currentPlayer?.id == session?.user.id &&
       useSocketStore.getState().socket
     ) {
       useSocketStore

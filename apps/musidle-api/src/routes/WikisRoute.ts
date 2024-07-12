@@ -68,7 +68,10 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
     const { description } = req.body;
     let { name } = req.body;
     if (!name || !description) {
-      return res.status(400).json({ message: 'Bad Request' });
+      req.body.name = 'Unknown Artist';
+      req.body.description = 'No description available';
+      const result = await wikiModel.create(req.body);
+      return res.status(201).json(result);
     }
 
     // Get artist info from LastFM API

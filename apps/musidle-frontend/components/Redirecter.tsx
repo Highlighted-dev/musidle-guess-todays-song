@@ -3,17 +3,19 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from './ui/use-toast';
 
-export default function Redirecter({
-  url,
-  variant,
-  title,
-  message,
-}: {
+interface RedirecterProps {
   url: string;
   variant?: 'default' | 'destructive' | null;
   title?: string;
   message?: string;
-}) {
+}
+
+export default function Redirecter({
+  url,
+  variant = 'default',
+  title = 'You have been redirected',
+  message,
+}: RedirecterProps) {
   const router = useRouter();
 
   useEffect(() => {
@@ -21,13 +23,13 @@ export default function Redirecter({
     router.refresh();
     if (message) {
       toast({
-        variant: variant || 'default',
-        title: title || 'You have been redirected',
+        variant,
+        title,
         description: message,
         style: { whiteSpace: 'pre-line' },
       });
     }
-  }, [message, router, title, url, variant]);
+  }, [url, router, variant, title, message]);
 
   return null;
 }

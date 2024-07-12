@@ -10,7 +10,9 @@ import {
 import { cn } from '../lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
-import LoginAndRegister from './LoginAndRegister';
+import { SignIn } from './auth/SignIn';
+import { Session } from 'next-auth';
+import UserMenu from './user/UserMenu';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
@@ -35,7 +37,7 @@ const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWit
   },
 );
 ListItem.displayName = 'ListItem';
-function Navbar({ sectionClassname }: { sectionClassname?: string }) {
+function Navbar({ session }: { session: Session | null }) {
   const components: { title: string; href: string; description: string }[] = [
     {
       title: 'Musidle',
@@ -54,11 +56,7 @@ function Navbar({ sectionClassname }: { sectionClassname?: string }) {
   return (
     <>
       <div className="flex w-full h-[50px] p-[29px] z-10 relative justify-center items-center" />
-      <section
-        className={
-          sectionClassname ? sectionClassname : 'fixed top-0 z-50 w-full bg-background p-1'
-        }
-      >
+      <section className={'fixed top-0 z-50 w-full bg-background p-1 border-b'}>
         <div className="absolute left-0 z-20 py-1 px-2">
           <div className="flex w-full h-full justify-center items-center">
             <Link href="/" className="text-accent-foreground p-1">
@@ -84,7 +82,7 @@ function Navbar({ sectionClassname }: { sectionClassname?: string }) {
             </NavigationMenuList>
           </NavigationMenu>
           <div className="absolute right-0 p-2 z-20">
-            <LoginAndRegister />
+            {session ? <UserMenu session={session} /> : <SignIn />}
           </div>
         </div>
       </section>

@@ -27,7 +27,7 @@ const router: Router = express.Router();
 
 router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.player || (!req.body.player._id && !req.body.player.username)) {
+    if (!req.body.player || (!req.body.player.id && !req.body.player.name)) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
     }
 
@@ -61,8 +61,8 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
     } else if (room.players.length >= 8) {
       return res.status(400).json({ status: 'error', message: 'Room is full' });
     } else if (
-      !room.players.some(player => player._id === req.body.player._id) &&
-      !room.spectators.some(spectator => spectator._id === req.body.player._id)
+      !room.players.some(player => player.id === req.body.player.id) &&
+      !room.spectators.some(spectator => spectator.id === req.body.player.id)
     ) {
       const update =
         room.round > 1
@@ -74,10 +74,10 @@ router.post('/', jsonParser, async (req: Request, res: Response, next: NextFunct
         .emit('updatePlayerList', room?.players, room?.spectators);
       return res.json(room);
     } else if (
-      room.players.some(player => player._id === req.body.player._id) &&
+      room.players.some(player => player.id === req.body.player.id) &&
       req.body.asSpectator
     ) {
-      await roomModel.updateOne({ roomCode }, { $pull: { players: { _id: req.body.player._id } } });
+      await roomModel.updateOne({ roomCode }, { $pull: { players: { id: req.body.player.id } } });
       room = await roomModel.findOneAndUpdate(
         { roomCode },
         { $push: { spectators: req.body.player } },
@@ -105,7 +105,7 @@ router.post('/leave', jsonParser, async (req: Request, res: Response, next: Next
 
     const room = await roomModel.findOneAndUpdate(
       { roomCode },
-      { $pull: { players: { _id: playerId } } },
+      { $pull: { players: { id: playerId } } },
       { new: true },
     );
 
@@ -234,7 +234,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response, next
 
     if (category) {
       await roomModel.findOneAndUpdate(
-        { roomCode, 'players._id': playerId },
+        { roomCode, 'players.id': playerId },
         { $set: { 'players.$.completedCategories.$[category].completed': true } },
         { arrayFilters: [{ 'category.category': category }], new: true },
       );
@@ -287,7 +287,7 @@ router.post('/updateScore', jsonParser, async (req: Request, res: Response, next
     const { roomCode, playerId, score } = req.body;
 
     await roomModel.findOneAndUpdate(
-      { roomCode: roomCode, 'players._id': playerId },
+      { roomCode: roomCode, 'players.id': playerId },
       { $inc: { 'players.$.score': score } },
       { new: true },
     );

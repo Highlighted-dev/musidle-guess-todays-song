@@ -47,7 +47,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const session = useNextAuthStore.getState().session;
     if (
       useSocketStore.getState().socket &&
-      useRoomStore.getState().currentPlayer?._id == session?.user?._id
+      useRoomStore.getState().currentPlayer?.id == session?.user?.id
     ) {
       useSocketStore
         .getState()
@@ -67,10 +67,10 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     useAnswerStore.setState({ loadingAnswer: true });
     if (
       useRoomStore.getState().round <= useRoomStore.getState().maxRoundsPhaseOne &&
-      currentPlayer?._id == session?.user?._id
+      currentPlayer?.id == session?.user?.id
     ) {
       useRoomStore.getState().players.map(player => {
-        if (player._id == session?.user?._id) {
+        if (player.id == session?.user?.id) {
           player.completedCategories.map((item: IPlayerCategories) => {
             if (useAudioStore.getState().songId.includes(item.category)) {
               category = item.category;
@@ -80,7 +80,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         }
       });
     }
-    if (currentPlayer?._id == session?.user?._id || router) {
+    if (currentPlayer?.id == session?.user?.id || router) {
       await fetch(getCurrentUrl() + `/externalApi/rooms/checkAnswer`, {
         method: 'POST',
         headers: {
@@ -88,7 +88,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         },
         body: JSON.stringify({
           roomCode: useRoomStore.getState().roomCode,
-          playerId: currentPlayer?._id ? currentPlayer._id : session?.user?._id,
+          playerId: currentPlayer?.id ? currentPlayer.id : session?.user?.id,
           playerAnswer: useAnswerStore.getState().value,
           songId: useAudioStore.getState().songId,
           time: useAudioStore.getState().time,
@@ -136,7 +136,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     useTimerStore.getState().setTimer(useTimerStore.getState().maxTimer);
     // if (audio) audio.volume = 0.05;
     useAnswerStore.setState({ loadingAnswer: false });
-    if (currentPlayer && currentPlayer._id === session?.user?._id) handleTurnChange();
+    if (currentPlayer && currentPlayer.id === session?.user?.id) handleTurnChange();
     else if (router) {
       // Set cookie that ends on 00:00:00 the next day
       const expires = new Date();
@@ -201,7 +201,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     const { currentPlayer } = useRoomStore.getState();
     const { socket } = useSocketStore.getState();
     const session = useNextAuthStore.getState().session;
-    if (currentPlayer?._id == session?.user?._id) {
+    if (currentPlayer?.id == session?.user?.id) {
       socket?.emit(
         'searchSong',
         useAnswerStore.getState().possibleAnswers,

@@ -1,17 +1,18 @@
-import AnswerSelector from 'apps/musidle-frontend/components/game-related/AnswerSelector';
-import AudioProgress from 'apps/musidle-frontend/components/game-related/AudioProgress';
-import PlayAudioButton from 'apps/musidle-frontend/components/buttons/PlayAudioButton';
-import AudioSetter from 'apps/musidle-frontend/components/daily/AudioSetter';
-import SingleplayerFooter from 'apps/musidle-frontend/components/daily/SingleplayerFooter';
-import { Card, CardContent, CardFooter } from 'apps/musidle-frontend/components/ui/card';
+import AnswerSelector from '@/components/game-related/AnswerSelector';
+import AudioProgress from '@/components/game-related/AudioProgress';
+import PlayAudioButton from '@/components/buttons/PlayAudioButton';
+import AudioSetter from '@/components/daily/AudioSetter';
+import SingleplayerFooter from '@/components/daily/SingleplayerFooter';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import React from 'react';
-import { AlreadyPlayed } from 'apps/musidle-frontend/components/daily/AlreadyPlayed';
+import { AlreadyPlayed } from '@/components/daily/AlreadyPlayed';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
-import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
-import { authOptions } from 'apps/musidle-frontend/app/api/auth/[...nextauth]/route';
-import { getServerSession } from 'next-auth';
-import Redirecter from 'apps/musidle-frontend/components/Redirecter';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { auth } from '@/auth';
+import Redirecter from '@/components/Redirecter';
+import TurnChangeDialog from '@/components/game-related/TurnChangeDialog';
+import GameHeader from '@/components/game-related/GameHeader';
 
 export const metadata = {
   title: 'Musidle Daily',
@@ -47,7 +48,7 @@ async function getSongId() {
 export default async function Page() {
   const song = await getSong();
   const songId: string | null = await getSongId();
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session)
     return (
       <Redirecter
@@ -63,32 +64,36 @@ export default async function Page() {
   };
 
   return (
-    <>
-      <CardContent className="flex w-full">
-        <Card className="flex justify-center items-center p-4 w-full lg:min-h-[540px] min-h-[300px] mt-2">
-          {getCookie('playedDaily', { cookies }) === 'true' ? (
-            <AlreadyPlayed />
-          ) : (
-            <>
-              <AudioSetter buffer={buffer()} songId={songId} />
-              <CardContent className="h-full flex flex-col">
-                <div className="min-h-[200px]">
-                  <AudioProgress />
-                  <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
-                    <PlayAudioButton className="min-w-[80px]" />
+    <div className="flex lg:flex-row flex-col justify-center items-center my-2">
+      <TurnChangeDialog displayPlayerName={false} />
+      <Card className="w-full flex flex-col  min-w-[200px] lg:p-0 py-6 lg:mx-2 lg:min-h-[700px] min-h-[460px]">
+        <GameHeader title="Guess the song" />
+        <CardContent className="flex w-full">
+          <Card className="flex justify-center items-center p-4 w-full lg:min-h-[540px] min-h-[300px] mt-2">
+            {getCookie('playedDaily', { cookies }) === 'true' ? (
+              <AlreadyPlayed />
+            ) : (
+              <>
+                <AudioSetter buffer={buffer()} songId={songId} />
+                <CardContent className="h-full flex flex-col">
+                  <div className="min-h-[200px]">
+                    <AudioProgress />
+                    <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
+                      <PlayAudioButton className="min-w-[80px]" />
+                    </div>
                   </div>
-                </div>
-                <div className=" flex flex-col justify-center items-center">
-                  <AnswerSelector />
-                </div>
-              </CardContent>
-            </>
-          )}
-        </Card>
-      </CardContent>
-      <CardFooter className="flex justify-between text-center">
-        <SingleplayerFooter />
-      </CardFooter>
-    </>
+                  <div className=" flex flex-col justify-center items-center">
+                    <AnswerSelector />
+                  </div>
+                </CardContent>
+              </>
+            )}
+          </Card>
+        </CardContent>
+        <CardFooter className="flex justify-between text-center">
+          <SingleplayerFooter />
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

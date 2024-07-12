@@ -55,7 +55,7 @@ export default function TurnChangeDialog({
         <Label className="text-center">The correct answer was: {answer}</Label>
         <br />
         {displayPlayerName && (
-          <h1 className="text-bold text-base">{currentPlayer?.username}&apos;s turn</h1>
+          <h1 className="text-bold text-base">{currentPlayer?.name}&apos;s turn</h1>
         )}
         <DialogFooter className="text-center">
           <Progress value={progress} />

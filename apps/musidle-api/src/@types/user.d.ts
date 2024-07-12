@@ -1,12 +1,13 @@
 export interface IUser {
-  username: string;
+  id: string;
+  name: string;
   email: string;
-  password: string;
-  role: 'admin' | 'user';
-  token: string;
-  activated: boolean;
+  image: string;
+  role: string;
+  emailVerified: Date | null;
+  createdAt: Date;
   guild: {
-    _id: string;
-    name: string;
+    _id: string | null;
+    name: string | null;
   };
 }

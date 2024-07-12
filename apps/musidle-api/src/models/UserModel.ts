@@ -3,12 +3,11 @@ import { IUser } from '../@types/user';
 
 const userSchema = new Schema<IUser>(
   {
-    username: { type: String, required: true, trim: true, minlength: 3, maxlength: 20 },
+    name: { type: String, required: true, trim: true, minlength: 3, maxlength: 20 },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
-    token: { type: String, required: true },
-    activated: { type: Boolean, default: false },
+    emailVerified: { type: Date, default: null },
+    image: { type: String, default: null },
     guild: {
       _id: { type: String, default: null },
       name: { type: String, default: null },
@@ -17,5 +16,5 @@ const userSchema = new Schema<IUser>(
   { versionKey: false, timestamps: true },
 );
 
-const userModel = model<IUser>('Users', userSchema, 'userData');
+const userModel = model<IUser>('Users', userSchema, 'users');
 export default userModel;

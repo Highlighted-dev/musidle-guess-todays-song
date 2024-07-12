@@ -1,11 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader } from 'apps/musidle-frontend/components/ui/card';
-import { getCurrentUrl } from 'apps/musidle-frontend/utils/GetCurrentUrl';
-import { IWiki } from 'apps/musidle-frontend/@types/Wiki';
-import { AspectRatio } from 'apps/musidle-frontend/components/ui/aspect-ratio';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { getCurrentUrl } from '@/utils/GetCurrentUrl';
+import { IWiki } from '@/@types/Wiki';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 import Image from 'next/image';
-import EnchancedPagination from 'apps/musidle-frontend/components/EnchancedPagination';
+import EnchancedPagination from '@/components/EnchancedPagination';
 
 export const dynamic = 'force-dynamic';
 const getWikis = async (searchParams: { search: string; tag: string }) => {

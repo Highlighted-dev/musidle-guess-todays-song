@@ -6,11 +6,11 @@ import GameMultiplayerLayout from './GameMultiplayerLayout';
 import { useRoomStore } from '../../stores/RoomStore';
 import { useAnswerStore } from '../../stores/AnswerStore';
 import { useSocketStore } from '../../stores/SocketStore';
-import { useSession } from 'next-auth/react';
-import GameHeader from './GameHeader';
+import GameHeader from '../game-related/GameHeader';
+import { Session } from 'next-auth';
 
-function GamePhase2() {
-  const user = useSession().data?.user;
+function GamePhase2({ session }: { session: Session | null }) {
+  const user = session?.user;
   const { currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const { artist, revealArtist, possibleSongs, changeSongToCompleted } = useAnswerStore();
   const [choosingArtist, setChoosingArtist] = React.useState(false);
@@ -18,7 +18,7 @@ function GamePhase2() {
   return (
     <>
       {selectMode ? (
-        <GameMultiplayerLayout />
+        <GameMultiplayerLayout session={session} />
       ) : (
         <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
           <GameHeader title="Phase 2" />
@@ -33,7 +33,7 @@ function GamePhase2() {
                     onClick={e => {
                       setChoosingArtist(true);
                       revealArtist(song.songId);
-                      if (currentPlayer?._id == user?._id) {
+                      if (currentPlayer?.id == user?.id) {
                         useSocketStore
                           .getState()
                           .socket?.emit(
@@ -50,7 +50,7 @@ function GamePhase2() {
                     }}
                     id={song.songId}
                     disabled={
-                      currentPlayer?._id != user?._id ||
+                      currentPlayer?.id != user?.id ||
                       possibleSongs.find(possibleSong => possibleSong.songId == song.songId)
                         ?.completed ||
                       choosingArtist

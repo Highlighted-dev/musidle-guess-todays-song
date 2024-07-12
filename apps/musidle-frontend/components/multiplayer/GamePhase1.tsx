@@ -7,9 +7,10 @@ import { useRoomStore } from '../../stores/RoomStore';
 import { useSession } from 'next-auth/react';
 import { IPlayerCategories } from '../../@types/Categories';
 import { useAnswerStore } from '../../stores/AnswerStore';
-import GameHeader from './GameHeader';
+import GameHeader from '../game-related/GameHeader';
+import { Session } from 'next-auth';
 
-export default function GamePhase1() {
+export default function GamePhase1({ session }: { session: Session | null }) {
   const user = useSession().data?.user;
   const { players, currentPlayer, selectMode, handleChooseCategory } = useRoomStore();
   const { categories } = useAnswerStore();
@@ -17,13 +18,13 @@ export default function GamePhase1() {
   const isCategoryCompleted = (category: string | undefined) => {
     if (!category) return false;
     return players
-      .find(player => player._id == user?._id)
+      .find(player => player.id == user?.id)
       ?.completedCategories.find((item: IPlayerCategories) => item.category == category).completed;
   };
   return (
     <>
       {selectMode ? (
-        <GameMultiplayerLayout />
+        <GameMultiplayerLayout session={session} />
       ) : (
         <Card className="w-full flex flex-col justify-center items-center min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
           <GameHeader title="Phase 1" />
@@ -37,9 +38,7 @@ export default function GamePhase1() {
                     onClick={e => handleChooseCategory(e.currentTarget.id, 1)}
                     id={category}
                     disabled={
-                      currentPlayer?._id == user?._id && !isCategoryCompleted(category)
-                        ? false
-                        : true
+                      currentPlayer?.id == user?.id && !isCategoryCompleted(category) ? false : true
                     }
                     key={index}
                   >

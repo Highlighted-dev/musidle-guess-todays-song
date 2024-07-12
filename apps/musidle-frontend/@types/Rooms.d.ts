@@ -1,20 +1,13 @@
 import { Socket } from 'socket.io-client';
 
 export type IPlayer = {
-  _id: string;
-  username: string;
+  id: string;
+  name: string;
   score: number;
   completedCategories: IPlayerCategories[];
   votedForTurnSkip: boolean;
 };
 
-export type IUser = {
-  _id: string;
-  username: string;
-  email: string;
-  role: string;
-  activated: boolean;
-};
 export interface IRoomStore {
   roomCode: string;
   setRoomCode: (roomCode: string) => void;

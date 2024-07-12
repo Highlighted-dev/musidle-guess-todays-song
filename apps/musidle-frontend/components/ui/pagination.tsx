@@ -1,8 +1,8 @@
 'use client';
 import * as React from 'react';
 import { LuChevronLeft, LuChevronRight, LuMoreHorizontal } from 'react-icons/lu';
-import { ButtonProps, buttonVariants } from 'apps/musidle-frontend/components/ui/button';
-import { cn } from 'apps/musidle-frontend/lib/utils';
+import { ButtonProps, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (

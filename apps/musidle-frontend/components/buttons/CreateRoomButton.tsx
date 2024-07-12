@@ -16,7 +16,7 @@ export default function JoinRoomButton({
   const user = useSession().data?.user;
 
   const handleRoomJoin = async (roomCode: string | null = null) => {
-    if (!user?._id || !user?.activated) {
+    if (!user?.id) {
       toast({
         variant: 'destructive',
         title: 'Error',

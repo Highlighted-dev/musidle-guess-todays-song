@@ -7,7 +7,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from 'apps/musidle-frontend/components/ui/pagination';
+} from '@/components/ui/pagination';
 
 export default function EnchancedPagination({
   pageNumber,

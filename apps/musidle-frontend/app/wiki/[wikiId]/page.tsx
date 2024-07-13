@@ -22,6 +22,24 @@ import { RxCross1 } from 'react-icons/rx';
 import { FaSpotify } from 'react-icons/fa';
 import { LuInstagram, LuTwitter } from 'react-icons/lu';
 import { auth } from '@/auth';
+import { title } from 'process';
+import { Metadata, ResolvingMetadata } from 'next';
+
+type Props = {
+  params: { wikiId: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const id = params.wikiId;
+  const wiki = await getWiki(id);
+
+  return {
+    title: wiki?.name + ' - Wiki',
+  };
+}
 
 async function getWiki(wikiId: string) {
   try {

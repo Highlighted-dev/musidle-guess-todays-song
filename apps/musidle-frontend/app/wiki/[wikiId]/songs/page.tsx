@@ -9,6 +9,20 @@ import React from 'react';
 import { RxCross1 } from 'react-icons/rx';
 import PlaySong from '@/components/wiki/PlayEmbed';
 import { auth } from '@/auth';
+import { Metadata } from 'next';
+
+type Props = {
+  params: { wikiId: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const id = params.wikiId;
+  const wiki = await getWiki(id);
+
+  return {
+    title: wiki?.name + ' - Songs',
+  };
+}
 
 async function getWiki(wikiId: string) {
   try {

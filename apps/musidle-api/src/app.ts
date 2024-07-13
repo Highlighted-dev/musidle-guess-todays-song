@@ -20,6 +20,8 @@ import cors from 'cors';
 
 export const app: Application = express();
 
+app.use(morganMiddleware);
+app.use(errorHandlingMiddleware);
 app.use(cookieParser());
 app.use(cors());
 app.use(helmet());
@@ -36,5 +38,3 @@ app.use('/externalApi/wikis', WikisRoute);
 app.use('/externalApi/quizes', QuizesRoute);
 app.use('/externalApi/user', UserRoute);
 app.use(() => scheduleSongUpdate);
-app.use(morganMiddleware);
-app.use(errorHandlingMiddleware);

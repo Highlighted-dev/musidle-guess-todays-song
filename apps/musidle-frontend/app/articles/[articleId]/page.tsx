@@ -6,13 +6,29 @@ import { Separator } from '@/components/ui/separator';
 import DOMPurify from 'isomorphic-dompurify';
 import EditButton from '@/components/buttons/EditButton';
 import { auth } from '@/auth';
+import { Metadata } from 'next';
+import { IArticle } from '@/@types/Article';
+
+type Props = {
+  params: { articleId: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const id = params.articleId;
+  const article = await getArticle(id);
+
+  return {
+    title: article?.title,
+    // description: article?.description,
+  };
+}
 
 async function getArticle(articleId: string) {
   try {
     const post = await fetch(getCurrentUrl() + `/externalApi/articles/${articleId}`, {
       cache: 'no-cache',
     }).then(res => res.json());
-    return post;
+    return post as IArticle;
   } catch (error) {
     console.error(error);
     return null;
@@ -30,15 +46,15 @@ export default async function Articles({ params }: { params: { articleId: string
     />;
   }
   const sanitizedHTML = () => {
-    return { __html: DOMPurify.sanitize(articleData.content) };
+    return { __html: DOMPurify.sanitize(articleData?.content) };
   };
   return (
     <div className="h-full w-full py-12">
       <div className="container px-4 md:px-6">
         <div className="flex">
-          <h1 className="text-5xl font-bold">{articleData.title}</h1>
+          <h1 className="text-5xl font-bold">{articleData?.title}</h1>
           {session?.user.role == 'admin' ? (
-            <EditButton url={`/admin/editor/articles/${articleData._id}`} />
+            <EditButton url={`/admin/editor/articles/${articleData?._id}`} />
           ) : null}
         </div>
         <Separator className="my-4" />

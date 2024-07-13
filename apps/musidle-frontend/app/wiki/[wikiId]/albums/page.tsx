@@ -8,7 +8,20 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import EditButton from '@/components/buttons/EditButton';
 import WikiNavbar from '@/components/wiki/WikiNavbar';
 import { auth } from '@/auth';
+import { Metadata } from 'next';
 
+type Props = {
+  params: { wikiId: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const id = params.wikiId;
+  const wiki = await getWiki(id);
+
+  return {
+    title: wiki?.name + ' - Albums',
+  };
+}
 async function getWiki(wikiId: string) {
   try {
     const wiki: IWiki = await fetch(getCurrentUrl() + `/externalApi/wikis/${wikiId}`, {

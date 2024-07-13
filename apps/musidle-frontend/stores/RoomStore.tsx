@@ -70,23 +70,31 @@ export const useRoomStore = create<IRoomStore>(set => ({
       turnChangeDialogOpen: turnChangeDialogOpen,
     })),
   random: 0,
-  joinAsSpectator: async (roomCode: string) => {
-    await axios.post(`/externalApi/rooms/`, {
-      roomCode: roomCode,
-      player: {
-        id: useNextAuthStore.getState().session?.user?.id,
-        name: useNextAuthStore.getState().session?.user?.name,
-      },
-      asSpectator: true,
-    });
-  },
   leaveRoom: async (router: Router, userId = null) => {
     const { roomCode } = useRoomStore.getState();
     if (userId) {
-      await axios.post(`/externalApi/rooms/leave`, {
-        roomCode: roomCode,
-        playerId: userId,
-      });
+      await fetch(`/externalApi/rooms/leave`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          roomCode: roomCode,
+          playerId: userId,
+        }),
+      })
+        .then(async res => {
+          if (res.status === 200) {
+            const data = await res.json();
+            toast({
+              title: 'Success!',
+              description: data.message,
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
       useSocketStore.getState().socket?.disconnect();
       router.push('/games/multiplayer');
       useRoomStore.setState({
@@ -101,11 +109,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
       });
       return;
     }
-  },
-  startGame: async () => {
-    await axios.post(`/externalApi/rooms/start`, {
-      roomCode: useRoomStore.getState().roomCode,
-    });
   },
   updatePlayerScore: (points, player) => {
     const tempPlayers = useRoomStore.getState().players.map(p => {
@@ -123,7 +126,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
       socket.emit('turnChange', useRoomStore.getState().roomCode, useAudioStore.getState().songId);
     }
   },
-
   handleChooseCategory: async (songId, phase = 1, socket = null) => {
     if (!socket) socket = useSocketStore.getState().socket;
     const { roomCode } = useRoomStore.getState();
@@ -131,54 +133,6 @@ export const useRoomStore = create<IRoomStore>(set => ({
       useAudioStore.setState({ audioContext: null });
       socket?.emit('chooseSong', songId, roomCode, phase);
     }
-  },
-  async updateSettings(maxRoundsPhaseOne, maxRoundsPhaseTwo, maxTimer) {
-    if (
-      maxRoundsPhaseOne < 1 ||
-      maxRoundsPhaseTwo < 1 ||
-      maxRoundsPhaseOne > 400 ||
-      maxRoundsPhaseTwo > 200 ||
-      maxTimer < 1 ||
-      maxTimer > 120
-    ) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: `Please enter a valid number of\n Rounds in phase 1: 1-400\nRounds in phase 2: 1-200 \n Seconds for timer: 1-120`,
-        style: { whiteSpace: 'pre-line' },
-      });
-      return;
-    }
-
-    //if either of maxRounds is NaN, then use the current value
-    const mxRoundsPhaseOne = isNaN(maxRoundsPhaseOne)
-      ? useRoomStore.getState().maxRoundsPhaseOne
-      : maxRoundsPhaseOne;
-    const mxRoundsPhaseTwo = isNaN(maxRoundsPhaseTwo)
-      ? useRoomStore.getState().maxRoundsPhaseTwo
-      : maxRoundsPhaseTwo;
-    const mxTimer = isNaN(maxTimer) ? useTimerStore.getState().maxTimer : maxTimer;
-
-    await axios
-      .put(`/externalApi/rooms/settings`, {
-        roomCode: useRoomStore.getState().roomCode,
-        maxRoundsPhaseOne: mxRoundsPhaseOne,
-        maxRoundsPhaseTwo: mxRoundsPhaseTwo,
-        maxTimer: mxTimer,
-      })
-      .then(res => {
-        if (res.status === 200) {
-          toast({
-            variant: 'default',
-            title: 'Success!',
-            description: res.data.message,
-          });
-        }
-        useRoomStore.setState({
-          maxRoundsPhaseOne: mxRoundsPhaseOne,
-          maxRoundsPhaseTwo: mxRoundsPhaseTwo,
-        });
-      });
   },
   votesForTurnSkip: 0,
   voteForTurnSkip(socket) {

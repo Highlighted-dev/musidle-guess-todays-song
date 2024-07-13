@@ -17,9 +17,25 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = params.wikiId;
   const wiki = await getWiki(id);
-
+  if (!wiki) {
+    return {
+      title: 'Musidle Wiki - Albums',
+    };
+  }
   return {
-    title: wiki?.name + ' - Albums',
+    title: wiki.name + ' - Albums',
+    openGraph: {
+      title: wiki.name + ' - Albums',
+      siteName: 'Musidle',
+      images: [
+        {
+          url: wiki.coverImage.url,
+          width: 800,
+          height: 600,
+          alt: wiki.name + ' Image',
+        },
+      ],
+    },
   };
 }
 async function getWiki(wikiId: string) {

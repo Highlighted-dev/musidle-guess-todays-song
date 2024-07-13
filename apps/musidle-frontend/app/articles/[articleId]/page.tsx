@@ -17,9 +17,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = params.articleId;
   const article = await getArticle(id);
 
+  if (!article) {
+    return {
+      title: 'Musidle Articles',
+    };
+  }
   return {
-    title: article?.title,
-    // description: article?.description,
+    title: article.title,
+    openGraph: {
+      title: article.title,
+      siteName: 'Musidle',
+      // images: [
+      //   {
+      //     url: article.coverImage.url,
+      //     width: 800,
+      //     height: 600,
+      //     alt: article.title + ' Image',
+      //   },
+      // ],
+    },
   };
 }
 

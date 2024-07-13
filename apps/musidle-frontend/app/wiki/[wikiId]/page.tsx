@@ -22,22 +22,34 @@ import { RxCross1 } from 'react-icons/rx';
 import { FaSpotify } from 'react-icons/fa';
 import { LuInstagram, LuTwitter } from 'react-icons/lu';
 import { auth } from '@/auth';
-import { title } from 'process';
-import { Metadata, ResolvingMetadata } from 'next';
+import { Metadata } from 'next';
 
 type Props = {
   params: { wikiId: string };
 };
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = params.wikiId;
   const wiki = await getWiki(id);
-
+  if (!wiki) {
+    return {
+      title: 'Musidle Wiki',
+    };
+  }
   return {
-    title: wiki?.name + ' - Wiki',
+    title: wiki.name + ' - Wiki',
+    openGraph: {
+      title: wiki.name + ' - Wiki',
+      siteName: 'Musidle',
+      images: [
+        {
+          url: wiki.coverImage.url,
+          width: 800,
+          height: 600,
+          alt: wiki.name + ' Image',
+        },
+      ],
+    },
   };
 }
 

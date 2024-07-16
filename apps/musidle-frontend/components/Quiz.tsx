@@ -38,8 +38,8 @@ export default function Quiz({ quizData }: { quizData: IQuiz[] }) {
   };
 
   return (
-    <div className="container flex flex-col justify-center items-center">
-      <div className="grid grid-cols-1 grid-rows-4 gap-2 mb-8">
+    <>
+      <div className="grid grid-cols-1 grid-rows-4 gap-2 mb-8 max-w-[400px] m-auto">
         <Label>{quizData[currentQuestion - 1].question}</Label>
         {quizData[currentQuestion - 1].options.map((option, index) => (
           <Button key={index} onClick={() => onOptionClick(option)}>
@@ -90,6 +90,6 @@ export default function Quiz({ quizData }: { quizData: IQuiz[] }) {
           </Button>
         </PaginationContent>
       </Pagination>
-    </div>
+    </>
   );
 }

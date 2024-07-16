@@ -18,11 +18,13 @@ export default function WikiNavbar({ id }: { id: string }) {
   };
 
   return (
-    <div className="px-4 md:px-6 lg:px-8 ">
+    <div className="px-4 md:px-6 lg:px-8">
       <NavigationMenu className="border-b justify-start">
-        <NavigationMenuList>
+        <NavigationMenuList className="flex flex-wrap">
           <NavigationMenuItem
-            className={`${isActive(`/wiki/${id}`) ? 'border-b border-tertiary' : ''}`}
+            className={`${
+              isActive(`/wiki/${id}`) ? 'border-b border-tertiary' : ''
+            } flex-shrink-0 px-2`}
           >
             <Link href={`/wiki/${id}`} legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -31,7 +33,9 @@ export default function WikiNavbar({ id }: { id: string }) {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem
-            className={`${isActive(`/wiki/${id}/albums`) ? 'border-b border-tertiary' : ''}`}
+            className={`${
+              isActive(`/wiki/${id}/albums`) ? 'border-b border-tertiary' : ''
+            } flex-shrink-0 px-2`}
           >
             <Link href={`/wiki/${id}/albums`} legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -40,7 +44,9 @@ export default function WikiNavbar({ id }: { id: string }) {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem
-            className={`${isActive(`/wiki/${id}/songs`) ? 'border-b border-tertiary' : ''}`}
+            className={`${
+              isActive(`/wiki/${id}/songs`) ? 'border-b border-tertiary' : ''
+            } flex-shrink-0 px-2`}
           >
             <Link href={`/wiki/${id}/songs`} legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -49,18 +55,18 @@ export default function WikiNavbar({ id }: { id: string }) {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem
-            className={`${isActive(`/wiki/${id}/quiz`) ? 'border-b border-tertiary' : ''}`}
+            className={`${
+              isActive(`/wiki/${id}/quiz`) ? 'border-b border-tertiary' : ''
+            } flex-shrink-0 px-2`}
           >
             <Link href={`/wiki/${id}/quiz`} legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>Quiz</NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
-          <NavigationMenuItem
-          // className={`${isActive(`/wiki/${id}`) ? 'border-b border-tertiary' : ''}`}
-          >
+          <NavigationMenuItem className="flex-shrink-0 px-2">
             <Link href={`/wiki/${id}`} legacyBehavior passHref aria-disabled>
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle() + 'pointer-events-none opacity-50'}`}
+                className={`${navigationMenuTriggerStyle()} pointer-events-none opacity-50`}
               >
                 News
               </NavigationMenuLink>

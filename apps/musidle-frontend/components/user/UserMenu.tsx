@@ -14,12 +14,13 @@ import { IoIosArrowDown } from 'react-icons/io';
 import GuildCreation from '../guilds/GuildCreation';
 import { Session } from 'next-auth';
 import { SignOut } from '../auth/SignOut';
+import BugReport from '../BugReport';
 
 export default function UserMenu({ session }: { session: Session | null }) {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className=" ">
+        <Button variant="ghost">
           <Label className="max-w-[100px] sm:max-w-[140px] text-ellipsis whitespace-nowrap overflow-hidden leading-normal p-1">
             {session?.user.name}
           </Label>
@@ -51,7 +52,7 @@ export default function UserMenu({ session }: { session: Session | null }) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem disabled>Help</DropdownMenuItem>
-          <DropdownMenuItem disabled>Report a problem</DropdownMenuItem>
+          <BugReport session={session} />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>

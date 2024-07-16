@@ -148,6 +148,9 @@ export const useRoomStore = create<IRoomStore>(set => ({
   },
 }));
 
+// Alright so if you are reading this you are probably wondering what the hell is going on below.
+// Well, this initializer is used to initialize the room store with the data that is passed from the server.
+// Key word - server. As I dont want to expose the data about the room that is passed from the server to the client, I've choosen the initializer approach.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function RoomStoreInitializer({ data, buffer }: { data: any; buffer: any }) {
   const initialized = useRef(false);

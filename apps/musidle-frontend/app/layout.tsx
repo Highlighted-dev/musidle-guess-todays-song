@@ -2,10 +2,9 @@ import '../styles/global.css';
 import React from 'react';
 import { Toaster } from '../components/ui/toaster';
 import NextAuthProvider from '../components/auth/NextAuthProvider';
-
 import { TriggerCookieSheet } from '../components/CookiesSheet';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/ui/Navbar';
+import Footer from '../components/ui/Footer';
 import { auth } from '@/auth';
 
 export const metadata = {

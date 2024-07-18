@@ -1,9 +1,9 @@
 import { useRoomStore } from '@/stores/RoomStore';
 import React from 'react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { Session } from 'next-auth';
-import { startGameAction } from '../actions/startGameAction';
-import { toast } from '../ui/use-toast';
+import { startGameAction } from '@/components/multiplayer/actions/startGameAction';
+import { toast } from '@/components/ui/use-toast';
 
 export default function StartGameButton({ session }: { session: Session | null }) {
   const { roomCode, players } = useRoomStore();

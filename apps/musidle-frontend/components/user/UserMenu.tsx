@@ -14,7 +14,7 @@ import { IoIosArrowDown } from 'react-icons/io';
 import GuildCreation from '../guilds/GuildCreation';
 import { Session } from 'next-auth';
 import { SignOut } from '../auth/SignOut';
-import BugReport from '../BugReport';
+import BugReport from './BugReport';
 
 export default function UserMenu({ session }: { session: Session | null }) {
   return (

@@ -1,11 +1,11 @@
 import AnswerSelector from '@/components/game-related/AnswerSelector';
 import AudioProgress from '@/components/game-related/AudioProgress';
-import PlayAudioButton from '@/components/buttons/PlayAudioButton';
-import AudioSetter from '@/components/daily/AudioSetter';
-import SingleplayerFooter from '@/components/daily/SingleplayerFooter';
+import PlayAudioButton from '@/components/game-related/buttons/PlayAudioButton';
+import AudioSetter from '@/components/game-related/AudioSetter';
+import SingleplayerFooter from '@/components/game-related/SingleplayerFooter';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import React from 'react';
-import { AlreadyPlayed } from '@/components/daily/AlreadyPlayed';
+import { AlreadyPlayed } from '@/components/game-related/AlreadyPlayed';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';

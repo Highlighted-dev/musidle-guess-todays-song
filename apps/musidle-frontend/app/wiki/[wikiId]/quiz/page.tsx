@@ -1,5 +1,5 @@
 import { IQuiz } from '@/@types/Quiz';
-import Quiz from '@/components/Quiz';
+import Quiz from '@/components/wiki/Quiz';
 import Redirecter from '@/components/Redirecter';
 import WikiNavbar from '@/components/wiki/WikiNavbar';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';

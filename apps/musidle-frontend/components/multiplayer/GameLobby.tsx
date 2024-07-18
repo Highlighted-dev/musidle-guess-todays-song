@@ -9,8 +9,8 @@ import { useRouter } from 'next/navigation';
 import { useTimerStore } from '../../stores/TimerStore';
 import GameHeader from '../game-related/GameHeader';
 import { Session } from 'next-auth';
-import StartGameButton from '../buttons/StartGameButton';
-import SaveSettingsButton from '../buttons/SaveSettingsButton';
+import StartGameButton from './buttons/StartGameButton';
+import SaveSettingsButton from './buttons/SaveSettingsButton';
 
 export default function GameLobby({ session }: { session: Session | null }) {
   const { maxRoundsPhaseOne, maxRoundsPhaseTwo, leaveRoom, players } = useRoomStore();

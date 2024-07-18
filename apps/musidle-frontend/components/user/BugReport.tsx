@@ -8,14 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
-import { DropdownMenuItem } from './ui/dropdown-menu';
+} from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
+import { DropdownMenuItem } from '../ui/dropdown-menu';
 import { FieldValues, useForm } from 'react-hook-form';
 import { Session } from 'next-auth';
-import { bugReportAction } from './actions/bugReportAction';
-import { toast } from './ui/use-toast';
+import { bugReportAction } from './bugReportAction';
+import { toast } from '../ui/use-toast';
 
 export interface IReportProblemForm {
   description: string;

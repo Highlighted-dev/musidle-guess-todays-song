@@ -3,10 +3,9 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useRoomStore } from '../../stores/RoomStore';
 import { Label } from '../ui/label';
-import VoteForTurnSkipButton from '../buttons/VoteForTurnSkipButton';
+import VoteForTurnSkipButton from './buttons/VoteForTurnSkipButton';
 import { Session } from 'next-auth';
-import { Button } from '../ui/button';
-import JoinToSpectatorsButton from '../buttons/JoinToSpectatorsButton';
+import JoinToSpectatorsButton from './buttons/JoinToSpectatorsButton';
 
 function Leaderboard({ session }: { session: Session | null }) {
   const { players, currentPlayer, spectators, roomCode } = useRoomStore();

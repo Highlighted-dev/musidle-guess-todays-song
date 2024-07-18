@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React from 'react';
 import Redirecter from '@/components/Redirecter';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import EditButton from '@/components/buttons/EditButton';
+import EditButton from '@/components/EditButton';
 import WikiNavbar from '@/components/wiki/WikiNavbar';
 import { auth } from '@/auth';
 import { Metadata } from 'next';

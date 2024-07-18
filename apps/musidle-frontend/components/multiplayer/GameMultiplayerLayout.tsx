@@ -7,7 +7,7 @@ import { useAudioStore } from '../../stores/AudioStore';
 import { useAnswerStore } from '../../stores/AnswerStore';
 import AnswerSelector from '../game-related/AnswerSelector';
 import AudioProgress from '../game-related/AudioProgress';
-import SubmitAnswerButton from '../buttons/SubmitAnswerButton';
+import SubmitAnswerButton from '@/components/game-related/buttons/SubmitAnswerButton';
 import { Button } from '../ui/button';
 import GameHeader from '../game-related/GameHeader';
 import { Session } from 'next-auth';

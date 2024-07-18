@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from '../ui/button';
-import { joinToSpectatorsAction } from '../actions/joinToSpectatorsAction';
+import { Button } from '@/components/ui/button';
+import { joinToSpectatorsAction } from '@/components/multiplayer/actions//joinToSpectatorsAction';
 import { Session } from 'next-auth';
-import { toast } from '../ui/use-toast';
+import { toast } from '@/components/ui/use-toast';
 
 export default function JoinToSpectatorsButton({
   roomCode,

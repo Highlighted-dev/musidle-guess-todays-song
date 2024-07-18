@@ -4,7 +4,7 @@ import '../../../styles/editor.css';
 import React from 'react';
 import { Separator } from '@/components/ui/separator';
 import DOMPurify from 'isomorphic-dompurify';
-import EditButton from '@/components/buttons/EditButton';
+import EditButton from '@/components/EditButton';
 import { auth } from '@/auth';
 import { Metadata } from 'next';
 import { IArticle } from '@/@types/Article';

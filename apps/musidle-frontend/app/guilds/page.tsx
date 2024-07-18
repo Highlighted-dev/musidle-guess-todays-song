@@ -3,7 +3,7 @@ import { IGuild } from '@/@types/Guild';
 import { getCurrentUrl } from '@/utils/GetCurrentUrl';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import JoinGuildButton from '@/components/buttons/JoinGuildButton';
+import JoinGuildButton from '@/components/guilds/JoinGuildButton';
 import EnchancedPagination from '@/components/EnchancedPagination';
 import { auth } from '@/auth';
 

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { Session } from 'next-auth';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useTimerStore } from '@/stores/TimerStore';
-import { toast } from '../ui/use-toast';
-import { saveSettingsAction } from '../actions/saveSettingsAction';
+import { toast } from '@/components/ui/use-toast';
+import { saveSettingsAction } from '@/components/multiplayer/actions/saveSettingsAction';
 
 export default function SaveSettingsButton({
   roomCode,

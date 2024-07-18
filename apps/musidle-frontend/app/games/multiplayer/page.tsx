@@ -1,7 +1,7 @@
 import { IRoom } from '@/@types/Rooms';
-import JoinRoomButton from '@/components/buttons/CreateRoomButton';
+import JoinRoomButton from '@/components/multiplayer/buttons/CreateRoomButton';
 import RefreshRooms from '@/components/multiplayer/RefreshRooms';
-import NoRooms from '@/components/NoRooms';
+import NoRooms from '@/components/multiplayer/NoRooms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 

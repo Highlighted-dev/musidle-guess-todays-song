@@ -1,6 +1,6 @@
 import { IWiki } from '@/@types/Wiki';
 import Redirecter from '@/components/Redirecter';
-import EditButton from '@/components/buttons/EditButton';
+import EditButton from '@/components/EditButton';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import WikiNavbar from '@/components/wiki/WikiNavbar';

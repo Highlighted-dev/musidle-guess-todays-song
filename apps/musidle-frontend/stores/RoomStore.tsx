@@ -90,23 +90,25 @@ export const useRoomStore = create<IRoomStore>(set => ({
               title: 'Success!',
               description: data.message,
             });
+            useSocketStore.getState().socket?.disconnect();
+            useSocketStore.setState({ socket: null });
+            router.push('/games/multiplayer');
+            useRoomStore.setState({
+              roomCode: '',
+              players: [],
+              currentPlayer: null,
+              maxRoundsPhaseOne: 2,
+              maxRoundsPhaseTwo: 2,
+              round: 1,
+              isInLobby: false,
+              selectMode: false,
+            });
           }
         })
         .catch(err => {
           console.log(err);
         });
-      useSocketStore.getState().socket?.disconnect();
-      router.push('/games/multiplayer');
-      useRoomStore.setState({
-        roomCode: '',
-        players: [],
-        currentPlayer: null,
-        maxRoundsPhaseOne: 2,
-        maxRoundsPhaseTwo: 2,
-        round: 1,
-        isInLobby: false,
-        selectMode: false,
-      });
+
       return;
     }
   },

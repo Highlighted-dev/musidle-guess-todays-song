@@ -13,7 +13,6 @@ import { Label } from '../ui/label';
 import { useTimerStore } from '../../stores/TimerStore';
 import { cn } from '../../lib/utils';
 import { useGameFinalStore } from '../../stores/GameFinalStore';
-import { useSession } from 'next-auth/react';
 import GameHeader from '../game-related/GameHeader';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { Session } from 'next-auth';

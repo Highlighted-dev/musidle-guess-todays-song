@@ -107,7 +107,7 @@ router.post('/leave', jsonParser, async (req: Request, res: Response) => {
 
     const room = await roomModel.findOneAndUpdate(
       { roomCode },
-      { $pull: { players: { id: playerId } } },
+      { $pull: { players: { id: playerId }, spectators: { id: playerId } } },
       { new: true },
     );
 

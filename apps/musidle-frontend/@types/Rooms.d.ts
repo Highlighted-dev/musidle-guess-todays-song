@@ -40,7 +40,6 @@ export interface IRoomStore {
   ) => Promise<void>;
 
   votesForTurnSkip: number;
-  voteForTurnSkip: (socket: Socket | null) => void;
 }
 export interface IRoom {
   _id: string;

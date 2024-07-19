@@ -48,7 +48,7 @@ function Leaderboard({ session }: { session: Session | null }) {
             </div>
           </div>
         </Card>
-        <VoteForTurnSkipButton className="w-full my-2" session={session} />
+        <VoteForTurnSkipButton className="w-full my-2" session={session} roomCode={roomCode} />
       </CardContent>
     </Card>
   );

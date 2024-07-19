@@ -83,7 +83,7 @@ export default async function Page() {
                     </div>
                   </div>
                   <div className=" flex flex-col justify-center items-center">
-                    <AnswerSelector />
+                    <AnswerSelector session={session} />
                   </div>
                 </CardContent>
               </>

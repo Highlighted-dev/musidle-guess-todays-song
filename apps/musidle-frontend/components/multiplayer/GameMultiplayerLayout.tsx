@@ -45,7 +45,7 @@ function GameMultiplayerLayout({ session }: { session: Session | null }) {
                 </Label>
               </div>
               <div>
-                <AnswerSelector />
+                <AnswerSelector session={session} />
                 <div className="p-2 flex justify-center items-center">
                   <Label className="text-center">{timer}s</Label>
                 </div>

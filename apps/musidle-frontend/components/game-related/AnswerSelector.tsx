@@ -2,18 +2,17 @@
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '../ui/button';
-import { useAnswerStore } from '../../stores/AnswerStore';
+import { useAnswerStore } from '@/stores/AnswerStore';
 import { LuChevronsUpDown } from 'react-icons/lu';
-import { useRoomStore } from '../../stores/RoomStore';
+import { useRoomStore } from '@/stores/RoomStore';
 import { Command, CommandGroup, CommandInput, CommandItem } from '../ui/command';
 import { AiOutlineCheck } from 'react-icons/ai';
-import { useNextAuthStore } from '../../stores/NextAuthStore';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
+import { Session } from 'next-auth';
 
-export default function AnswerSelector() {
+export default function AnswerSelector({ session }: { session: Session | null }) {
   const { possibleAnswers, value, handleValueChange, getPossibleSongAnswers } = useAnswerStore();
   const { currentPlayer } = useRoomStore();
-  const user = useNextAuthStore.getState().session?.user;
   const [open, setOpen] = useState(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -23,7 +22,7 @@ export default function AnswerSelector() {
           role="combobox"
           aria-expanded={open}
           className="w-[250px] justify-between whitespace-normal h-auto"
-          disabled={currentPlayer != null && currentPlayer.id != user?.id}
+          disabled={currentPlayer != null && currentPlayer.id != session?.user?.id}
         >
           {value
             ? possibleAnswers.find(song => song.value.toLowerCase() === value.toLowerCase())?.value
@@ -37,7 +36,7 @@ export default function AnswerSelector() {
             placeholder="Search song..."
             onValueChange={value => {
               getPossibleSongAnswers(value);
-              handleValueChange(value);
+              handleValueChange(value, session);
             }}
             value={value}
           />
@@ -47,7 +46,7 @@ export default function AnswerSelector() {
               <CommandItem
                 key={song.key}
                 onSelect={currentValue => {
-                  handleValueChange(currentValue === value ? '' : currentValue);
+                  handleValueChange(currentValue === value ? '' : currentValue, session);
                   setOpen(false);
                 }}
               >

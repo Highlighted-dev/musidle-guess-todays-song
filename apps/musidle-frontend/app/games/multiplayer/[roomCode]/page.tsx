@@ -60,7 +60,7 @@ export default async function Page({ params }: { params: { roomCode: string } })
   } else
     return (
       <>
-        <RoomStoreInitializer data={data} buffer={buffer()} />
+        <RoomStoreInitializer data={data} buffer={buffer()} session={session} />
         <div className="flex lg:flex-row flex-col justify-center items-center my-2">
           <GameChat session={session} />
           <GameController params={params} session={session} />

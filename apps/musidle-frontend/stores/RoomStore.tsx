@@ -12,8 +12,8 @@ import { Router } from 'next/router';
 import { useRouter } from 'next/navigation';
 import dotenv from 'dotenv';
 import { useRef } from 'react';
-import { useNextAuthStore } from './NextAuthStore';
 import { ICategory } from '../@types/Categories';
+import { Session } from 'next-auth';
 dotenv.config();
 
 export const useRoomStore = create<IRoomStore>(set => ({
@@ -137,24 +137,21 @@ export const useRoomStore = create<IRoomStore>(set => ({
     }
   },
   votesForTurnSkip: 0,
-  voteForTurnSkip(socket) {
-    socket?.emit(
-      'voteForTurnSkip',
-      useRoomStore.getState().roomCode,
-      useNextAuthStore.getState().session?.user?.id,
-      useAudioStore.getState().songId,
-    );
-    useRoomStore.setState({
-      votesForTurnSkip: useRoomStore.getState().votesForTurnSkip + 1,
-    });
-  },
 }));
 
 // Alright so if you are reading this you are probably wondering what the hell is going on below.
 // Well, this initializer is used to initialize the room store with the data that is passed from the server.
 // Key word - server. As I dont want to expose the data about the room that is passed from the server to the client, I've choosen the initializer approach.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function RoomStoreInitializer({ data, buffer }: { data: any; buffer: any }) {
+export function RoomStoreInitializer({
+  data,
+  buffer,
+  session,
+}: {
+  data: any;
+  buffer: any;
+  session: Session | null;
+}) {
   const initialized = useRef(false);
   const roomData = data;
   useSocketStore.getState().router = useRouter();
@@ -234,9 +231,7 @@ export function RoomStoreInitializer({ data, buffer }: { data: any; buffer: any 
               : 'http://localhost:5000',
           ),
         );
-      useSocketStore
-        .getState()
-        .socket?.emit('id', useNextAuthStore.getState().session?.user.id, roomData.roomCode);
+      useSocketStore.getState().socket?.emit('id', session?.user.id, roomData.roomCode);
     }
   }
   return null;

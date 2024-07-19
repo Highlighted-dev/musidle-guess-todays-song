@@ -9,6 +9,7 @@ import { useNextAuthStore } from './NextAuthStore';
 import { toast } from '../components/ui/use-toast';
 import { IPlayerCategories } from '../@types/Categories';
 import { getCurrentUrl } from '../utils/GetCurrentUrl';
+import { Session } from 'next-auth';
 
 export const useAnswerStore = create<IAnswerStore>(set => ({
   loadingAnswer: false,
@@ -43,8 +44,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
       possibleSongs: possibleSongs,
     })),
   categories: [],
-  handleValueChange: async (value: string) => {
-    const session = useNextAuthStore.getState().session;
+  handleValueChange: async (value: string, session: Session | null) => {
     if (
       useSocketStore.getState().socket &&
       useRoomStore.getState().currentPlayer?.id == session?.user?.id

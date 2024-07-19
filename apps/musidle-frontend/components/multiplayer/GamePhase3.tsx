@@ -102,7 +102,7 @@ function GamePhase3({ session }: { session: Session | null }) {
                   placeholder="Search song..."
                   onValueChange={value => {
                     getPossibleSongAnswers(value);
-                    handleValueChange(value);
+                    handleValueChange(value, session);
                   }}
                   value={value}
                 />
@@ -112,7 +112,7 @@ function GamePhase3({ session }: { session: Session | null }) {
                     <CommandItem
                       key={song.key}
                       onSelect={currentValue => {
-                        handleValueChange(currentValue === value ? '' : currentValue);
+                        handleValueChange(currentValue === value ? '' : currentValue, session);
                         setOpen(false);
                       }}
                     >

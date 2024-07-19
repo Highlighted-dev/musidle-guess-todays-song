@@ -1,3 +1,4 @@
+import { Session } from 'next-auth';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 export interface IAnswer {
   value: string;
@@ -36,7 +37,7 @@ export interface IAnswerStore {
   possibleSongs: ISong[];
   categories: any[] | undefined;
   setPossibleSongs: (songs: ISong[]) => void;
-  handleValueChange: (value: string) => void;
+  handleValueChange: (value: string, session: Session | null) => void;
   handleAnswerSubmit: (router?: AppRouterInstance | null) => void;
   getPossibleSongAnswers: (query: string) => void;
   revealArtist: (song_id: string) => void;

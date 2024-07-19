@@ -4,19 +4,33 @@ import { Button } from '@/components/ui/button';
 import { useRoomStore } from '@/stores/RoomStore';
 import { useSocketStore } from '@/stores/SocketStore';
 import { Session } from 'next-auth';
+import { useAudioStore } from '@/stores/AudioStore';
 
 export default function VoteForTurnSkipButton({
   className,
   session,
+  roomCode,
 }: {
   className?: string;
   session: Session | null;
+  roomCode: string;
 }) {
-  const { votesForTurnSkip, voteForTurnSkip, players, isInLobby } = useRoomStore();
+  const { votesForTurnSkip, players, isInLobby } = useRoomStore();
   return (
     <Button
       onClick={() => {
-        voteForTurnSkip(useSocketStore.getState().socket || null);
+        if (!session) return;
+        useSocketStore
+          .getState()
+          .socket?.emit(
+            'voteForTurnSkip',
+            roomCode,
+            session.user?.id,
+            useAudioStore.getState().songId,
+          );
+        useRoomStore.setState({
+          votesForTurnSkip: useRoomStore.getState().votesForTurnSkip + 1,
+        });
       }}
       className={className}
       disabled={isInLobby || players.find(player => player.id === session?.user?.id) === undefined}

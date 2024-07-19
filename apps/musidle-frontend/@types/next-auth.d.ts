@@ -17,6 +17,9 @@ declare module 'next-auth' {
         _id: string | null;
         name: string | null;
       };
+      settings: {
+        volume: number;
+      };
     };
   }
   interface User extends IUser {}
@@ -33,5 +36,8 @@ export interface IUser {
   guild: {
     _id: string | null;
     name: string | null;
+  };
+  settings: {
+    volume: number;
   };
 }

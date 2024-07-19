@@ -15,8 +15,6 @@ interface IAudioStore {
   setTime: (time: number) => void;
   audioTime: number;
   setAudioTime: (audioTime: number) => void;
-  volume: number;
-  setVolume: (volume: number) => void;
   intervalId: NodeJS.Timeout | null;
   setIntervalId: (intervaldId: NodeJS.Timeout | null) => void;
   songId: string;
@@ -48,11 +46,6 @@ export const useAudioStore = create<IAudioStore>(set => ({
   setAudioTime: (audioTime: number) =>
     set(() => ({
       audioTime: audioTime,
-    })),
-  volume: 0.25,
-  setVolume: (volume: number) =>
-    set(() => ({
-      volume: volume,
     })),
   intervalId: null,
   setIntervalId: (intervalId: NodeJS.Timeout | null) =>
@@ -125,7 +118,7 @@ export const useAudioStore = create<IAudioStore>(set => ({
         const newAudioContext = new AudioContext();
         audio.stop();
         const gainNode = newAudioContext.createGain();
-        gainNode.gain.value = 0.1;
+        gainNode.gain.value = session?.user.settings?.volume ?? 0.25;
         gainNode.connect(newAudioContext.destination);
 
         const newAudio = newAudioContext!.createBufferSource();

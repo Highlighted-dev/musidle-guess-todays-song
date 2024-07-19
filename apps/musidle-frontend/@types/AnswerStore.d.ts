@@ -38,7 +38,7 @@ export interface IAnswerStore {
   categories: any[] | undefined;
   setPossibleSongs: (songs: ISong[]) => void;
   handleValueChange: (value: string, session: Session | null) => void;
-  handleAnswerSubmit: (router?: AppRouterInstance | null) => void;
+  handleAnswerSubmit: (router?: AppRouterInstance | null, session: Session | null) => void;
   getPossibleSongAnswers: (query: string) => void;
   revealArtist: (song_id: string) => void;
   changeSongToCompleted: (song_id: string) => void;

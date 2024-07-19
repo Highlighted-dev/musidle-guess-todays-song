@@ -55,11 +55,10 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
     }
     useAnswerStore.setState({ value: value });
   },
-  handleAnswerSubmit: async (router = null) => {
+  handleAnswerSubmit: async (router = null, session) => {
     // if router is not null, it means that the user is playing daily mode
     const { currentPlayer, roomCode, handleTurnChange, setTurnChangeDialogOpen } =
       useRoomStore.getState();
-    const session = useNextAuthStore.getState().session;
     const socket = useSocketStore.getState().socket;
     const { setValue, setAnswer, setPossibleAnswers } = useAnswerStore.getState();
     let category = '';
@@ -114,7 +113,7 @@ export const useAnswerStore = create<IAnswerStore>(set => ({
         const newAudioContext = new AudioContext();
         audio.stop();
         const gainNode = newAudioContext.createGain();
-        gainNode.gain.value = 0.1;
+        gainNode.gain.value = session?.user.settings?.volume ?? 0.25;
         gainNode.connect(newAudioContext.destination);
 
         const newAudio = newAudioContext!.createBufferSource();

@@ -15,6 +15,7 @@ import GuildCreation from '../guilds/GuildCreation';
 import { Session } from 'next-auth';
 import { SignOut } from '../auth/SignOut';
 import BugReport from './BugReport';
+import UserSettings from './UserSettings';
 
 export default function UserMenu({ session }: { session: Session | null }) {
   return (
@@ -32,9 +33,7 @@ export default function UserMenu({ session }: { session: Session | null }) {
           <Link href="/profile">
             <DropdownMenuItem>Profile</DropdownMenuItem>
           </Link>
-          <Link href="/profile/settings">
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-          </Link>
+          <UserSettings session={session} />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

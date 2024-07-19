@@ -161,7 +161,7 @@ export function RoomStoreInitializer({
       // Use the audio data to create an AudioContext and decode the audio data
       const audioContext = new AudioContext();
       const gainNode = audioContext.createGain();
-      gainNode.gain.value = 0.1;
+      gainNode.gain.value = session?.user.settings?.volume ?? 0.25;
       gainNode.connect(audioContext.destination);
       audioContext
         .decodeAudioData(arrayBuffer, audioBuffer => {

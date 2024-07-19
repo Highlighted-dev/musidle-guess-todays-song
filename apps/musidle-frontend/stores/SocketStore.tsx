@@ -68,7 +68,7 @@ useSocketStore.subscribe(async ({ socket }) => {
     socket.on('answerSubmit', (score: number, player: IPlayer, answer: string) => {
       useRoomStore.getState().updatePlayerScore(score, player);
       useAnswerStore.getState().setAnswer(answer);
-      useAnswerStore.getState().handleAnswerSubmit();
+      useAnswerStore.getState().handleAnswerSubmit(null, useNextAuthStore.getState().session);
     });
     socket.on('valueChange', (value: string) => {
       useAnswerStore.setState({ value: value });

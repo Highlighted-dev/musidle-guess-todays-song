@@ -26,7 +26,7 @@ router.put('/:id', jsonParser, async (req: Request, res: Response) => {
       await guildModel.updateMany({ 'members.id': user._id }, { 'members.$.name': req.body.name });
       await guildModel.updateMany({ 'leader.id': user._id }, { 'leader.name': req.body.name });
     }
-    return res.json(user);
+    return res.json({ message: 'User data updated' });
   } catch (error) {
     logger.error(error);
     res.status(500).json({ message: 'Failed to update user' });

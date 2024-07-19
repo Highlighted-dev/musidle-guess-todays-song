@@ -10,4 +10,7 @@ export interface IUser {
     _id: string | null;
     name: string | null;
   };
+  settings: {
+    volume: number;
+  };
 }

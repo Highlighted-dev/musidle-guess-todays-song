@@ -74,7 +74,7 @@ export default async function Page() {
               <AlreadyPlayed />
             ) : (
               <>
-                <AudioSetter buffer={buffer()} songId={songId} />
+                <AudioSetter buffer={buffer()} songId={songId} session={session} />
                 <CardContent className="h-full flex flex-col">
                   <div className="min-h-[200px]">
                     <AudioProgress />

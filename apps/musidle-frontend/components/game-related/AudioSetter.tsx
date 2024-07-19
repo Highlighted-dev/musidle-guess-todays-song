@@ -1,13 +1,16 @@
 'use client';
+import { Session } from 'next-auth';
 import { useAudioStore } from '../../stores/AudioStore';
 import { useEffect } from 'react';
 
 export default function AudioSetter({
   buffer,
   songId,
+  session,
 }: {
   buffer: string | null;
   songId: string | null;
+  session: Session | null;
 }) {
   useEffect(() => {
     if (buffer != null && songId != null) {
@@ -16,7 +19,7 @@ export default function AudioSetter({
         // Use the audio data to create an AudioContext and decode the audio data
         const audioContext = new AudioContext();
         const gainNode = audioContext.createGain();
-        gainNode.gain.value = 0.1;
+        gainNode.gain.value = session?.user.settings?.volume ?? 0.25;
         gainNode.connect(audioContext.destination);
         audioContext
           .decodeAudioData(arrayBuffer, audioBuffer => {
@@ -37,6 +40,6 @@ export default function AudioSetter({
         console.log(err);
       }
     }
-  }, [buffer, songId]);
+  }, [buffer, songId, session]);
   return null;
 }

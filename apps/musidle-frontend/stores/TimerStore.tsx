@@ -25,6 +25,6 @@ useTimerStore.subscribe(async ({ timer }) => {
   const session = useNextAuthStore.getState().session;
   if (timer <= 0 && useRoomStore.getState().currentPlayer?.id == session?.user?.id) {
     setTimer(useTimerStore.getState().maxTimer);
-    handleAnswerSubmit();
+    handleAnswerSubmit(null, session);
   }
 });

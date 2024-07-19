@@ -70,6 +70,7 @@ function GameMultiplayerLayout({ session }: { session: Session | null }) {
               : 'w-[9%] min-w-[130px]'
           }
           disabled={!value || !audio}
+          session={session}
         />
       </CardFooter>
     </Card>

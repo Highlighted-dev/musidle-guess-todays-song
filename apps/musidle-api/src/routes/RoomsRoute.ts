@@ -12,10 +12,12 @@ import {
   isRoomEmpty,
   preparePlayer,
   updateRoomAfterTurnChange,
+  updateUserStats,
 } from '../utils/RoomUtils';
 import { ICustomRequest } from '../@types';
 import { getCurrentUrl } from '../utils/GetCurrentUrl';
 import { logger } from '../utils/Logger';
+import userModel from '../models/UserModel';
 
 // Load environment variables
 dotenv.config();
@@ -166,6 +168,15 @@ router.post('/start', jsonParser, async (req: Request, res: Response) => {
       { currentPlayer: currentPlayer, isInGameLobby: false },
     );
 
+    // Increment games played for all players in the room
+    room.players.forEach(async player => {
+      await userModel.findOneAndUpdate(
+        { _id: player.id },
+        { $inc: { 'stats.totalGames': 1 } },
+        { new: true },
+      );
+    });
+
     return res.status(200).json({ status: 'success', message: 'Game started' });
   } catch (error) {
     logger.error(error);
@@ -208,8 +219,9 @@ router.post('/turnChange', jsonParser, async (req: Request, res: Response) => {
 router.post('/checkAnswer', jsonParser, async (req: Request, res: Response) => {
   try {
     const { roomCode, playerId, playerAnswer, songId, time, category } = req.body;
-    if (!playerId || !songId || !time)
+    if (!playerId || !songId || !time) {
       return res.status(400).json({ status: 'error', message: 'Missing parameters' });
+    }
 
     const response = await axios.get(`${getCurrentUrl()}/externalApi/songs/${songId}`);
     const correctAnswer = response.data.song;
@@ -218,6 +230,7 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response) => {
     const isAnswerCorrect = playerAnswer.toLowerCase().includes(correctAnswer.value.toLowerCase());
 
     if (!roomCode) {
+      await updateUserStats(playerId, isAnswerCorrect, score);
       return res.status(200).json({
         status: 'success',
         message: isAnswerCorrect ? 'Correct answer' : 'Wrong answer',
@@ -251,6 +264,8 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response) => {
       return res.status(404).json({ status: 'error', message: 'Answer not found' });
     }
 
+    await updateUserStats(playerId, isAnswerCorrect, score);
+
     await axios.post(`${getCurrentUrl()}/externalApi/rooms/updateScore`, {
       roomCode,
       playerId,
@@ -258,13 +273,13 @@ router.post('/checkAnswer', jsonParser, async (req: Request, res: Response) => {
     });
 
     if (songId.includes('final')) {
-      //Check if all song with category 'final' are completed
+      // Check if all songs with category 'final' are completed
       await roomModel.findOne({ roomCode: roomCode }).then(async room => {
         const songs = room?.songs.filter(
           song => song.category === 'final' && song.completed === true,
         );
         if (songs?.length === 6) {
-          //If all songs with category 'final' are completed, then add +1 to round
+          // If all songs with category 'final' are completed, then add +1 to round
           await axios.post(`${getCurrentUrl()}/externalApi/rooms/turnChange`, {
             roomCode: roomCode,
             songId: songId,

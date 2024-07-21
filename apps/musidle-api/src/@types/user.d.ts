@@ -13,4 +13,11 @@ export interface IUser {
   settings: {
     volume: number;
   };
+  stats: {
+    correctAnswers: number;
+    wrongAnswers: number;
+    totalAnswers: number;
+    totalGames: number;
+    totalPoints: number;
+  };
 }

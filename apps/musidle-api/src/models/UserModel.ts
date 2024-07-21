@@ -15,6 +15,13 @@ const userSchema = new Schema<IUser>(
     settings: {
       volume: { type: Number, default: 0.25 },
     },
+    stats: {
+      correctAnswers: { type: Number, default: 0 },
+      wrongAnswers: { type: Number, default: 0 },
+      totalAnswers: { type: Number, default: 0 },
+      totalGames: { type: Number, default: 0 },
+      totalPoints: { type: Number, default: 0 },
+    },
   },
   { versionKey: false, timestamps: true },
 );

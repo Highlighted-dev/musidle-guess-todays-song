@@ -30,7 +30,7 @@ export default function UserMenu({ session }: { session: Session | null }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="font-inter">
         <DropdownMenuGroup>
-          <Link href="/profile">
+          <Link href={`/profile/${session?.user.id}`}>
             <DropdownMenuItem>Profile</DropdownMenuItem>
           </Link>
           <UserSettings session={session} />

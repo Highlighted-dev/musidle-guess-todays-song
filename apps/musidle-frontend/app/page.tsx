@@ -10,7 +10,10 @@ import { IWiki } from '../@types/Wiki';
 async function getWikis() {
   try {
     const wiki: IWiki[] = await fetch(getCurrentUrl() + `/externalApi/wikis/`, {
-      cache: 'no-cache',
+      cache: 'default',
+      next: {
+        revalidate: 900, // 15 minutes
+      },
     }).then(res => res.json());
     return wiki;
   } catch (err) {
@@ -60,12 +63,14 @@ export default async function Page() {
           <h2 className="text-3xl font-bold">Featured Article</h2>
           <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px] mt-6">
             <AspectRatio ratio={16 / 9}>
-              <Image
-                src="https://musidle.live/externalApi/images/indie-music.jpg"
-                alt="Indie music"
-                layout="fill"
-                className="object-cover rounded-md"
-              />
+              <Link href="/articles/65be98854c2ef87123c1f37e">
+                <Image
+                  src="https://musidle.live/externalApi/images/indie-music.jpg"
+                  alt="Indie music"
+                  layout="fill"
+                  className="object-cover rounded-md"
+                />
+              </Link>
             </AspectRatio>
             <div className="flex flex-col justify-center space-y-4">
               <h3 className="text-2xl font-bold">The Rise of Indie Music</h3>

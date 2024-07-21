@@ -20,6 +20,13 @@ declare module 'next-auth' {
       settings: {
         volume: number;
       };
+      stats: {
+        correctAnswers: number;
+        wrongAnswers: number;
+        totalAnswers: number;
+        totalGames: number;
+        totalPoints: number;
+      };
     };
   }
   interface User extends IUser {}
@@ -39,5 +46,12 @@ export interface IUser {
   };
   settings: {
     volume: number;
+  };
+  stats: {
+    correctAnswers: number;
+    wrongAnswers: number;
+    totalAnswers: number;
+    totalGames: number;
+    totalPoints: number;
   };
 }

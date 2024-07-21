@@ -3,6 +3,8 @@ import { ICategory } from '../@types/categories';
 import { IPlayer, IRoom, IUpdate } from '../@types/room';
 import roomModel from '../models/RoomModel';
 import { Request } from 'express';
+import userModel from '../models/UserModel';
+import { logger } from './Logger';
 
 export async function generateRoomCode() {
   let roomCode;
@@ -80,5 +82,21 @@ export function calculateScore(time: number, songId: string) {
       return 100 * modifier;
     default:
       return 0;
+  }
+}
+
+export async function updateUserStats(playerId: string, isAnswerCorrect: boolean, score: number) {
+  const user = await userModel.findById(playerId);
+  if (user) {
+    user.stats.totalAnswers += 1;
+    if (isAnswerCorrect) {
+      user.stats.correctAnswers += 1;
+      user.stats.totalPoints += score;
+    } else {
+      user.stats.wrongAnswers += 1;
+    }
+    await user.save();
+  } else {
+    logger.error(`User with id ${playerId} not found`);
   }
 }

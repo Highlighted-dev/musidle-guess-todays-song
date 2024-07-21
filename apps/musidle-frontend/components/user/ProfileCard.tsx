@@ -1,5 +1,5 @@
 'use client';
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import React from 'react';
 import { Label } from '../ui/label';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
@@ -11,12 +11,19 @@ import { useForm } from 'react-hook-form';
 import { editProfileAction } from './EditProfileAction';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { IUser } from '@/@types/next-auth';
 
 export interface IUserEditForm {
   name: string;
 }
 
-export default function ProfileCard({ session }: { session: Session | null }) {
+export default function ProfileCard({
+  session,
+  user,
+}: {
+  session: Session | null;
+  user: IUser | null;
+}) {
   const [editMode, setEditMode] = React.useState(false);
   const { register, handleSubmit, reset } = useForm<IUserEditForm>();
   const router = useRouter();
@@ -39,8 +46,8 @@ export default function ProfileCard({ session }: { session: Session | null }) {
       <Card className="w-full p-2 flex flex-col justify-center items-center">
         <CardHeader className="text-center pb-2 w-full flex justify-center items-center">
           <Avatar>
-            <AvatarImage src={session?.user.image} alt="avatar" />
-            <AvatarFallback>Img</AvatarFallback>
+            <AvatarImage src={user?.image} alt="avatar" />
+            <AvatarFallback>{user?.name[0]}</AvatarFallback>
           </Avatar>
         </CardHeader>
         {editMode ? (
@@ -61,7 +68,7 @@ export default function ProfileCard({ session }: { session: Session | null }) {
                       Hover to reveal
                     </Button>
                   </HoverCardTrigger>
-                  <HoverCardContent>
+                  <HoverCardContent className="flex items-center justify-center">
                     <Label>{session?.user.email}</Label>
                   </HoverCardContent>
                 </HoverCard>
@@ -85,7 +92,7 @@ export default function ProfileCard({ session }: { session: Session | null }) {
           <div className="w-full">
             <CardContent className="grid sm:grid-cols-3 grid-cols-1 gap-2 text-lg">
               <div className="flex flex-col items-center justify-center gap-1">
-                <Label>{session?.user.name}</Label>
+                <Label>{user?.name}</Label>
                 <p className="text-muted-foreground text-xs">Your username</p>
               </div>
               <div className="flex flex-col items-center justify-center gap-1">
@@ -95,29 +102,68 @@ export default function ProfileCard({ session }: { session: Session | null }) {
                       Hover to reveal
                     </Button>
                   </HoverCardTrigger>
-                  <HoverCardContent>
-                    <Label>{session?.user.email}</Label>
+                  <HoverCardContent className="flex items-center justify-center">
+                    <Label>
+                      {session?.user.email === user?.email ? session?.user.email : 'Private'}
+                    </Label>
                   </HoverCardContent>
                 </HoverCard>
                 <p className="text-muted-foreground text-xs">Your email</p>
               </div>
               <div className="flex flex-col items-center justify-center gap-1">
-                <Label>{session?.user.role}</Label>
+                <Label>{user?.role}</Label>
                 <p className="text-muted-foreground text-xs">Your role</p>
               </div>
             </CardContent>
             <CardFooter className="grid sm:grid-cols-2 grid-cols-1 gap-2">
               <div className="flex items-center justify-center">
-                <Button type="button" onClick={() => setEditMode(true)}>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    if (session?.user.id === user?.id) {
+                      setEditMode(true);
+                    }
+                  }}
+                >
                   Edit Profile
                 </Button>
               </div>
               <div className="flex items-center justify-center">
-                <Button type="button">Message</Button>
+                <Button type="button" disabled>
+                  Message
+                </Button>
               </div>
             </CardFooter>
           </div>
         )}
+      </Card>
+      <Card className="w-full p-2 flex flex-col justify-center items-center mt-2">
+        <CardHeader className="text-center">
+          <CardTitle>Stats</CardTitle>
+          <CardDescription>Memories of your journey</CardDescription>
+        </CardHeader>
+        <CardContent className="grid sm:grid-cols-5 grid-cols-1 gap-8 text-lg">
+          <div className="flex flex-col items-center justify-center gap-1">
+            <Label className="text-primary">{user?.stats.correctAnswers}</Label>
+            <p className="text-muted-foreground text-xs">Correct Answers</p>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-1">
+            <Label className="text-primary">{user?.stats.wrongAnswers}</Label>
+            <p className="text-muted-foreground text-xs">Wrong Answers</p>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-1">
+            <Label className="text-primary">{user?.stats.totalAnswers}</Label>
+            <p className="text-muted-foreground text-xs">Total Answers</p>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-1">
+            <Label className="text-primary">{user?.stats.totalPoints}</Label>
+            <p className="text-muted-foreground text-xs">Total points</p>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-1">
+            <Label className="text-primary">{user?.stats.totalGames}</Label>
+            <p className="text-muted-foreground text-xs">Games played</p>
+          </div>
+        </CardContent>
       </Card>
     </CardContent>
   );

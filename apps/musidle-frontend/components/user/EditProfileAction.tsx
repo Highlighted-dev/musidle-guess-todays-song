@@ -13,13 +13,6 @@ export const editProfileAction = async (formData: IUserEditForm, session: Sessio
   }
 
   const { name } = formData;
-  const response = await fetch(getCurrentUrl() + `/externalApi/user/${session.user.id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(formData),
-  });
   if (!name) {
     return {
       status: 'Error',
@@ -35,10 +28,18 @@ export const editProfileAction = async (formData: IUserEditForm, session: Sessio
       status: 'Error',
       message: 'Username too long',
     };
-  } else if (response.status !== 200) {
+  }
+  const response = await fetch(getCurrentUrl() + `/externalApi/user/${session.user.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData),
+  });
+  if (response.status !== 200) {
     return {
       status: 'Error',
-      message: 'An error occurred',
+      message: 'Failed to update username',
     };
   } else {
     const updatedUser = {

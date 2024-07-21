@@ -8,7 +8,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="container flex justify-center align-center py-12 ">
-      <Card className="w-full flex flex-col min-h-[620px]">
+      <Card className="w-full flex flex-col sm:min-h-[620px]">
         <CardHeader className="text-center">
           <CardTitle>Profile</CardTitle>
           <CardDescription>Everything about you</CardDescription>

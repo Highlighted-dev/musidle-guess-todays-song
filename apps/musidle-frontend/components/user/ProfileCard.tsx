@@ -35,18 +35,18 @@ export default function ProfileCard({ session }: { session: Session | null }) {
   };
 
   return (
-    <CardContent className="min-h-[300px] mx-8">
+    <CardContent className="min-h-[300px]">
       <Card className="w-full p-2 flex flex-col justify-center items-center">
-        <CardHeader className="text-center pb-1 text-xs h-1/3 w-full flex justify-center items-center">
+        <CardHeader className="text-center pb-2 w-full flex justify-center items-center">
           <Avatar>
-            <img src={session?.user.image} alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={session?.user.image} alt="avatar" />
+            <AvatarFallback>Img</AvatarFallback>
           </Avatar>
         </CardHeader>
         {editMode ? (
           <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-            <CardContent className="flex lg:justify-between justify-center items-center text-center text-lg w-full lg:flex-row flex-col">
-              <div className="lg:w-1/3 h-full flex justify-center items-center">
+            <CardContent className="grid sm:grid-cols-3 grid-cols-1 gap-2 text-lg">
+              <div className="flex flex-col items-center justify-center gap-1">
                 <Input
                   type="text"
                   className="w-4/5 p-2"
@@ -54,7 +54,7 @@ export default function ProfileCard({ session }: { session: Session | null }) {
                   {...register('name')}
                 />
               </div>
-              <div className="lg:w-1/3 h-full">
+              <div className="flex flex-col items-center justify-center gap-1">
                 <HoverCard>
                   <HoverCardTrigger asChild>
                     <Button variant="link" className="h-auto py-0 font-bold">
@@ -67,7 +67,7 @@ export default function ProfileCard({ session }: { session: Session | null }) {
                 </HoverCard>
                 <p className="text-muted-foreground text-xs">Your email</p>
               </div>
-              <div className="lg:w-1/3 h-full">
+              <div className="flex flex-col items-center justify-center gap-1">
                 <Label>{session?.user.role}</Label>
                 <p className="text-muted-foreground text-xs">Your role</p>
               </div>
@@ -83,12 +83,12 @@ export default function ProfileCard({ session }: { session: Session | null }) {
           </form>
         ) : (
           <div className="w-full">
-            <CardContent className="flex lg:justify-between justify-center items-center text-center text-lg w-full lg:flex-row flex-col">
-              <div className="lg:w-1/3 h-full">
+            <CardContent className="grid sm:grid-cols-3 grid-cols-1 gap-2 text-lg">
+              <div className="flex flex-col items-center justify-center gap-1">
                 <Label>{session?.user.name}</Label>
                 <p className="text-muted-foreground text-xs">Your username</p>
               </div>
-              <div className="lg:w-1/3 h-full">
+              <div className="flex flex-col items-center justify-center gap-1">
                 <HoverCard>
                   <HoverCardTrigger asChild>
                     <Button variant="link" className="h-auto py-0 font-bold">
@@ -101,18 +101,18 @@ export default function ProfileCard({ session }: { session: Session | null }) {
                 </HoverCard>
                 <p className="text-muted-foreground text-xs">Your email</p>
               </div>
-              <div className="lg:w-1/3 h-full">
+              <div className="flex flex-col items-center justify-center gap-1">
                 <Label>{session?.user.role}</Label>
                 <p className="text-muted-foreground text-xs">Your role</p>
               </div>
             </CardContent>
-            <CardFooter className="flex lg:justify-between justify-center items-center text-center w-full lg:flex-row flex-col">
-              <div className="lg:w-1/2 h-full">
+            <CardFooter className="grid sm:grid-cols-2 grid-cols-1 gap-2">
+              <div className="flex items-center justify-center">
                 <Button type="button" onClick={() => setEditMode(true)}>
                   Edit Profile
                 </Button>
               </div>
-              <div className="lg:w-1/2 h-full">
+              <div className="flex items-center justify-center">
                 <Button type="button">Message</Button>
               </div>
             </CardFooter>

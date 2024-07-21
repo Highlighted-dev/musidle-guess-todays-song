@@ -12,6 +12,7 @@ import { editProfileAction } from './EditProfileAction';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { IUser } from '@/@types/next-auth';
+import Redirecter from '../Redirecter';
 
 export interface IUserEditForm {
   name: string;
@@ -24,6 +25,16 @@ export default function ProfileCard({
   session: Session | null;
   user: IUser | null;
 }) {
+  if (!user) {
+    return (
+      <Redirecter
+        title="User not found"
+        message="The user you are looking for does not exist"
+        url="/"
+        variant={'destructive'}
+      />
+    );
+  }
   const [editMode, setEditMode] = React.useState(false);
   const { register, handleSubmit, reset } = useForm<IUserEditForm>();
   const router = useRouter();

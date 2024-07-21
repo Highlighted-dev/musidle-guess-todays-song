@@ -1,3 +1,4 @@
+import { IUser } from '@/@types/next-auth';
 import { auth } from '@/auth';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import ProfileCard from '@/components/user/ProfileCard';
@@ -9,9 +10,12 @@ async function getUser(userId: string) {
     const response = await fetch(getCurrentUrl() + `/externalApi/user/${userId}`, {
       cache: 'no-cache',
     });
+    if (response.status !== 200) {
+      return null;
+    }
     let result = await response.json();
     result.id = result._id;
-    return result;
+    return (result as IUser) || null;
   } catch (err) {
     console.log(err);
     return null;

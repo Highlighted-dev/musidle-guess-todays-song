@@ -6,6 +6,8 @@ import { TriggerCookieSheet } from '../components/CookiesSheet';
 import Navbar from '../components/ui/Navbar';
 import Footer from '../components/ui/Footer';
 import { auth } from '@/auth';
+import { Inter as FontSans } from 'next/font/google';
+import { cn } from '@/lib/utils';
 
 export const metadata = {
   title: 'Musidle',
@@ -15,15 +17,22 @@ export const metadata = {
     'music, games, quizzes, articles, artist wikis, wordle, music quizzes, music games, music articles, music wiki',
 };
 
+const fontSans = FontSans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   return (
     <html lang="en" className="w-full h-full xl:min-h-0 min-h-screen">
-      <head>
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-      </head>
-      <body className="dark h-full w-full flex min-h-screen flex-col">
+      <head />
+      <body
+        className={cn(
+          'dark h-full w-full flex min-h-screen flex-col bg-background font-sans antialiased',
+          fontSans.variable,
+        )}
+      >
         <NextAuthProvider session={session}>
           <Toaster />
           <TriggerCookieSheet />

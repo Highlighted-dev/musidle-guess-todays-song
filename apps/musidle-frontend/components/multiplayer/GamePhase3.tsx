@@ -16,6 +16,7 @@ import { useGameFinalStore } from '../../stores/GameFinalStore';
 import GameHeader from '../game-related/GameHeader';
 import { useAnswerStore } from '@/stores/AnswerStore';
 import { Session } from 'next-auth';
+import PlayAudioButton from '../game-related/buttons/PlayAudioButton';
 function GamePhase3({ session }: { session: Session | null }) {
   const user = session?.user;
   const { currentPlayer, handleChooseCategory } = useRoomStore();
@@ -68,13 +69,7 @@ function GamePhase3({ session }: { session: Session | null }) {
             ))}
         </div>
         <div className="flex justify-center items-center mt-2">
-          <Button
-            onClick={() => handlePlay()}
-            className="min-w-[100px]"
-            disabled={currentPlayer?.id != user?.id || !audioContext}
-          >
-            {audioContext?.state == 'running' ? 'Pause' : 'Play'}
-          </Button>
+          <PlayAudioButton session={session} />
         </div>
       </CardContent>
       <div className="flex flex-col w-full justify-center items-center">

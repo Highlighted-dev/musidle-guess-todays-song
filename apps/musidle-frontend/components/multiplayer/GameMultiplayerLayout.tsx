@@ -11,12 +11,14 @@ import SubmitAnswerButton from '@/components/game-related/buttons/SubmitAnswerBu
 import { Button } from '../ui/button';
 import GameHeader from '../game-related/GameHeader';
 import { Session } from 'next-auth';
+import ChangeStageButton from '../game-related/buttons/ChangeStageButton';
+import PlayAudioButton from '../game-related/buttons/PlayAudioButton';
 
 function GameMultiplayerLayout({ session }: { session: Session | null }) {
   const { timer } = useTimerStore();
   const { value, possibleSongs } = useAnswerStore();
   const { currentPlayer } = useRoomStore();
-  const { audio, songId, handlePlay, audioContext, changeStage } = useAudioStore();
+  const { audio, songId } = useAudioStore();
 
   return (
     <Card className="w-full flex flex-col  min-w-[200px] lg:p-0 py-6 lg:mx-2 min-h-[700px]">
@@ -27,13 +29,7 @@ function GameMultiplayerLayout({ session }: { session: Session | null }) {
             <div className="h-1/2">
               <AudioProgress />
               <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
-                <Button
-                  onClick={() => handlePlay()}
-                  className="min-w-[80px]"
-                  disabled={currentPlayer?.id != session?.user.id || !audio}
-                >
-                  {audioContext?.state == 'running' ? 'Pause' : 'Play'}
-                </Button>
+                <PlayAudioButton session={session} />
               </div>
             </div>
             <div className="h-1/2 flex flex-col justify-center items-center">
@@ -55,14 +51,7 @@ function GameMultiplayerLayout({ session }: { session: Session | null }) {
         </Card>
       </CardContent>
       <CardFooter className="flex justify-between text-center w-full">
-        <Button
-          variant={'secondary'}
-          onClick={() => changeStage()}
-          className="w-[12%] min-w-[130px]"
-          disabled={currentPlayer?.id != session?.user.id || !audioContext}
-        >
-          Change Stage
-        </Button>
+        <ChangeStageButton session={session} />
         <SubmitAnswerButton
           className={
             currentPlayer?.id != session?.user.id || value === ''

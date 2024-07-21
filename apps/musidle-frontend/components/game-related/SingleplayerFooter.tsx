@@ -1,12 +1,13 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRoomStore } from '../../stores/RoomStore';
 import { toast } from '../ui/use-toast';
 import ChangeStageButton from './buttons/ChangeStageButton';
 import SubmitAnswerButton from './buttons/SubmitAnswerButton';
 import { useRouter } from 'next/navigation';
+import { Session } from 'next-auth';
 
-export default function SingleplayerFooter() {
+export default function SingleplayerFooter({ session }: { session: Session | null }) {
   const { currentPlayer, roomCode } = useRoomStore();
   const router = useRouter();
 
@@ -14,15 +15,16 @@ export default function SingleplayerFooter() {
     if (!currentPlayer) return;
     toast({
       title: `You are currently playing multiplayer in ${roomCode} room`,
-      description: `You can't play singleplayer while playing multiplayer. Please leave multiplayer room to play singleplayer. (or hit f5 to clear room-related data)`,
+      description: `If you want to play daily games, please hit f5 to clear multiplayer data.`,
       variant: 'destructive',
+      duration: 10000,
     });
   }, [currentPlayer]);
 
   return (
     <>
-      <ChangeStageButton className="w-[12%] min-w-[130px]" />
-      <SubmitAnswerButton className="w-[12%] min-w-[130px]" router={router} />
+      <ChangeStageButton session={session} />
+      <SubmitAnswerButton className="w-[9%] min-w-[130px]" router={router} session={session} />
     </>
   );
 }

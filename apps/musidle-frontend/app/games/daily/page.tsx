@@ -79,7 +79,7 @@ export default async function Page() {
                   <div className="min-h-[200px]">
                     <AudioProgress />
                     <div className="text-center w-[250px] h-[50px] flex justify-center items-center ">
-                      <PlayAudioButton className="min-w-[80px]" />
+                      <PlayAudioButton session={session} />
                     </div>
                   </div>
                   <div className=" flex flex-col justify-center items-center">
@@ -91,7 +91,7 @@ export default async function Page() {
           </Card>
         </CardContent>
         <CardFooter className="flex justify-between text-center">
-          <SingleplayerFooter />
+          <SingleplayerFooter session={session} />
         </CardFooter>
       </Card>
     </div>

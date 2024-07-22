@@ -50,8 +50,10 @@ export default function UserMenu({ session }: { session: Session | null }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem disabled>Help</DropdownMenuItem>
-          <BugReport session={session} />
+          <Link href={`/help`}>
+            <DropdownMenuItem>Help</DropdownMenuItem>
+          </Link>
+          <BugReport session={session} menuItem />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>

@@ -20,7 +20,13 @@ import { toast } from '../ui/use-toast';
 export interface IReportProblemForm {
   description: string;
 }
-export default function BugReport({ session }: { session: Session | null }) {
+export default function BugReport({
+  session,
+  menuItem = false,
+}: {
+  session: Session | null;
+  menuItem?: boolean;
+}) {
   const { register, handleSubmit, reset } = useForm();
   const [loading, setLoading] = useState(false);
   const onSubmit = async (formData: FieldValues) => {
@@ -38,7 +44,11 @@ export default function BugReport({ session }: { session: Session | null }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={e => e.preventDefault()}>Report a bug</DropdownMenuItem>
+        {menuItem ? (
+          <DropdownMenuItem onSelect={e => e.preventDefault()}>Report a bug</DropdownMenuItem>
+        ) : (
+          <Button>Report a bug</Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit(onSubmit)}>

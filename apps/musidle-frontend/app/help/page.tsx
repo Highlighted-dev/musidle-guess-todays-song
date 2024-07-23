@@ -22,13 +22,9 @@ import dotenv from 'dotenv';
 import Redirecter from '@/components/Redirecter';
 import { IBugReport } from '@/@types/Help';
 import BugReport from '@/components/user/BugReport';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+
+import Link from 'next/link';
+import BugRequestStatusSelection from '@/components/help/BugRequestStatusSelection';
 dotenv.config();
 
 const getBugReports = async (role: string, userId: string) => {
@@ -66,6 +62,7 @@ export default async function HelpPage() {
   }
   const bugReports =
     ((await getBugReports(session.user.role, session.user.id)) as IBugReport[]) || null;
+
   return (
     <div className="container flex flex-col justify-center items-center pt-6">
       <Card className="w-full">
@@ -93,32 +90,15 @@ export default async function HelpPage() {
               )}
               {bugReports.map((request: IBugReport) => (
                 <TableRow key={request._id}>
-                  <TableCell>{request._id}</TableCell>
+                  <TableCell>
+                    <Link href={`/help/${request._id}`}>{request._id}</Link>
+                  </TableCell>
+
                   <TableCell>{formatDate(request.createdAt)}</TableCell>
                   <TableCell>{formatDate(request.updatedAt)}</TableCell>
-                  <TableCell
-                    className={
-                      request.status === 'Resolved'
-                        ? 'text-green-500'
-                        : request.status === 'Pending'
-                        ? 'text-yellow-500'
-                        : 'text-red-500'
-                    }
-                  >
-                    {session.user.role === 'admin' ? (
-                      <Select>
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder={request.status} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Resolved">Resolved</SelectItem>
-                          <SelectItem value="Pending">Pending</SelectItem>
-                          <SelectItem value="Rejected">Rejected</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      request.status
-                    )}
+
+                  <TableCell>
+                    <BugRequestStatusSelection session={session} request={request} />
                   </TableCell>
                 </TableRow>
               ))}

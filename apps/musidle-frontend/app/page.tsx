@@ -9,7 +9,7 @@ import { IWiki } from '../@types/Wiki';
 
 async function getWikis() {
   try {
-    const wiki: IWiki[] = await fetch(getCurrentUrl() + `/externalApi/wikis/`, {
+    const wiki: IWiki[] | null = await fetch(getCurrentUrl() + `/externalApi/wikis/`, {
       cache: 'default',
       next: {
         revalidate: 900, // 15 minutes

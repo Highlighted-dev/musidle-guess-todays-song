@@ -76,7 +76,7 @@ export const editorExtensions = [
   }),
   TableHeader.configure({
     HTMLAttributes: {
-      class: '[&_tr]:border-b bg-muted/50 text-muted-foreground font-medium',
+      class: 'bg-muted/50 text-muted-foreground font-medium',
     },
   }),
   TextAlign.configure({

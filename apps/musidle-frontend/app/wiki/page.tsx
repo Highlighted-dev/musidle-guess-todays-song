@@ -27,11 +27,9 @@ const getWikis = async (searchParams: { search: string; tag: string }) => {
       ).then(res => res.json());
       return wiki;
     }
-    const wiki: IWiki[] = await fetch(getCurrentUrl() + `/externalApi/wikis/`, {
-      next: {
-        revalidate: 120,
-      },
-    }).then(res => res.json());
+    const wiki: IWiki[] = await fetch(getCurrentUrl() + `/externalApi/wikis/`).then(res =>
+      res.json(),
+    );
     return wiki;
   } catch (err) {
     console.log(err);

@@ -1,4 +1,4 @@
-# This project has been merged with open-book-chronicle. It won't be updated anymore (10.31.2024)
+# This project has been merged with another project. It won't be updated anymore (10.31.2024)
 
 # MusidleGuessTodaysSong
 

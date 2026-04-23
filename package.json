@@ -68,7 +68,7 @@
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
     "next": "^14.2.13",
-    "next-auth": "^5.0.0-beta.19",
+    "next-auth": "^5.0.0-beta.30",
     "node-schedule": "^2.1.1",
     "pg": "^8.12.0",
     "react": "18.2.0",

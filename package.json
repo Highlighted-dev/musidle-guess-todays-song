@@ -78,15 +78,15 @@
     "react-textarea-autosize": "^8.5.3",
     "shadcn-ui": "^0.4.1",
     "sharp": "^0.33.2",
-    "socket.io": "^4.6.2",
-    "socket.io-client": "^4.6.2",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
     "supertest": "^6.3.3",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "tslib": "^2.3.0",
     "utf-8-validate": "^5.0.10",
     "winston": "^3.13.1",
-    "ws": "8.17",
+    "ws": "8.21",
     "zustand": "^4.4.4"
   },
   "devDependencies": {

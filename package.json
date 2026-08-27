@@ -96,7 +96,7 @@
     "@nx/eslint-plugin": "18.2.4",
     "@nx/jest": "18.2.4",
     "@nx/js": "18.2.4",
-    "@nx/next": "18.2.4",
+    "@nx/next": "23.1.0",
     "@nx/node": "18.2.4",
     "@nx/react": "18.2.4",
     "@nx/workspace": "18.2.4",
